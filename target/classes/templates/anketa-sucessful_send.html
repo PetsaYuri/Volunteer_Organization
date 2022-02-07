@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head class="blue">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" />
+        <title>Анкета відправлена</title>
+        <link rel="stylesheet" href="../css/bootstrap.css">
+        <link rel="stylesheet" href="../css/main.css">
+        <link rel="shortcun icon" href="../icon/logo.ico">
+        <link href="https://fonts.googleapis.com/css2?family=Lato:ital@1&family=Raleway:ital@1&display=swap"
+            rel="stylesheet">
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body class="background-color">
+        <header th:insert="blocks\header :: header"></header>
+        <main>
+            <div class="container mt-for-header mb-for-footer mb-5 two">
+                <h1 class="text-center mb-4 text-success">Форму успішно відправлено!</h1>
+                <div class="concatenate">
+                    <h4 class="mx-auto mb-4 paragraph" th:inline="text">Протягом пару днів ми переглянемо вашу заявку і
+                        дамо відповідь на вашу електрону адресу: [[${email}]].
+                    </h4>
+                </div>
+            </div>
+            <div>
+                <center>
+                    <a href="/" class="btn btn-outline-success">Повернутись на головну сторінку</a>
+                </center>
+                <center>
+                    <figure class="mt-4">
+                        <img src="../icon/full_logo.jpg" alt="Волонтерська організація">
+                        <figcaption>
+                            <h3>Дякуємо за вашу підтримку. Разом ми зможем зробити цей світ трохи кращим!</h3>
+                        </figcaption>
+                    </figure>
+                </center>
+            </div>
+        </main>
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+
+</html>

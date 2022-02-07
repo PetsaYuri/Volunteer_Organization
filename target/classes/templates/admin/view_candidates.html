@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="shortcun icon" href="icon/logo.ico">
+        <title>Перегляд кандидатів</title>
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body>
+        <header class="navbar-inverse" th:insert="blocks\header :: header"></header>
+        <main class="lin1">
+            <div class="mt-for-header">
+                <div class="text-center mb-3">
+                    <form action="/view_candidates_filter" method="post" class="form-horizontal ml-2"
+                        enctype="multipart/form-data" name="form1">
+                        <h2>Фільтри по статусу:</h2>
+                        <button type="submit" class="btn btn-warning" name="filter" value="ОЧІКУВАННЯ">Нові</button>
+                        <button type="submit" class="btn btn-danger" name="filter"
+                            value="ВІДМОВЛЕНО">Відмовленні</button>
+                        <button type="submit" class="btn btn-success" name="filter" value="ПРИЙНЯТО">Прийняті</button>
+                    </form>
+                </div>
+                <div th:each="candidate : ${forms}" th:with="ids=${candidate.id} - 1">
+                    <div class="container content-lg">
+                        <div class="row">
+                            <div class="col-sm-5 sm-margin-b-60 mb-2">
+                                <img class="full-width img-responsive" th:src="${filePath} + ${candidate.photo}"
+                                    th:alt="${filePath} + ${candidate.photo}">
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="section-seperator margin-b-50">
+                                    <div class="margin-b-50">
+                                        <div class="margin-b-30">
+                                            <h2 th:inline="text" class="font-weight-bold">Кандидат №[[${candidate.id}]]
+                                            </h2>
+                                            <h5 th:inline="text"><b class="font-weight-bold">ПІБ:</b>
+                                                [[${candidate.name}]]
+                                            </h5>
+                                            <h5 th:inline="text"><b class="font-weight-bold">Населений пункт:</b>
+                                                [[${candidate.city}]]</h5>
+                                            <h5 th:inline="text"><b class="font-weight-bold">Опис:</b>
+                                                [[${candidate.description}]]</h5>
+                                            <h5 th:inline="text"><b class="font-weight-bold">Зв'язок:</b> <i
+                                                    class="fa fa-envelope" aria-hidden="true"></i>
+                                                [[${candidate.email}]] або <i class="fa fa-phone"
+                                                    aria-hidden="true"></i>
+                                                [[${candidate.phone}]]
+                                            </h5>
+                                            <th:block th:switch="${candidate.status}">
+                                                <h5 th:inline="text">
+                                                    <h5 th:case="ОЧІКУВАННЯ"><b class="font-weight-bold">Статус: </b><b
+                                                            class="text-warning">ОЧІКУВАННЯ</b></h5>
+                                                    <h5 th:case="ВІДМОВЛЕНО"><b class="font-weight-bold">Статус: </b><b
+                                                            class="text-danger">ВІДМОВЛЕНО</b></h5>
+                                                    <h5 th:case="ПРИЙНЯТО"><b class="font-weight-bold">Статус: </b> <b
+                                                            class="text-success">ПРИЙНЯТО</b></h5>
+                                                </h5>
+                                            </th:block>
+                                        </div>
+                                        <form action="/view_candidates" method="post" class="form-horizontal"
+                                            enctype="multipart/form-data" name="form">
+                                            <input type="hidden" name="candidateId" th:value="${candidate.id}">
+                                            <input type="hidden" name="currentStatus" th:value="${currentStatus}">
+                                            <button type="submit" class="btn btn-danger" name="newStatus"
+                                                value="ВІДМОВЛЕНО">Відмовити</button>
+                                            <button type="submit" class="btn btn-success" name="newStatus"
+                                                value="ПРИЙНЯТО">Прийняти</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+
+</html>

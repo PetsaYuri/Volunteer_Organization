@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="shortcun icon" href="icon/logo.ico">
+        <title>Анкета</title>
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body>
+        <header class="navbar-inverse" th:insert="blocks\header :: header"></header>
+        <main>
+            <div class="mt-5">
+
+            </div>
+            <div class="mr-300 mt-5">
+                <div class="col-md-7 offset-md-4">
+                    <div class="form-container mt-for-header mb-5">
+                        <h1 class="title text-center">Заповнення анкети на волонтера</h1>
+                        <form action="/anketa" method="post" class="form-horizontal" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <h4>Введіть ПІБ:
+                                    <input type="text" name="name" placeholder="Іванов Іван Іванович"
+                                        class="form-control mb-2" required maxlength="40">
+                                </h4>
+                                <h4>Введіть ваш електроний адрес:
+                                    <input type="email" name="email" placeholder="example@gmail.com"
+                                        class="form-control mb-2" required pattern="^[A-Za-z0-9+_.-]+@(.+)$"
+                                        minlength="10" maxlength="30">
+                                </h4>
+
+                                <h4>Введіть номер телефону:
+                                    <input type="number" name="phone" placeholder="+380951234567" value="+380"
+                                        class="form-control mb-2" required minlength="11" maxlength="12">
+                                </h4>
+                                <h4>Введіть ваш населений пункт:
+                                    <input type="text" name="city" placeholder="Закарпатська обл., м. Ужгород"
+                                        class="form-control mb-2" required maxlength="70">
+                                </h4>
+                                <h4>Коротко опишіть себе:
+                                    <textarea placeholder="до 350 символів" name="description" maxlength="350"
+                                        class="form-control mb-4"></textarea>
+                                </h4>
+                                <h4>
+                                    Додайте власну фотографію
+                                    <p class="text-warning">*тип файла: png, jpg або jpeg. Бажаний розмір: 500х500</p>
+                                    <input type="file" name="file" required>
+                                </h4>
+                                <div th:if="${param.FileFormatException}">
+                                    *Невірний формат файла!
+                                </div>
+                                <input type="hidden" name="status" value="ОЧІКУВАННЯ">
+                            </div>
+                            <center> <button type="submit" class="btn btn-outline-success btn-block">Відправити</button>
+                            </center>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+
+</html>

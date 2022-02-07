@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head class="blue">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" />
+        <title>Волонтерська організація</title>
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="shortcun icon" href="icon/logo.ico">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Lato:ital@1&family=Raleway:ital@1&display=swap"
+            rel="stylesheet">
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body class="">
+        <header th:insert="blocks\header :: header"></header>
+        <main>
+            <div class="container">
+                <div class="mx-auto my-5 text-center">
+                    <h1 class="text-info header-font mt-for-header mb-3">404</h1>
+                    <h4 class="mb-3">Схоже ми не знайшли потрібну сторінку за цим посиланням, поверніться будь ласка на
+                        головну сторінку
+                    </h4>
+                    <a class="btn-lg btn-outline-primary nav-link active" href="/">Повернутись на головну сторінку</a>
+                </div>
+            </div>
+        </main>
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+
+</html>

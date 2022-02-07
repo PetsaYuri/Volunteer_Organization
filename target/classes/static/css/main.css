@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital@1&family=Raleway:ital@1&display=swap');
+
+body    {
+    background-color: #f2f2f2;
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    color: #555;
+    
+    -webkit-font-smoothing: antialiased;
+    -webkit-overflow-scrolling: touch;
+
+    margin-top: 0px;
+}
+
+h1, h2, h3, h4, h5, h6  {
+    font-family: "Raleway", sans-serif;
+    font-weight: 300;
+    color: #333;
+}
+
+.header-font  {
+    font-size: 5.4em;
+}
+
+p   {
+    line-height: 28px;
+    font-size: medium;
+}
+
+a   {
+    color: #d31616;
+}
+
+a:hover, a:focus   {
+    color: #2419c2;
+    text-decoration: none;
+    outline: 0;
+}
+
+hr  {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+.navbar {
+    font-weight: 800;
+    font-size: 14px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.navbar-inverse {
+    background: #2d2d2d;
+    border-color: #2d2d2d;
+}
+
+.navbar-inverse .navbar-nav > .active > a   {
+    background-color: #ff7878;
+}
+
+.link-secondary {
+    text-decoration: none;
+}
+
+.container {
+    width: 300%;
+    max-width: 1470px;
+    margin: 0 auto;
+}
+
+.test   {
+    color: #4b1fff;
+}
+
+.background-image   {
+    background-image: url("../icon/background.jpg");
+    background-repeat: no-repeat;
+}
+
+.background-color   {
+    background-color: #a8a8a8;
+}
+
+.page-error {
+    background-image: url("../icon/error-404.jpg");
+    background-repeat: no-repeat;
+}
+
+.color-yellow   {
+    color: yellow;
+}
+
+.mt-for-header    {
+    margin-top: 100px;
+}
+
+#content{
+    min-height:100%;
+}
+
+#footer {
+    position: fixed;
+    left:0px;
+    bottom:90px;
+    height:30px;
+    width:100%;
+ }
+
+input:focus:invalid,
+
+textarea:focus:invalid{
+
+    border:solid 2px #F5192F;
+
+}
+
+input:focus:valid,
+
+textarea:focus:valid{
+
+    border:solid 2px #18E109;
+
+    background-color:#fff;
+
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.paragraph  {
+    text-indent: 30px;
+}
+
+.concatenate h3:first-of-type {
+    float: right;
+}
+
+.concatenate h4:last-of-type {
+    float: left;
+}
+
+.mr-300    {
+    margin-right: 300px;
+}
+
+.font-weight-bold  {
+    font-weight: bold;
+}
+
+.ml-500 {
+    margin-left: 150px;
+}
+
+.lin1    {
+    position: relative;
+    height: auto;
+}
+
+.lin2   {
+    position: relative;
+    height: 100%;
+}
