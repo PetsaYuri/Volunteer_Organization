@@ -30,7 +30,7 @@ public class FormService {
     public String sendMessageToEmail(Form form)    {
         String message = String.format("Доброго дня %s! \n" +
                 "Будь ласка, перейдіть по посиланню ниже " +
-                "<a href=\"http://localhost:8081/activate/%s\"></a>",
+                "http://localhost:8081/activate/%s",
                 form.getName(),
                 form.getActivationCode());
         return message;

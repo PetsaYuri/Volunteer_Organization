@@ -49,7 +49,7 @@ public class FormController {
                 String photo = uploadsPhotos.createFilenameWithUUID();
                 Form form = formService.createForm(name, email, phone, city, description, status, photo);
                 uploadsPhotos.saveFileToServer(file);
-                formService.saveForm(form);
+
 
                 String message = formService.sendMessageToEmail(form);
 
@@ -70,6 +70,7 @@ public class FormController {
 
         if(isActivated) {
             model.addAttribute("message", "Активація пройшла успішно");
+            formService.saveForm(form);
         }
         else {
             model.addAttribute("message", "Активація не здійснилась");
