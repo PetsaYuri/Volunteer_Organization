@@ -27,20 +27,17 @@ public class FormService {
         formRepository.save(form);
     }
 
-    public void sendMessageToEmail(Form form)    {
+    public String sendMessageToEmail(Form form)    {
         String message = String.format("Доброго дня %s! \n" +
-                "Будь ласка, перейдіть по посиланню ниже" +
-                "http://localhost:8081/activate/%s",
+                "Будь ласка, перейдіть по посиланню ниже " +
+                "<a href=\"http://localhost:8081/activate/%s\"></a>",
                 form.getName(),
                 form.getActivationCode());
-
-        if(!ObjectUtils.isEmpty(form.getEmail()))   {
-            mailSender.send(form.getEmail(), "Активація коду", message);
-        }
+        return message;
     }
 
-    public boolean activateForm(String code) {
-        Form form = formRepository.findByActivation(code);
+    public boolean activateForm(String code1) {
+        Form form = formRepository.findByActivation(code1);
 
         if(form == null)    {
             return false;

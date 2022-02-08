@@ -42,6 +42,7 @@ public class FormController {
                            @RequestParam("file") MultipartFile file, @RequestParam String status,
                            Model model) throws IOException {
             model.addAttribute("email", email);
+            String activationCode = "";
         try {
             if(uploadsPhotos.checkFormatFile(file.getOriginalFilename()))   {
                 uploadsPhotos.setFilename(file.getOriginalFilename());
@@ -50,16 +51,18 @@ public class FormController {
                 uploadsPhotos.saveFileToServer(file);
                 formService.saveForm(form);
 
+                String message = formService.sendMessageToEmail(form);
 
-                mailSenderService.send(email, "title", "text");
+                mailSenderService.send(email, "Активація коду", message);
             }   else {
                 throw new FileUploadException();
             }
         }   catch (FileUploadException ex) {
             return "redirect:anketa/?FileFormatException";
         }
+
         return "anketa-sucessful_send";
-    }
+}
 
     @GetMapping("/activate/{code}")
     public String activate(Model model, @PathVariable String code)  {
@@ -72,6 +75,6 @@ public class FormController {
             model.addAttribute("message", "Активація не здійснилась");
         }
 
-        return "/";
+        return "anketa-sucessful_send";
     }
 }
