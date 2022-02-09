@@ -13,4 +13,6 @@ public interface FormRepository extends JpaRepository<Form, Long> {
     Iterable<Form> findAllByOrderById();
 
     Form findByActivation(String code);
+
+    Form findByEmail(String email);
 }

@@ -15,8 +15,15 @@
         <header th:insert="blocks\header :: header"></header>
         <main>
             <div class="container">
-                <div class="p-lg-5 mx-auto my-5 text-center">
-                    <h1 class="color-yellow header-font mt-for-header mb-4">Ми волонтери!</h1>
+                <div class="p-lg-5 mx-auto my-5 text-center mt-for-header">
+                    <div class="text-success" th:if="${param.SendingMessageToEmail}">
+                        <h5 class="text-warning"> Лист із підтвердженням відправлено на вашу електронну адресу:
+                            [[${email}]]. Без
+                            підтвердження
+                            ваша заявка не буде розглянута.
+                        </h5>
+                    </div>
+                    <h1 class="color-yellow header-font mb-4">Ми волонтери!</h1>
                     <h3 class="color-yellow mb-4">Наша мета - залучити як можна більше людей до волонтерської справи,
                         <br> щоб допомогти всім, кому це потрібно!
                     </h3>

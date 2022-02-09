@@ -1,5 +1,6 @@
 package com.volunteer.Volunteer.Organization.controllers;
 
+import com.volunteer.Volunteer.Organization.exceptions.EmailAlreadyExistsException;
 import com.volunteer.Volunteer.Organization.service.FormService;
 import com.volunteer.Volunteer.Organization.service.MailSenderService;
 import com.volunteer.Volunteer.Organization.service.UploadsPhotosService;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 
 @Controller
 public class FormController {
@@ -26,6 +28,9 @@ public class FormController {
 
     @Autowired
     private FormService formService;
+
+    @Autowired
+    private FormRepository formRepository;
 
     @Autowired
     private MailSenderService mailSenderService;
@@ -42,35 +47,39 @@ public class FormController {
                            @RequestParam("file") MultipartFile file, @RequestParam String status,
                            Model model) throws IOException {
             model.addAttribute("email", email);
-            String activationCode = "";
         try {
-            if(uploadsPhotos.checkFormatFile(file.getOriginalFilename()))   {
-                uploadsPhotos.setFilename(file.getOriginalFilename());
-                String photo = uploadsPhotos.createFilenameWithUUID();
-                Form form = formService.createForm(name, email, phone, city, description, status, photo);
-                uploadsPhotos.saveFileToServer(file);
+            Form f = formRepository.findByEmail(email);
+            if(f == null)   {
+                if(uploadsPhotos.checkFormatFile(file.getOriginalFilename()))   {
+                    uploadsPhotos.setFilename(file.getOriginalFilename());
+                    String photo = uploadsPhotos.createFilenameWithUUID();
 
+                    Form form = formService.createForm(name, email, phone, city, description, status, photo);
+                    uploadsPhotos.saveFileToServer(file);
+                    formService.saveForm(form);
 
-                String message = formService.sendMessageToEmail(form);
-
-                mailSenderService.send(email, "Активація коду", message);
+                    String message = formService.sendMessageToEmail(form);
+                    mailSenderService.send(email, "Активація коду", message);
+                } else {
+                    throw new FileUploadException();
+                }
             }   else {
-                throw new FileUploadException();
+                throw new EmailAlreadyExistsException();
             }
         }   catch (FileUploadException ex) {
-            return "redirect:anketa/?FileFormatException";
+            return "redirect:anketa?FileFormatException";
+        }   catch (EmailAlreadyExistsException ex)  {
+            return "redirect:anketa?EmailAlreadyExistsException";
         }
-
-        return "anketa-sucessful_send";
+        return "redirect:/?SendingMessageToEmail";
 }
 
     @GetMapping("/activate/{code}")
-    public String activate(Model model, @PathVariable String code)  {
+    public String activate(Model model, @PathVariable String code) throws IOException {
         boolean isActivated = formService.activateForm(code);
 
         if(isActivated) {
             model.addAttribute("message", "Активація пройшла успішно");
-            formService.saveForm(form);
         }
         else {
             model.addAttribute("message", "Активація не здійснилась");

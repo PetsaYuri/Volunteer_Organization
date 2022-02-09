@@ -15,9 +15,6 @@
     <body>
         <header class="navbar-inverse" th:insert="blocks\header :: header"></header>
         <main>
-            <div class="mt-5">
-
-            </div>
             <div class="mr-300 mt-5">
                 <div class="col-md-7 offset-md-4">
                     <div class="form-container mt-for-header mb-5">
@@ -33,6 +30,10 @@
                                         class="form-control mb-2" required pattern="^[A-Za-z0-9+_.-]+@(.+)$"
                                         minlength="10" maxlength="30">
                                 </h4>
+
+                                <div th:if="${param.EmailAlreadyExistsException}">
+                                    *Email уже використовується!
+                                </div>
 
                                 <h4>Введіть номер телефону:
                                     <input type="number" name="phone" placeholder="+380951234567" value="+380"

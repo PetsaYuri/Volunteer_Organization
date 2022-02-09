@@ -16,13 +16,11 @@
     <body class="background-color">
         <header th:insert="blocks\header :: header"></header>
         <main>
-            <div class="container mt-for-header mb-for-footer mb-5 two">
-                <h1 class="text-center mb-4 text-success">Форму успішно відправлено!</h1>
-                <div class="concatenate">
-                    <h4 class="mx-auto mb-4 paragraph" th:inline="text">Протягом пару днів ми переглянемо вашу заявку і
-                        дамо відповідь на вашу електрону адресу: [[${email}]].
-                    </h4>
-                </div>
+            <div class="container mt-for-header mb-for-footer two text-center">
+                <h1 class=" mb-3 text-success">Форму успішно відправлено!</h1>
+                <h4 class="mx-auto">
+                    [[${message}]]
+                </h4>
             </div>
             <div>
                 <center>
