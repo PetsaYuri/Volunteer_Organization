@@ -31,7 +31,7 @@
                                         minlength="10" maxlength="30">
                                 </h4>
 
-                                <div th:if="${param.EmailAlreadyExistsException}">
+                                <div th:if="${param.EmailAlreadyExistsException}" class="text-warning">
                                     *Email уже використовується!
                                 </div>
 
@@ -52,7 +52,7 @@
                                     <p class="text-warning">*тип файла: png, jpg або jpeg. Бажаний розмір: 500х500</p>
                                     <input type="file" name="file" required>
                                 </h4>
-                                <div th:if="${param.FileFormatException}">
+                                <div th:if="${param.NotAllowedFileFormatException}">
                                     *Невірний формат файла!
                                 </div>
                                 <input type="hidden" name="status" value="ОЧІКУВАННЯ">

@@ -22,20 +22,13 @@ public class UploadsPhotosService {
 
     private final String UPLOAD_PATH_TARGET = System.getProperty("user.dir") + "/target/classes/static/icon/uploads/candidates";
 
-    private String filename;
-
     private String filenameWithUUID;
 
     public UploadsPhotosService()  {
         checkFolderOnExist();
     }
 
-    public UploadsPhotosService(String filename)   {
-        this.filename = filename;
-        checkFolderOnExist();
-    }
-
-    public Boolean checkFormatFile(String namefile)    {
+    public Boolean isAllowedFileFormat(String namefile)    {
         String[] str = new String[2];
         str = namefile.split("\\.", 2);
         String fileFormat = str[1];
@@ -66,7 +59,7 @@ public class UploadsPhotosService {
         Files.copy(Paths.get(String.valueOf(dirUpload)), Paths.get(String.valueOf(dirUploadTarget)));
     }
 
-    public String createFilenameWithUUID()    {
+    public String createFilenameWithUUID(String filename)    {
         String uuidfile = UUID.randomUUID().toString();
         filenameWithUUID = uuidfile + "_" + filename;
         return filenameWithUUID;
@@ -74,14 +67,6 @@ public class UploadsPhotosService {
 
     public String getFilenameWithUUID() {
         return filenameWithUUID;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
     }
 
     public String getUPLOAD_PATH() {

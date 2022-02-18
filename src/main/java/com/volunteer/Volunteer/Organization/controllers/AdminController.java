@@ -1,7 +1,8 @@
 package com.volunteer.Volunteer.Organization.controllers;
 
-import com.volunteer.Volunteer.Organization.service.ViewCandidatesService;
-import com.volunteer.Volunteer.Organization.service.ViewUsersService;
+import com.volunteer.Volunteer.Organization.exceptions.UserAlreadyExistsException;
+import com.volunteer.Volunteer.Organization.service.UserService;
+import com.volunteer.Volunteer.Organization.service.CandidatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     @Autowired
-    private ViewCandidatesService candidatesService;
+    private CandidatesService candidatesService;
 
     @Autowired
-    private ViewUsersService usersService;
+    private UserService usersService;
 
     private final String PATH_TO_TEMPLATE = "admin/";
 
@@ -55,6 +56,21 @@ public class AdminController {
     public String viewUsers(Model model)    {
         model.addAttribute("users", usersService.findAllUsers());
         return PATH_TO_TEMPLATE + "view_users";
+    }
+
+    @GetMapping("/add_user")
+    public String addUser(Model model)  {
+        return PATH_TO_TEMPLATE + "add_user";
+    }
+
+    @PostMapping("/add_user")
+    public String postAddUser(@RequestParam String username, @RequestParam String password, Model model)    {
+        try {
+            usersService.addUser(username, password);
+        }   catch (UserAlreadyExistsException ex)   {
+            return "redirect:add_user?UserAlreadyExistsException";
+        }
+        return PATH_TO_TEMPLATE + "add_user";
     }
 
     public String getPATH_TO_TEMPLATE() {

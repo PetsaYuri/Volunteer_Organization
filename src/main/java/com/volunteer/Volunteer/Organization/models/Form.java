@@ -10,14 +10,14 @@ public class Form {
 
     }
 
-    public Form(String name, String email, String phone, String city, String description, String status, String photo) {
+    public Form(String name, String email, String phone, String city, String description, String status, String filename) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.city = city;
         this.description = description;
         this.status = status;
-        this.photo = photo;
+        this.photo = filename;
     }
 
     @Id

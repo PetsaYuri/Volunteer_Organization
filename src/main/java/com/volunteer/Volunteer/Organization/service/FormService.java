@@ -4,7 +4,6 @@ import com.volunteer.Volunteer.Organization.models.Form;
 import com.volunteer.Volunteer.Organization.repository.FormRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.UUID;
 
@@ -17,14 +16,11 @@ public class FormService {
     @Autowired
     private MailSenderService mailSender;
 
-    public Form createForm(String name, String email, String phone, String city, String description, String status, String photo)    {
-        Form form = new Form(name, email, phone, city, description, status, photo);
+    public Form addForm(String name, String email, String phone, String city, String description, String status, String filename)    {
+        Form form = new Form(name, email, phone, city, description, status, filename);
         form.setActivationCode(UUID.randomUUID().toString());
-        return form;
-    }
-
-    public void saveForm(Form form) {
         formRepository.save(form);
+        return form;
     }
 
     public String sendMessageToEmail(Form form)    {
@@ -36,8 +32,8 @@ public class FormService {
         return message;
     }
 
-    public boolean activateForm(String code1) {
-        Form form = formRepository.findByActivation(code1);
+    public boolean activateForm(String code) {
+        Form form = formRepository.findByActivation(code);
 
         if(form == null)    {
             return false;
@@ -47,5 +43,15 @@ public class FormService {
         formRepository.save(form);
 
         return true;
+    }
+
+    public boolean isAlreadyExistsEmail(String email)  {
+        Form form = formRepository.findByEmail(email);
+
+        if(form == null)    {
+            return false;
+        }   else {
+            return true;
+        }
     }
 }

@@ -1,11 +1,12 @@
 package com.volunteer.Volunteer.Organization.controllers;
 
 import com.volunteer.Volunteer.Organization.exceptions.EmailAlreadyExistsException;
+import com.volunteer.Volunteer.Organization.exceptions.NotAllowedFileFormatException;
+import com.volunteer.Volunteer.Organization.models.Form;
+import com.volunteer.Volunteer.Organization.repository.FormRepository;
 import com.volunteer.Volunteer.Organization.service.FormService;
 import com.volunteer.Volunteer.Organization.service.MailSenderService;
 import com.volunteer.Volunteer.Organization.service.UploadsPhotosService;
-import com.volunteer.Volunteer.Organization.models.Form;
-import com.volunteer.Volunteer.Organization.repository.FormRepository;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,9 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 
 @Controller
 public class FormController {
@@ -45,29 +44,26 @@ public class FormController {
     public String postForm(@RequestParam String name, @RequestParam String email, @RequestParam String phone,
                            @RequestParam String city, @RequestParam String description,
                            @RequestParam("file") MultipartFile file, @RequestParam String status,
-                           Model model) throws IOException {
+                           Model model) throws NotAllowedFileFormatException, IOException {
             model.addAttribute("email", email);
         try {
-            Form f = formRepository.findByEmail(email);
-            if(f == null)   {
-                if(uploadsPhotos.checkFormatFile(file.getOriginalFilename()))   {
-                    uploadsPhotos.setFilename(file.getOriginalFilename());
-                    String photo = uploadsPhotos.createFilenameWithUUID();
-
-                    Form form = formService.createForm(name, email, phone, city, description, status, photo);
+            String filename = file.getOriginalFilename();
+            if(!formService.isAlreadyExistsEmail(email))   {
+                if(uploadsPhotos.isAllowedFileFormat(filename))   {
+                    String filenameWithUUID = uploadsPhotos.createFilenameWithUUID(filename);
+                    Form form = formService.addForm(name, email, phone, city, description, status, filenameWithUUID);
                     uploadsPhotos.saveFileToServer(file);
-                    formService.saveForm(form);
 
                     String message = formService.sendMessageToEmail(form);
-                    mailSenderService.send(email, "Активація коду", message);
+                  //  mailSenderService.send(email, "Активація коду", message);
                 } else {
-                    throw new FileUploadException();
+                    throw new NotAllowedFileFormatException();
                 }
             }   else {
                 throw new EmailAlreadyExistsException();
             }
         }   catch (FileUploadException ex) {
-            return "redirect:anketa?FileFormatException";
+            return "redirect:anketa?NotAllowedFileFormatException";
         }   catch (EmailAlreadyExistsException ex)  {
             return "redirect:anketa?EmailAlreadyExistsException";
         }
