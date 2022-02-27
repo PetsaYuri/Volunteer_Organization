@@ -14,7 +14,10 @@
     <body>
         <header th:insert="blocks\header :: header"></header>
         <main>
-            <div class="container mt-for-header">
+            <div class="container">
+                <div th:if="${param.UserAdded}" class="alert alert-success text-center" role="alert">
+                    Користувач доданий!
+                </div>
                 <form action="/add_user" method="post" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group">
                         <h4>Нікнейм:
@@ -32,13 +35,20 @@
                             <input type="email" name="email" placeholder="Введіть емайл" class="form-control mb-2"
                                 maxlength="20">
                         </h4>
+                        <select name="selectedRole" id="select_role">
+                            <option disabled>Виберіть роль</option>
+                            <th:block th:each="role : ${roles}">
+                                <option th:value="${role.roles}">[[${role.roles}]]</option>
+                            </th:block>
+                        </select>
                     </div>
-                    <center> <button type="submit" class="btn btn-outline-success btn-block">Відправити</button>
+                    <center>
+                        <button type="submit" class="btn btn-outline-success btn-block mb-2">Відправити</button>
                     </center>
                 </form>
             </div>
         </main>
-        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+        <footer class=" navbar-inverse" th:insert="blocks\footer :: footer"></footer>
     </body>
 
 </html>

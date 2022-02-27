@@ -1,6 +1,9 @@
 package com.volunteer.Volunteer.Organization.controllers;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.volunteer.Volunteer.Organization.exceptions.UserAlreadyExistsException;
+import com.volunteer.Volunteer.Organization.models.Roles;
+import com.volunteer.Volunteer.Organization.service.RolesService;
 import com.volunteer.Volunteer.Organization.service.UserService;
 import com.volunteer.Volunteer.Organization.service.CandidatesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +20,21 @@ public class AdminController {
     @Autowired
     private UserService usersService;
 
+    @Autowired
+    private RolesService rolesService;
+
     private final String PATH_TO_TEMPLATE = "admin/";
 
-    private final String FILE_PATH = "icon/uploads/candidates/";
+    private final String URI_PATH = "/admin";
+
+    private final String FILE_PATH = "/icon/uploads/candidates/";
 
     @GetMapping("/admin")
     public String admin(Model model) {
         return PATH_TO_TEMPLATE + "admin";
     }
 
-    @GetMapping("/view_candidates")
+    @GetMapping("/admin/view_candidates")
     public String viewCandidates(Model model)  {
         model.addAttribute("filePath", FILE_PATH);
         model.addAttribute("forms", candidatesService.findAllCandidates());
@@ -60,18 +68,32 @@ public class AdminController {
 
     @GetMapping("/add_user")
     public String addUser(Model model)  {
+        model.addAttribute("roles", rolesService.getAllRoles());
         return PATH_TO_TEMPLATE + "add_user";
     }
 
     @PostMapping("/add_user")
-    public String postAddUser(@RequestParam String username, @RequestParam String password, Model model)    {
+    public String postAddUser(@RequestParam String username, @RequestParam String password,
+                             @RequestParam String selectedRole,  Model model)    {
         try {
-            usersService.addUser(username, password);
+            usersService.addUser(username, password, selectedRole);
         }   catch (UserAlreadyExistsException ex)   {
             return "redirect:add_user?UserAlreadyExistsException";
         }
-        return PATH_TO_TEMPLATE + "add_user";
+        return "redirect:add_user?UserAdded";
     }
+
+   /* @GetMapping("/add_roles")
+    public String addRoles(Model model)    {
+        return PATH_TO_TEMPLATE + "add_roles";
+    }
+
+    @PostMapping("/add_roles")
+    public String postAddRoles(@RequestParam String role, @RequestParam String description, Model model) {
+        rolesService.addNewRole(role, description);
+
+        return "redirect:add_roles?RoleAdded";
+    }*/
 
     public String getPATH_TO_TEMPLATE() {
         return PATH_TO_TEMPLATE;

@@ -1,29 +1,32 @@
 <div th:fragment="header">
-    <div class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom fixed-top navbar-inverse">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none mx-2"><img
-                src="../icon/logo_for_navbar.jpg" alt="Іконка сайту">
-            <b class="nav-link">ВОЛОНТЕРСЬКА ОРГАНІЗАЦІЯ</b>
-        </a>
-        <ul class="nav nav-pills">
-            <li class="nav-item"><a href="#" class="nav-link" aria-current="page">Про нас</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Проекти</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Блог</a></li>
-            <li class="nav-item"><a href="/anketa" class="nav-link">Стати волонтером</a></li>
+    <div class="container mb-for-header">
+        <div class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom fixed-top navbar-inverse">
+            <a href="/"
+                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none mx-2"><img
+                    src="../icon/logo_for_navbar.jpg" alt="Іконка сайту">
+                <b class="nav-link">ВОЛОНТЕРСЬКА ОРГАНІЗАЦІЯ</b>
+            </a>
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="#" class="nav-link" aria-current="page">Про нас</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Проекти</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Блог</a></li>
+                <li class="nav-item"><a href="/anketa" class="nav-link">Стати волонтером</a></li>
 
-            <div th:if="${#httpServletRequest.remoteUser == null}">
-                <li class="nav-item"><a href="login" class="nav-link">Вхід</a></li>
-            </div>
-            <div th:unless="${#httpServletRequest.remoteUser == null}">
-                <li class="nav-item"><a href="view_candidates" class="nav-link">Подивитись кандидатів</a></li>
-                <form th:action="@{/logout}" method="post" class="nav-item">
-                    <input type="submit" value="Sign Out" class="nav-link" />
-                </form>
-            </div>
+                <div th:if="${#httpServletRequest.remoteUser == null}">
+                    <li class="nav-item"><a href="login" class="nav-link">Вхід</a></li>
+                </div>
+                <div th:unless="${#httpServletRequest.remoteUser == null}">
+                    <li class="nav-item"><a href="view_candidates" class="nav-link">Подивитись кандидатів</a></li>
+                    <form th:action="@{/logout}" method="post" class="nav-item">
+                        <input type="submit" value="Sign Out" class="nav-link" />
+                    </form>
+                </div>
 
 
-            <li class="nav-item" th:if="${#httpServletRequest.remoteUser != null}">
-                <p class="nav-link"> Роль: [[${#httpServletRequest.remoteUser}]]</p>
-            </li>
-        </ul>
+                <li class="nav-item" th:if="${#httpServletRequest.remoteUser != null}">
+                    <p class="nav-link"> Роль: [[${#httpServletRequest.remoteUser}]]</p>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

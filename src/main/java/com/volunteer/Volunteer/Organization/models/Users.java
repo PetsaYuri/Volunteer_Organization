@@ -8,9 +8,10 @@ public class Users {
 
     public Users()  {}
 
-    public Users(String username, String password)  {
+    public Users(String username, String password, String role)  {
         this.username = username;
         this.password = password;
+        this.roles = role;
     }
 
     @Id

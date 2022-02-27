@@ -24,6 +24,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         String password = authentication.getCredentials().toString();
         Users user = usersRepository.findByUsername(username);
+        System.out.println(user.getPassword());
+        System.out.println(password);
         Boolean istruepass = bcrypt.matches(password, user.getPassword());
         SecurityConfig.setRole(user.getRoles());
 

@@ -14,10 +14,10 @@ public class UserService {
     @Autowired
     private UsersRepository usersRepository;
 
-    public void addUser(String username, String password) throws UserAlreadyExistsException {
+    public void addUser(String username, String password, String role) throws UserAlreadyExistsException {
         if(!isAlreadyExistsUser(username)) {
             String encodedPassword = passwordEncoder(password);
-            Users user = new Users(username, encodedPassword);
+            Users user = new Users(username, encodedPassword, role);
             usersRepository.save(user);
         }   else {
             throw new UserAlreadyExistsException();

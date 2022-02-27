@@ -16,14 +16,14 @@
         <header th:insert="blocks\header :: header"></header>
         <main>
             <div class="container-fluid mt-5">
+                <div class="alert alert-info text-center" th:if="${param.logout}">
+                    Ви вийшли з системи.
+                </div>
+                <div class="alert alert-info text-center" th:if="${param.error}">
+                    Невірний пароль або користувач.
+                </div>
                 <div class="col-md-4 offset-md-4">
                     <div class="form-container mt-for-header mb-5">
-                        <div th:if="${param.logout}">
-                            Ви вийшли з системи.
-                        </div>
-                        <div th:if="${param.error}">
-                            Невірний пароль або користувач.
-                        </div>
                         <div class="form-icon text-center"><i class="fa fa-user"></i></div>
                         <h1 class="title text-center">Вхід</h1>
                         <form class="form-horizontal" action="/login" method="post">
