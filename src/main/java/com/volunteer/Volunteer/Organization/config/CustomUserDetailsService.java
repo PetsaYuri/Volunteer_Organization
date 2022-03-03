@@ -1,4 +1,4 @@
-package com.volunteer.Volunteer.Organization.service;
+package com.volunteer.Volunteer.Organization.config;
 
 import com.volunteer.Volunteer.Organization.models.Users;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;

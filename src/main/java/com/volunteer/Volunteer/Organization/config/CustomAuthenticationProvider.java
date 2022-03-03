@@ -2,6 +2,8 @@ package com.volunteer.Volunteer.Organization.config;
 
 import com.volunteer.Volunteer.Organization.models.Users;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
+import com.volunteer.Volunteer.Organization.service.RolesService;
+import com.volunteer.Volunteer.Organization.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,10 +26,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         String password = authentication.getCredentials().toString();
         Users user = usersRepository.findByUsername(username);
-        System.out.println(user.getPassword());
-        System.out.println(password);
         Boolean istruepass = bcrypt.matches(password, user.getPassword());
-        SecurityConfig.setRole(user.getRoles());
+        UserService.setCurrentRole(user.getRoles());
 
         if(user == null)    {
             throw new BadCredentialsException("Невідомий користувач: " + username);
@@ -36,8 +36,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if(!istruepass) {
             throw new BadCredentialsException("Невірний пароль");
         }
-
-
 
         UserDetails principal = org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())

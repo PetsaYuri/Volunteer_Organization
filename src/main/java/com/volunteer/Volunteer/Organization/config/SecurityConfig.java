@@ -1,5 +1,6 @@
 package com.volunteer.Volunteer.Organization.config;
 
+import com.volunteer.Volunteer.Organization.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,9 +9,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.util.UrlPathHelper;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -18,8 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
-
-    private static String role = "";
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
@@ -31,8 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
        http
                    .csrf().disable()
                    .authorizeRequests()
-                   .antMatchers("/user/**").hasAnyRole("USER", "admin")
-                   .antMatchers("/admin/**").hasRole("ADMIN")
+                   .antMatchers("/user/**").hasAnyRole("user", "admin")
+                   .antMatchers("/admin/**").hasRole("admin")
                    .antMatchers("/**", "/login*").permitAll()
                    .antMatchers("/css/**", "/icon/**").permitAll()
                    .anyRequest().authenticated()
@@ -45,22 +52,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                    .failureUrl("/login?error=true")
                .and()
                    .logout()
-                   .logoutUrl("/logout")
-                   .permitAll()
-                   .deleteCookies("JSESSIONID");
+               .logoutSuccessHandler(new LogoutSuccessHandler() {
+           @Override
+           public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+               UserService.setCurrentRole("guest");
 
+               UrlPathHelper helper = new UrlPathHelper();
+               String context = helper.getContextPath(request);
+               response.sendRedirect(context + "/login?logout");
+           }
+       });
     }
 
     @Bean
     public PasswordEncoder passwordEncoder()  {
         return new BCryptPasswordEncoder();
-    }
-
-    public static String getRole() {
-        return role;
-    }
-
-    public static void setRole(String Role) {
-        role = Role;
     }
 }

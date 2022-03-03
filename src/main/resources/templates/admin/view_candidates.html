@@ -13,11 +13,13 @@
     </head>
 
     <body>
-        <header class="navbar-inverse" th:insert="blocks\header :: header"></header>
+        <th:block th:with="newHeader=${header} + header">
+            <header class="navbar-inverse" th:insert="${blocks} + ${newHeader} :: ${newHeader}"></header>
+        </th:block>
         <main class="lin1">
             <div class="mt-for-header">
                 <div class="text-center mb-3">
-                    <form action="/view_candidates_filter" method="post" class="form-horizontal ml-2"
+                    <form th:action="view_candidates_filter" method="post" class="form-horizontal ml-2"
                         enctype="multipart/form-data" name="form1">
                         <h2>Фільтри по статусу:</h2>
                         <button type="submit" class="btn btn-warning" name="filter" value="ОЧІКУВАННЯ">Нові</button>
@@ -52,6 +54,7 @@
                                                     aria-hidden="true"></i>
                                                 [[${candidate.phone}]]
                                             </h5>
+                                            <p>[[${currentFilter}]]</p>
                                             <th:block th:switch="${candidate.status}">
                                                 <h5 th:inline="text">
                                                     <h5 th:case="ОЧІКУВАННЯ"><b class="font-weight-bold">Статус: </b><b
@@ -63,15 +66,17 @@
                                                 </h5>
                                             </th:block>
                                         </div>
-                                        <form action="/view_candidates" method="post" class="form-horizontal"
-                                            enctype="multipart/form-data" name="form">
-                                            <input type="hidden" name="candidateId" th:value="${candidate.id}">
-                                            <input type="hidden" name="currentStatus" th:value="${currentStatus}">
-                                            <button type="submit" class="btn btn-danger" name="newStatus"
-                                                value="ВІДМОВЛЕНО">Відмовити</button>
-                                            <button type="submit" class="btn btn-success" name="newStatus"
-                                                value="ПРИЙНЯТО">Прийняти</button>
-                                        </form>
+                                        <th:block th:if="${currentRole} == admin">
+                                            <form action="view_candidates" method="post" class="form-horizontal"
+                                                enctype="multipart/form-data" name="form">
+                                                <input type="hidden" name="candidateId" th:value="${candidate.id}">
+                                                <input type="hidden" name="currentFilter" th:value="${currentFilter}">
+                                                <button type="submit" class="btn btn-danger" name="newStatus"
+                                                    value="ВІДМОВЛЕНО">Відмовити</button>
+                                                <button type="submit" class="btn btn-success" name="newStatus"
+                                                    value="ПРИЙНЯТО">Прийняти</button>
+                                            </form>
+                                        </th:block>
                                     </div>
                                 </div>
                             </div>

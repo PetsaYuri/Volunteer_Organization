@@ -8,11 +8,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+
 @Service
 public class UserService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    private static String currentRole = "guest";
+
+    public static final String PATH_TO_ADMIN_FOLDER = "admin/";
+    public static final String PATH_TO_ADMIN_HEADER = "admin_";
+
+    public static final String PATH_TO_USER_FOLDER = "user/";
+    public static final String PATH_TO_USER_HEADER = "user_";
+
+    public static final String PATH_TO_BLOCKS = "blocks" + File.separator;
+
+    public static final String PATH_TO_PHOTO = "/icon/uploads/candidates/";
 
     public void addUser(String username, String password, String role) throws UserAlreadyExistsException {
         if(!isAlreadyExistsUser(username)) {
@@ -42,5 +56,13 @@ public class UserService {
     public Iterable<Users> findAllUsers()  {
         Iterable<Users> user = usersRepository.findAllByOrderById();
         return user;
+    }
+
+    public static String getCurrentRole() {
+        return currentRole;
+    }
+
+    public static void setCurrentRole(String currentRole) {
+        UserService.currentRole = currentRole;
     }
 }
