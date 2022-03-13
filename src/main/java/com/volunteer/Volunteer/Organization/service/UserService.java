@@ -21,6 +21,9 @@ public class UserService {
     public static final String PATH_TO_ADMIN_FOLDER = "admin/";
     public static final String PATH_TO_ADMIN_HEADER = "admin_";
 
+    public static final String PATH_TO_EDITOR_FOLDER = "editor/";
+    public static final String PATH_TO_EDITOR_HEADER = "editor_";
+
     public static final String PATH_TO_USER_FOLDER = "user/";
     public static final String PATH_TO_USER_HEADER = "user_";
 

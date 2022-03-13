@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @Controller
@@ -52,7 +53,9 @@ public class FormController {
                 if(uploadsPhotos.isAllowedFileFormat(filename))   {
                     String filenameWithUUID = uploadsPhotos.createFilenameWithUUID(filename);
                     Form form = formService.addForm(name, email, phone, city, description, status, filenameWithUUID);
-                    uploadsPhotos.saveFileToServer(file);
+                    BufferedImage croppedImage = uploadsPhotos.cropImageSquare(file.getBytes());
+                    MultipartFile multipartFile = (MultipartFile) croppedImage;
+                    uploadsPhotos.saveFileToServer(multipartFile);
 
                     String message = formService.sendMessageToEmail(form);
                   //  mailSenderService.send(email, "Активація коду", message);

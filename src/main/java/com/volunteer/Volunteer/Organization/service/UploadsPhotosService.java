@@ -1,13 +1,17 @@
 package com.volunteer.Volunteer.Organization.service;
 
-import com.volunteer.Volunteer.Organization.models.Form;
 import com.volunteer.Volunteer.Organization.repository.FormRepository;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -57,6 +61,27 @@ public class UploadsPhotosService {
         File dirUploadTarget = new File(getUPLOAD_PATH_TARGET() + File.separator + getFilenameWithUUID());
         file.transferTo( new File(String.valueOf(dirUpload)));
         Files.copy(Paths.get(String.valueOf(dirUpload)), Paths.get(String.valueOf(dirUploadTarget)));
+    }
+
+    public BufferedImage cropImageSquare(byte[] image) throws IOException {
+        InputStream in = new ByteArrayInputStream(image);
+        BufferedImage originalImage = ImageIO.read(in);
+
+        int height = originalImage.getHeight();
+        int width = originalImage.getWidth();
+
+        int squareSize = (height > width ? width : height);
+
+        int xc = width / 2;
+        int yc = height / 2;
+
+        BufferedImage croppedImage = originalImage.getSubimage(
+                xc - (squareSize / 2),
+                yc - (squareSize / 2),
+                squareSize,
+                squareSize
+        );
+        return croppedImage;
     }
 
     public String createFilenameWithUUID(String filename)    {

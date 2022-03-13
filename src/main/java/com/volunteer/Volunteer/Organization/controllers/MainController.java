@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.sql.Timestamp;
 
 @Controller
 public class MainController {
@@ -19,7 +20,6 @@ public class MainController {
     @GetMapping("/")
     public static String main(Model model, HttpServletRequest request) {
         String role = UserService.getCurrentRole();
-        System.out.println(role);
         if(role.equals("admin"))    {
             return "redirect:/admin";
         }

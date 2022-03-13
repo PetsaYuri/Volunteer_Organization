@@ -21,7 +21,7 @@ public class AdminController {
     private CandidatesService candidatesService;
 
     @Autowired
-    private UserService usersService;
+    private UserService userService;
 
     @Autowired
     private RolesService rolesService;
@@ -70,7 +70,7 @@ public class AdminController {
 
     @GetMapping("/admin/view_users")
     public String viewUsers(Model model)    {
-        model.addAttribute("users", usersService.findAllUsers());
+        model.addAttribute("users", userService.findAllUsers());
         model.addAttribute("header", PATH_TO_ADMIN_HEADER);
         model.addAttribute("blocks", PATH_TO_BLOCKS);
         return PATH_TO_ADMIN_FOLDER + "view_users";
@@ -93,7 +93,7 @@ public class AdminController {
                 throw new RepeatedPasswordIsInvalidException();
             }
 
-            usersService.addUser(username, password, selectedRole);
+            userService.addUser(username, password, selectedRole);
         }   catch (UserAlreadyExistsException ex)   {
             return "redirect:add_user?UserAlreadyExistsException";
         }   catch (RepeatedPasswordIsInvalidException ex)   {
