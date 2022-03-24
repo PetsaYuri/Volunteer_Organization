@@ -45,11 +45,13 @@
                             <input type="email" name="email" placeholder="Введіть емайл" class="form-control mb-2"
                                 maxlength="20">
                         </h4>
-                        <select name="selectedRole" id="select_role">
-                            <option disabled>Виберіть роль</option>
-                            <th:block th:each="role : ${roles}">
-                                <option th:value="${role.roles}">[[${role.roles}]]</option>
-                            </th:block>
+                        <h4>Роль:
+                            <select name="selectedRole" id="select_role" class="form-select form-select-sm mb-2">
+                                <option selected>Виберіть роль</option>
+                                <th:block th:each="role : ${roles}">
+                                    <option th:value="${role.roles}">[[${role.roles}]]</option>
+                                </th:block>
+                        </h4>
                         </select>
                     </div>
                     <center>

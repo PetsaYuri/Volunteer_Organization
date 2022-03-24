@@ -16,6 +16,11 @@
         <header class="navbar-inverse" th:insert="blocks\header :: header"></header>
         <main>
             <div class="container pb50">
+                <div class="alert alert-success text-center" th:if="${param.AddedComment}">
+                    <h5>
+                        Ваш коментар додано!
+                    </h5>
+                </div>
                 <div class="row">
                     <div class="col-md-9 mb40">
                         <article>
@@ -25,7 +30,7 @@
                                 <h3>[[${post.title}]]</h3>
                                 <ul class="post-meta list-inline">
                                     <li class="list-inline-item">
-                                        <i class="fa fa-user-circle-o"></i> <a href="#">John Doe</a>
+                                        <i class="fa fa-user-circle-o"></i> <a href="#">[[${post.author}]]</a>
                                     </li>
                                     <li class="list-inline-item">
                                         <i class="fa fa-calendar-o"></i> <a href="#">[[${post.date}]]</a>
@@ -54,68 +59,51 @@
                                     </li>
                                 </ul>
                                 <hr class="mb40">
-                                <h4 class="mb40 text-uppercase font500">About Author</h4>
-                                <div class="media mb40">
-                                    <i class="d-flex mr-3 fa fa-user-circle fa-5x text-primary"></i>
-                                    <div class="media-body">
-                                        <h5 class="mt-0 font700">Jane Doe</h5> Cras sit amet nibh libero, in gravida
-                                        nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio,
-                                        vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac
-                                        nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                                <h4 class="mb40 text-uppercase font500">Коментарі</h4>
+                                <!--    <form action="/blog" method="post" class="form-horizontal"
+                                    enctype="multipart/form-data">
+                                    <select class="form-select" name="sorting" aria-label="Default select example">
+                                        <option selected>Сортувати за</option>
+                                        <option value="1">Новішими коментарями</option>
+                                        <option value="2">Давнішими коментарями</option>
+                                    </select>
+                                    <button type="submit">Відправити</button>
+                                </form>
+                                <div th:if="${param.name == n}">
+                                    <p>ddddddddddddddd</p>
+                                </div>-->
+                                <th:block th:each="comment : ${post.comments}">
+                                    <div class="media mb40">
+                                        <i class="d-flex mr-3 fa fa-user-circle-o fa-3x mb-2"
+                                            th:text="${comment.author}"></i>
+                                        <div class="media-body">
+                                            <h4 th:text="${comment.comment}" class="mb-1"></h4>
+                                            <p th:text="${comment.date}" class="mt-1"></p>
+                                        </div>
                                     </div>
-                                </div>
+                                </th:block>
                                 <hr class="mb40">
-                                <h4 class="mb40 text-uppercase font500">Comments</h4>
-                                <div class="media mb40">
-                                    <i class="d-flex mr-3 fa fa-user-circle-o fa-3x"></i>
-                                    <div class="media-body">
-                                        <h5 class="mt-0 font400 clearfix">
-                                            <a href="#" class="float-right">Reply</a>
-                                            Jane Doe
-                                        </h5> Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum
-                                        in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate
-                                        fringilla. Donec lacinia congue felis in faucibus.
-                                    </div>
-                                </div>
-                                <div class="media mb40">
-                                    <i class="d-flex mr-3 fa fa-user-circle-o fa-3x"></i>
-                                    <div class="media-body">
-                                        <h5 class="mt-0 font400 clearfix">
-                                            <a href="#" class="float-right">Reply</a>
-                                            Jane Doe
-                                        </h5> Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum
-                                        in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate
-                                        fringilla. Donec lacinia congue felis in faucibus.
-                                    </div>
-                                </div>
-                                <div class="media mb40">
-                                    <i class="d-flex mr-3 fa fa-user-circle-o fa-3x"></i>
-                                    <div class="media-body">
-                                        <h5 class="mt-0 font400 clearfix">
-                                            <a href="#" class="float-right">Reply</a>
-                                            Jane Doe
-                                        </h5> Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum
-                                        in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate
-                                        fringilla. Donec lacinia congue felis in faucibus.
-                                    </div>
-                                </div>
-                                <hr class="mb40">
-                                <h4 class="mb40 text-uppercase font500">Post a comment</h4>
-                                <form role="form">
+                                <h4 class="mb40 text-uppercase font500">Додати власний коментар</h4>
+                                <form role="form" action="/add_comment" method="post">
                                     <div class="form-group">
-                                        <label>Name</label>
-                                        <input type="text" class="form-control" placeholder="John Doe">
+                                        <label>Дані про коментатора</label>
+                                        <input type="text" name="author" class="form-control"
+                                            placeholder="Введіть прізвище та ім'я">
                                     </div>
-                                    <div class="form-group">
+                                    <!--      <div class="form-group">
                                         <label>Email</label>
                                         <input type="email" class="form-control" placeholder="john@doe.com">
-                                    </div>
+                                    </div>-->
                                     <div class="form-group">
-                                        <label>Comment</label>
-                                        <textarea class="form-control" rows="5" placeholder="Comment"></textarea>
+                                        <label>Коментар:</label>
+                                        <textarea class="form-control" rows="5" name="comment"
+                                            placeholder="Прокоментуйте даний допис"></textarea>
                                     </div>
+                                    <input type="hidden" name="id_post" th:value="${post.id}">
                                     <div class="clearfix float-right">
-                                        <button type="button" class="btn btn-primary btn-lg">Submit</button>
+                                        <button type="submit"
+                                            class="btn btn-primary btn-lg text-center mb-2 mt-2">Додати
+                                            коментар</button>
                                     </div>
                                 </form>
                             </div>

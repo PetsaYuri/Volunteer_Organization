@@ -30,6 +30,7 @@ p   {
 
 a   {
     color: #d31616;
+    text-decoration: none;
 }
 
 a:hover, a:focus   {

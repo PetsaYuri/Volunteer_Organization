@@ -2,7 +2,6 @@ package com.volunteer.Volunteer.Organization.config;
 
 import com.volunteer.Volunteer.Organization.models.Users;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
-import com.volunteer.Volunteer.Organization.service.RolesService;
 import com.volunteer.Volunteer.Organization.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -26,6 +25,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         String password = authentication.getCredentials().toString();
         Users user = usersRepository.findByUsername(username);
+        System.out.println("pass = " + password + " name = " + username);
         Boolean istruepass = bcrypt.matches(password, user.getPassword());
         UserService.setCurrentRole(user.getRoles());
 

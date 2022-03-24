@@ -1,7 +1,6 @@
 package com.volunteer.Volunteer.Organization.service;
 
-import com.volunteer.Volunteer.Organization.repository.FormRepository;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
+import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +19,7 @@ import java.util.UUID;
 public class UploadsPhotosService {
 
     @Autowired
-    private FormRepository formRepository;
+    private CandidatesRepository candidatesRepository;
 
     private final String UPLOAD_PATH = System.getProperty("user.dir") + "/src/main/resources/static/icon/uploads/candidates";
 

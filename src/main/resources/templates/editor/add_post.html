@@ -16,12 +16,14 @@
         <header class="navbar-inverse" th:insert="blocks\header :: header"></header>
         <main>
             <div class="container">
+                <div th:if="${param.AddedPost}" class="alert alert-success text-center">
+                    <h5>
+                        Допис додано!
+                    </h5>
+                </div>
                 <div class="mr-300">
                     <div class="col-md-8 offset-md-4">
                         <div class="form-container mb-5">
-                            <div th:if="${param.AddedPost}" class="alert alert-success text-center">
-                                Допис додано!
-                            </div>
                             <h1 class="title text-center">Добавлення нового допису</h1>
                             <form action="/add_post" method="post" class="form-horizontal"
                                 enctype="multipart/form-data">

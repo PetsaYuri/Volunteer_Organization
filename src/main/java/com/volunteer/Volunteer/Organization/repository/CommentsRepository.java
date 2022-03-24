@@ -1,13 +1,14 @@
 package com.volunteer.Volunteer.Organization.repository;
 
+import com.volunteer.Volunteer.Organization.models.Comments;
 import com.volunteer.Volunteer.Organization.models.Posts;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface PostsRepository extends JpaRepository<Posts, Long> {
-    Optional<Posts> findById(Long id);
+public interface CommentsRepository extends JpaRepository<Comments, Long> {
+ //   Posts findByPost(Long id);
 
-    List<Posts> findAllByOrderById();
+ //   List<Comments> findAll();
+
 }

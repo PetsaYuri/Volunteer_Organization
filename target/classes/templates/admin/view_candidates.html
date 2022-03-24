@@ -18,17 +18,19 @@
         </th:block>
         <main class="lin1">
             <div class="mt-for-header">
+                <div class="mb-2">
+                    <a href="/user/csv_candidates" class="btn btn-danger">Експортувати у файл</a>
+                </div>
                 <div class="text-center mb-3">
                     <form th:action="view_candidates_filter" method="post" class="form-horizontal ml-2"
                         enctype="multipart/form-data" name="form1">
                         <h2>Фільтри по статусу:</h2>
-                        <button type="submit" class="btn btn-warning" name="filter" value="ОЧІКУВАННЯ">Нові</button>
-                        <button type="submit" class="btn btn-danger" name="filter"
-                            value="ВІДМОВЛЕНО">Відмовленні</button>
-                        <button type="submit" class="btn btn-success" name="filter" value="ПРИЙНЯТО">Прийняті</button>
+                        <button type="submit" class="btn btn-warning" name="filter" value="waiting">Нові</button>
+                        <button type="submit" class="btn btn-danger" name="filter" value="deny">Відмовленні</button>
+                        <button type="submit" class="btn btn-success" name="filter" value="accept">Прийняті</button>
                     </form>
                 </div>
-                <div th:each="candidate : ${forms}" th:with="ids=${candidate.id} - 1">
+                <div th:each="candidate : ${candidates}" th:with="ids=${candidate.id} - 1">
                     <div class="container content-lg">
                         <div class="row">
                             <div class="col-sm-5 sm-margin-b-60 mb-2">
@@ -54,14 +56,13 @@
                                                     aria-hidden="true"></i>
                                                 [[${candidate.phone}]]
                                             </h5>
-                                            <p>[[${currentFilter}]]</p>
                                             <th:block th:switch="${candidate.status}">
                                                 <h5 th:inline="text">
-                                                    <h5 th:case="ОЧІКУВАННЯ"><b class="font-weight-bold">Статус: </b><b
+                                                    <h5 th:case="waiting"><b class="font-weight-bold">Статус: </b><b
                                                             class="text-warning">ОЧІКУВАННЯ</b></h5>
-                                                    <h5 th:case="ВІДМОВЛЕНО"><b class="font-weight-bold">Статус: </b><b
+                                                    <h5 th:case="deny"><b class="font-weight-bold">Статус: </b><b
                                                             class="text-danger">ВІДМОВЛЕНО</b></h5>
-                                                    <h5 th:case="ПРИЙНЯТО"><b class="font-weight-bold">Статус: </b> <b
+                                                    <h5 th:case="accept"><b class="font-weight-bold">Статус: </b> <b
                                                             class="text-success">ПРИЙНЯТО</b></h5>
                                                 </h5>
                                             </th:block>
@@ -72,9 +73,9 @@
                                                 <input type="hidden" name="candidateId" th:value="${candidate.id}">
                                                 <input type="hidden" name="currentFilter" th:value="${currentFilter}">
                                                 <button type="submit" class="btn btn-danger" name="newStatus"
-                                                    value="ВІДМОВЛЕНО">Відмовити</button>
+                                                    value="deny">Відмовити</button>
                                                 <button type="submit" class="btn btn-success" name="newStatus"
-                                                    value="ПРИЙНЯТО">Прийняти</button>
+                                                    value="accept">Прийняти</button>
                                             </form>
                                         </th:block>
                                     </div>

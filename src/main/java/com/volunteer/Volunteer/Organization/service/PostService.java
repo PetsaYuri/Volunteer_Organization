@@ -1,11 +1,16 @@
 package com.volunteer.Volunteer.Organization.service;
 
+import com.volunteer.Volunteer.Organization.models.Comments;
 import com.volunteer.Volunteer.Organization.models.Posts;
+import com.volunteer.Volunteer.Organization.repository.CommentsRepository;
 import com.volunteer.Volunteer.Organization.repository.PostsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.OrderBy;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -13,12 +18,15 @@ public class PostService {
     @Autowired
     private PostsRepository postsRepository;
 
-    public void addNewPost(String title, String description, String date)    {
-        Posts post = new Posts(title, description, date);
+    @Autowired
+    private CommentsRepository commentsRepository;
+
+    public void addNewPost(String title, String description)    {
+        Posts post = new Posts(title, description);
         Posts p = postsRepository.save(post);
     }
 
-    public String getCurrentDate() {
+    public static String getCurrentDate() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String currentTime = timestamp.toString();
         String[] regexByDayAndHour = currentTime.split(" ");
@@ -31,13 +39,19 @@ public class PostService {
         return date;
     }
 
-    public Iterable<Posts> getAllPosts()  {
-        Iterable<Posts> posts = postsRepository.findAllByOrderById();
+    public List<Posts> getAllPosts()  {
+        List<Posts> posts = postsRepository.findAllByOrderById();
         return posts;
     }
 
-    public Posts getPostById(Long id)   {
-        Posts post = postsRepository.findByIdOrderById(id);
+    public Optional<Posts> getPostById(Long id)   {
+        Optional<Posts> post = postsRepository.findById(id);
         return post;
+    }
+
+    public void addNewComment(String author, String comment, Long id_post)  {
+        Optional<Posts> post = postsRepository.findById(id_post);
+        Comments newComment = new Comments(author, comment, post.get());
+        commentsRepository.save(newComment);
     }
 }

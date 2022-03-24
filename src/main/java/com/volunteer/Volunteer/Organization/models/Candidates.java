@@ -3,20 +3,18 @@ package com.volunteer.Volunteer.Organization.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "form")
-public class Form {
+@Table(name = "candidates")
+public class Candidates {
 
-    public Form()   {
+    public Candidates()   {}
 
-    }
-
-    public Form(String name, String email, String phone, String city, String description, String status, String filename) {
+    public Candidates(String name, String email, String phone, String city, String description, String filename) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.city = city;
         this.description = description;
-        this.status = status;
+        this.status = "waiting";
         this.photo = filename;
     }
 

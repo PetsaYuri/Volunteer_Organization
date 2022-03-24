@@ -2,9 +2,8 @@ package com.volunteer.Volunteer.Organization.controllers;
 
 import com.volunteer.Volunteer.Organization.exceptions.EmailAlreadyExistsException;
 import com.volunteer.Volunteer.Organization.exceptions.NotAllowedFileFormatException;
-import com.volunteer.Volunteer.Organization.models.Form;
-import com.volunteer.Volunteer.Organization.repository.FormRepository;
-import com.volunteer.Volunteer.Organization.service.FormService;
+import com.volunteer.Volunteer.Organization.models.Candidates;
+import com.volunteer.Volunteer.Organization.service.CandidatesService;
 import com.volunteer.Volunteer.Organization.service.MailSenderService;
 import com.volunteer.Volunteer.Organization.service.UploadsPhotosService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -21,16 +20,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @Controller
-public class FormController {
+public class CandidateController {
 
     @Autowired
     private UploadsPhotosService uploadsPhotos;
 
     @Autowired
-    private FormService formService;
-
-    @Autowired
-    private FormRepository formRepository;
+    private CandidatesService candidatesService;
 
     @Autowired
     private MailSenderService mailSenderService;
@@ -44,20 +40,20 @@ public class FormController {
     @PostMapping("/anketa")
     public String postForm(@RequestParam String name, @RequestParam String email, @RequestParam String phone,
                            @RequestParam String city, @RequestParam String description,
-                           @RequestParam("file") MultipartFile file, @RequestParam String status,
-                           Model model) throws NotAllowedFileFormatException, IOException {
+                           @RequestParam("file") MultipartFile file, Model model)
+            throws NotAllowedFileFormatException, IOException {
             model.addAttribute("email", email);
         try {
             String filename = file.getOriginalFilename();
-            if(!formService.isAlreadyExistsEmail(email))   {
+            if(!candidatesService.isAlreadyExistsEmail(email))   {
                 if(uploadsPhotos.isAllowedFileFormat(filename))   {
                     String filenameWithUUID = uploadsPhotos.createFilenameWithUUID(filename);
-                    Form form = formService.addForm(name, email, phone, city, description, status, filenameWithUUID);
-                    BufferedImage croppedImage = uploadsPhotos.cropImageSquare(file.getBytes());
-                    MultipartFile multipartFile = (MultipartFile) croppedImage;
-                    uploadsPhotos.saveFileToServer(multipartFile);
+                    Candidates candidates = candidatesService.addCandidate(name, email, phone, city, description, filenameWithUUID);
+                  //  BufferedImage croppedImage = uploadsPhotos.cropImageSquare(file.getBytes());
+                 //   MultipartFile multipartFile = (MultipartFile) croppedImage;
+                    uploadsPhotos.saveFileToServer(file);
 
-                    String message = formService.sendMessageToEmail(form);
+                    String message = candidatesService.sendMessageToEmail(candidates);
                   //  mailSenderService.send(email, "Активація коду", message);
                 } else {
                     throw new NotAllowedFileFormatException();
@@ -75,7 +71,7 @@ public class FormController {
 
     @GetMapping("/activate/{code}")
     public String activate(Model model, @PathVariable String code) throws IOException {
-        boolean isActivated = formService.activateForm(code);
+        boolean isActivated = candidatesService.activateEmail(code);
 
         if(isActivated) {
             model.addAttribute("message", "Активація пройшла успішно");
