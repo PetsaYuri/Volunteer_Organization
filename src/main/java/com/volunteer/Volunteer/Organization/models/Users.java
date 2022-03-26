@@ -8,10 +8,21 @@ public class Users {
 
     public Users()  {}
 
-    public Users(String username, String password, String role)  {
+    public Users(String username, String password, String role, String email, String name)  {
         this.username = username;
         this.password = password;
         this.roles = role;
+        this.email = email;
+        this.name = name;
+    }
+
+    public Users(String username, String password, String role, Candidates candidate, String email, String name)   {
+        this.username = username;
+        this.password = password;
+        this.roles = role;
+        this.candidate = candidate;
+        this.email = email;
+        this.name = name;
     }
 
     @Id
@@ -19,7 +30,11 @@ public class Users {
     private Long id;
 
     @Column
-    private String username, password, roles;
+    private String username, password, roles, email, name;
+
+    @OneToOne()
+    @JoinColumn(name = "id_candidate")
+    private Candidates candidate;
 
     public Long getId() {
         return id;
@@ -51,5 +66,29 @@ public class Users {
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    public Candidates getCandidate() {
+        return candidate;
+    }
+
+    public void setCandidate(Candidates candidate) {
+        this.candidate = candidate;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

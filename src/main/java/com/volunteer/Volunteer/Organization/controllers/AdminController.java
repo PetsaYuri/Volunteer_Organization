@@ -99,13 +99,23 @@ public class AdminController {
     @PostMapping("/add_user")
     public String postAddUser(@RequestParam String username, @RequestParam String password,
                              @RequestParam String selectedRole, @RequestParam String repeatedPassword,
+                              @RequestParam String email, @RequestParam(required = false) String name,
                               Model model)    {
         try {
+            if(userService.isAlreadyExistsUser(username))   {
+                throw new UserAlreadyExistsException();
+            }
+
             if(!password.equals(repeatedPassword))    {
                 throw new RepeatedPasswordIsInvalidException();
             }
 
-            userService.addUser(username, password, selectedRole);
+            Candidates candidate = userService.findCandidateByEmail(email);
+            if (candidate == null)  {
+                userService.addUser(username, password, selectedRole, email, name);
+            }   else {
+                userService.addUser(username, password, selectedRole, candidate);
+            }
         }   catch (UserAlreadyExistsException ex)   {
             return "redirect:add_user?UserAlreadyExistsException";
         }   catch (RepeatedPasswordIsInvalidException ex)   {

@@ -27,15 +27,20 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm">
-                                <div class="text-right">
+                                <div class="">
                                 </div>
                                 <div th:each="user : ${users}">
                                     <table class="table manage-candidates-top mb-0">
                                         <thead>
                                             <tr>
                                                 <th>Ім'я користувача</th>
-                                                <th class="text-center">Роль</th>
-                                                <th class="action text-right">Дії</th>
+                                                <th>Роль</th>
+                                                <th:block th:if="${user.candidate != null}">
+                                                    <th>Місце проживання</th>
+                                                    <th>Номер телефону</th>
+                                                    <th>Опис</th>
+                                                    <th>Активація</th>
+                                                </th:block>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -54,38 +59,48 @@
                                                             </div>
                                                             <div class="candidate-list-option">
                                                                 <ul class="list-unstyled">
-                                                                    <li><i class="fas fa-filter pr-1"></i>Human
-                                                                        Resources
+                                                                    <li><i class="fas fa-user" aria-hidden="true"></i>
+                                                                        [[${user.name}]]
                                                                     </li>
-                                                                    <li><i class="fas fa-map-marker-alt pr-1"></i>Monroe
-                                                                        Township, NJ 08831</li>
+                                                                    <li><i class="fa fa-envelope"
+                                                                            aria-hidden="true"></i>[[${user.email}]]
+                                                                    </li>
                                                                 </ul>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td class="candidate-list-favourite-time text-center">
-                                                    <span class="candidate-list-time order-1">[[${user.roles}]]</span>
-                                                </td>
 
-                                                <td>
-                                                    <ul class="list-unstyled mb-0 d-flex justify-content-end">
-                                                        <center>
-                                                            <li><a href="#" class="text-primary ml-2"
-                                                                    data-toggle="tooltip" title=""
-                                                                    data-original-title="view"><i
-                                                                        class="far fa-eye"></i></a>
-                                                            </li>
-                                                        </center>
-                                                        <li><a href="#" class="text-info ml-2" data-toggle="tooltip"
-                                                                title="" data-original-title="Edit"><i
-                                                                    class="fas fa-pencil-alt"></i></a></li>
-                                                        <li><a href="#" class="text-danger ml-2" data-toggle="tooltip"
-                                                                title="" data-original-title="Delete"><i
-                                                                    class="far fa-trash-alt"></i></a></li>
-                                                    </ul>
+                                                <td class="candidate-list-favourite-time">
+                                                    <span class="candidate-list-time"
+                                                        data-tooltip="ddd">[[${user.roles}]]</span>
                                                 </td>
-
+                                                <th:block th:each="candidate : ${user.candidate}">
+                                                    <th:block th:if="${user.candidate != null}">
+                                                        <td class="candidate-list-favourite-time">
+                                                            <span class="candidate-list-time"
+                                                                th:text="${candidate.city}"></span>
+                                                        </td>
+                                                        <td class="candidate-list-favourite-time">
+                                                            <span class="candidate-list-time"
+                                                                th:text="${candidate.phone}"></span>
+                                                        </td>
+                                                        <td class="candidate-list-favourite-time">
+                                                            <span class="candidate-list-time"
+                                                                th:text="${candidate.description}"></span>
+                                                        </td>
+                                                        <th:block th:if="${candidate.activation} != confirmed">
+                                                            <td class="candidate-list-favourite-time">
+                                                                <span class="candidate-list-time">Не Підтверджено</span>
+                                                            </td>
+                                                        </th:block>
+                                                        <th:block th:unless="${candidate.activation} != confirmed">
+                                                            <td class="candidate-list-favourite-time">
+                                                                <span class="candidate-list-time">Підтверджено</span>
+                                                            </td>
+                                                        </th:block>
+                                                    </th:block>
+                                                </th:block>
                                             </tr>
                                         </tbody>
                                     </table>

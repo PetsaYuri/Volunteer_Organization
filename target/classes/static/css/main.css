@@ -30,6 +30,7 @@ p   {
 
 a   {
     color: #d31616;
+    text-decoration: none;
 }
 
 a:hover, a:focus   {
@@ -73,17 +74,14 @@ hr  {
     margin: 0 auto;
 }
 
-.test   {
-    color: #4b1fff;
-}
-
 .background-image   {
     background-image: url("../icon/background.jpg");
     background-repeat: no-repeat;
 }
 
-.background-color   {
-    background-color: #a8a8a8;
+.anketa {
+    background-image: url("../icon/Volunteers_needed.jpg1");
+    background-repeat: no-repeat;
 }
 
 .page-error {

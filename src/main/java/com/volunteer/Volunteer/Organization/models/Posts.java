@@ -22,7 +22,7 @@ public class Posts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column()
     private String title, description, image, date, author;
 
     @OneToMany(mappedBy = "post")

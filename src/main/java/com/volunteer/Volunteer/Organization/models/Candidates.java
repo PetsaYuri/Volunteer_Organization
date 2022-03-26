@@ -25,6 +25,9 @@ public class Candidates {
     @Column
     private String name, email, phone, city, description, photo, status, activation;
 
+    @OneToOne(mappedBy = "candidate")
+    private Users user;
+
     public String getEmail() {
         return email;
     }
@@ -95,6 +98,22 @@ public class Candidates {
 
     public void setActivationCode(String activationCode) {
         this.activation = activationCode;
+    }
+
+    public String getActivation() {
+        return activation;
+    }
+
+    public void setActivation(String activation) {
+        this.activation = activation;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }
 

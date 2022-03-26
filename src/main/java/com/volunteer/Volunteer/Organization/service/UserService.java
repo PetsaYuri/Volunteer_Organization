@@ -1,7 +1,9 @@
 package com.volunteer.Volunteer.Organization.service;
 
 import com.volunteer.Volunteer.Organization.exceptions.UserAlreadyExistsException;
+import com.volunteer.Volunteer.Organization.models.Candidates;
 import com.volunteer.Volunteer.Organization.models.Users;
+import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private CandidatesRepository candidatesRepository;
 
     private static String currentRole = "guest";
 
@@ -31,14 +36,17 @@ public class UserService {
 
     public static final String PATH_TO_PHOTO = "/icon/uploads/candidates/";
 
-    public void addUser(String username, String password, String role) throws UserAlreadyExistsException {
-        if(!isAlreadyExistsUser(username)) {
-            String encodedPassword = passwordEncoder(password);
-            Users user = new Users(username, encodedPassword, role);
-            usersRepository.save(user);
-        }   else {
-            throw new UserAlreadyExistsException();
-        }
+    public void addUser(String username, String password, String role, String email, String name)   {
+        String encodedPassword = passwordEncoder(password);
+        Users user = new Users(username, encodedPassword, role, email, name);
+        usersRepository.save(user);
+    }
+
+    public void addUser(String username, String password, String role, Candidates candidate)    {
+        String encodedPassword = passwordEncoder(password);
+        Users user = new Users(username, encodedPassword, role, candidate,
+                candidate.getEmail(), candidate.getName());
+        usersRepository.save(user);
     }
 
     public String passwordEncoder(String password)    {
@@ -67,5 +75,10 @@ public class UserService {
 
     public static void setCurrentRole(String currentRole) {
         UserService.currentRole = currentRole;
+    }
+
+    public Candidates findCandidateByEmail(String email)    {
+        Candidates candidate = candidatesRepository.findByEmail(email);
+        return candidate;
     }
 }

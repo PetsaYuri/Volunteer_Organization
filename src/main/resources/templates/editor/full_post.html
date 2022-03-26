@@ -112,7 +112,7 @@
 
                     </div>
                     <div class="col-md-3 mb40">
-                        <div>
+                        <div th:each="post : ${lastPosts}">
                             <h4 class="sidebar-title">Останні новини</h4>
                             <ul class="list-unstyled">
                                 <li class="media">
@@ -120,26 +120,8 @@
                                         src="https://bootdey.com/img/Content/avatar/avatar1.png"
                                         alt="Generic placeholder image">
                                     <div class="media-body">
-                                        <h5 class="mt-0 mb-1"><a href="#">Lorem ipsum dolor sit amet</a></h5> April 05,
-                                        2017
-                                    </div>
-                                </li>
-                                <li class="media my-4">
-                                    <img class="d-flex mr-3 img-fluid" width="64"
-                                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                        alt="Generic placeholder image">
-                                    <div class="media-body">
-                                        <h5 class="mt-0 mb-1"><a href="#">Lorem ipsum dolor sit amet</a></h5> Jan 05,
-                                        2017
-                                    </div>
-                                </li>
-                                <li class="media">
-                                    <img class="d-flex mr-3 img-fluid" width="64"
-                                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                        alt="Generic placeholder image">
-                                    <div class="media-body">
-                                        <h5 class="mt-0 mb-1"><a href="#">Lorem ipsum dolor sit amet</a></h5> March 15,
-                                        2017
+                                        <h5 class="mt-0 mb-1"><a th:href="${post.id}">[[${post.title}]]</a>
+                                        </h5> [[${post.date}]]
                                     </div>
                                 </li>
                             </ul>

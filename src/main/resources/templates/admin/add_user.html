@@ -27,6 +27,9 @@
                 <div th:if="${param.UserAlreadyExistsException}" class="alert alert-warning text-center" role="alert">
                     <h2>Користувач під таким іменем уже існує</h2>
                 </div>
+                <h1 class="text-center">
+                    Додати користувача
+                </h1>
                 <form action="/admin/add_user" method="post" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group">
                         <h4>Нікнейм:
@@ -43,7 +46,12 @@
                         </h4>
                         <h4>Емайл:
                             <input type="email" name="email" placeholder="Введіть емайл" class="form-control mb-2"
-                                maxlength="20">
+                                required maxlength="30">
+                        </h4>
+                        <h4>ПІБ:
+                            <input type="text" name="name" ,
+                                placeholder="Необов'язково, якщо користувач заповнюв анкету з даним email'ом"
+                                class="form-control mb-2" maxlength="30">
                         </h4>
                         <h4>Роль:
                             <select name="selectedRole" id="select_role" class="form-select form-select-sm mb-2">

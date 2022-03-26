@@ -5,9 +5,10 @@ import com.volunteer.Volunteer.Organization.models.Posts;
 import com.volunteer.Volunteer.Organization.repository.CommentsRepository;
 import com.volunteer.Volunteer.Organization.repository.PostsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.OrderBy;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +41,7 @@ public class PostService {
     }
 
     public List<Posts> getAllPosts()  {
-        List<Posts> posts = postsRepository.findAllByOrderById();
+        List<Posts> posts = postsRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         return posts;
     }
 
@@ -53,5 +54,10 @@ public class PostService {
         Optional<Posts> post = postsRepository.findById(id_post);
         Comments newComment = new Comments(author, comment, post.get());
         commentsRepository.save(newComment);
+    }
+
+    public List<Posts> lastPosts()  {
+        List<Posts> posts = postsRepository.findByOrderByIdDesc(PageRequest.of(0,3));
+        return posts;
     }
 }

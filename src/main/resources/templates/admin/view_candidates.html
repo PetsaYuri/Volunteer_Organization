@@ -46,7 +46,7 @@
                                             <h5 th:inline="text"><b class="font-weight-bold">ПІБ:</b>
                                                 [[${candidate.name}]]
                                             </h5>
-                                            <h5 th:inline="text"><b class="font-weight-bold">Населений пункт:</b>
+                                            <h5 th:inline="text"><b class="font-weight-bold">Місце проживання:</b>
                                                 [[${candidate.city}]]</h5>
                                             <h5 th:inline="text"><b class="font-weight-bold">Опис:</b>
                                                 [[${candidate.description}]]</h5>
@@ -64,6 +64,16 @@
                                                             class="text-danger">ВІДМОВЛЕНО</b></h5>
                                                     <h5 th:case="accept"><b class="font-weight-bold">Статус: </b> <b
                                                             class="text-success">ПРИЙНЯТО</b></h5>
+                                                </h5>
+                                            </th:block>
+                                            <th:block th:if="${candidate.activation} != confirmed">
+                                                <h5 th:inline="text"><b class="font-weight-bold">Активація:</b>
+                                                    <b class="text-danger">Не Підтверджено</b>
+                                                </h5>
+                                            </th:block>
+                                            <th:block th:unless="${candidate.activation} != confirmed">
+                                                <h5 th:inline="text"><b class="font-weight-bold">Активація:</b>
+                                                    <b class="text-success">Підтверджено</b>
                                                 </h5>
                                             </th:block>
                                         </div>

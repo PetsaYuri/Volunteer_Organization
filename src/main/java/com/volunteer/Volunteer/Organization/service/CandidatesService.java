@@ -69,7 +69,7 @@ public class CandidatesService {
             return false;
         }
 
-        candidates.setActivationCode("ПІДТВЕРДЖЕНО");
+        candidates.setActivationCode("confirmed");
         candidatesRepository.save(candidates);
 
         return true;

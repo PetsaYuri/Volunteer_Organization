@@ -30,6 +30,7 @@ public class EditorContoller {
         List<Posts> posts = postService.getAllPosts();
         model.addAttribute("posts", posts);
         model.addAttribute("URI", "blog/");
+        postService.lastPosts();
         return PATH_TO_EDITOR_FOLDER + "blog";
     }
 
@@ -50,6 +51,9 @@ public class EditorContoller {
         try {
             Optional<Posts> post = postService.getPostById(idPost);
             model.addAttribute("post", post.get());
+
+            List<Posts> lastPosts = postService.lastPosts();
+            model.addAttribute("lastPosts", lastPosts);
             return PATH_TO_EDITOR_FOLDER + "full_post";
         }   catch (Exception ex)    {
             return "";
