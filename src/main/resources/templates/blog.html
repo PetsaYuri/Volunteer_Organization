@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head class="blue">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" />
+        <title>Волонтерська організація</title>
+        <link rel="stylesheet" href="/css/bootstrap.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="shortcun icon" href="/icon/logo.ico">
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body>
+        <header th:insert="blocks/header :: _header"></header>
+
+        <div th:if=" ${param.ItLastPage}" class="alert alert-info text-center">
+            Це остання сторінка!
+        </div>
+
+        <div th:if=" ${param.NotExistsNextPage}" class="alert alert-info text-center">
+            Не існує наступної сторінки!
+        </div>
+
+        <div th:if="${param.NotFoundByQuery}" class="alert alert-info text-center">
+            Нічого не знайдено по вашому запиту!
+        </div>
+
+        <main>
+            <section>
+                <div class="container">
+
+                    <th:block th:if="${role} == editor">
+                        <div class="mt-2 text-end">
+                            <h3><a href="/add_post" class="fa fa-plus" aria-hidden="true">Додати новий допис </a>
+                            </h3>
+                        </div>
+                    </th:block>
+
+                    <!--search-->
+                    <div class="mb-2 mt-3 d-flex justify-content-center">
+                        <div class="input-group">
+                            <form action="/posts_search" method="post">
+                                <div class="btn-group">
+                                    <input type="search" name="query" class="form-control width-1000" />
+                                    <input type="hidden" name="page" th:value="${posts.getNumber()}">
+                                    <input type="hidden" name="size" th:value="${posts.getSize()}">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <th:block th:each="post : ${posts}">
+                            <div class="col-lg-4 col-md-6 mb-2-6">
+                                <article class="card card-style2">
+                                    <div class="card-img">
+                                        <img class="rounded-top" th:src="${filePath} + ${post.image}"
+                                            th:alt="${filePath} + ${post.image}">
+                                        <div class="date" th:text="${post.date}"></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h3 class="h5"><a th:href="${URI} + ${post.id}" th:text="${post.title}"></a>
+                                        </h3>
+                                    </div>
+                                    <div class="card-footer">
+                                        <ul>
+                                            <li><a href="#!"><i class="fas fa-user"></i>Brittany Hucks</a></li>
+                                        </ul>
+                                    </div>
+                                </article>
+                            </div>
+                        </th:block>
+                    </div>
+
+                    <!--pagination-->
+                    <div class="d-flex justify-content-center">
+                        <nav class="mt-2">
+                            <ul class="pagination">
+
+                                <div>
+                                    <form action="/previous_page" method="post">
+                                        <input type="hidden" name="page" th:value="${posts.getNumber()}">
+                                        <input type="hidden" name="size" th:value="${posts.getSize()}">
+                                        <input type="hidden" name="query" th:value="${query}">
+                                        <li class="page-item"><button type="submit" class="page-link">Попередня</button>
+                                        </li>
+                                    </form>
+                                </div>
+
+                                <th:block th:each="page : ${pages}">
+
+                                    <th:block th:if="${posts.getNumber()} == ${page}">
+                                        <li class="page-item active"><a class="page-link"
+                                                th:href="${URI_page} + ${page} + ${URI_size} + ${URI_query}">[[${page}
+                                                + 1]]</a>
+                                        </li>
+                                    </th:block>
+
+                                    <th:block th:if="${URI_query} != null">
+                                        <th:block th:unless="${posts.getNumber()} == ${page}">
+                                            <li class="page-item"><a class="page-link"
+                                                    th:href="${URI_page} + ${page} + ${URI_size} + ${URI_query}">[[${page}
+                                                    + 1]]</a>
+                                            </li>
+                                        </th:block>
+                                    </th:block>
+
+                                    <th:block th:unless="${URI_query} != null">
+                                        <th:block th:unless="${posts.getNumber()} == ${page}">
+                                            <li class="page-item"><a class="page-link"
+                                                    th:href="${URI_page} + ${page} + ${URI_size}">[[${page}
+                                                    + 1]]</a>
+                                            </li>
+                                        </th:block>
+                                    </th:block>
+                                </th:block>
+
+                                <div>
+                                    <form action="/next_page" method="post">
+                                        <input type="hidden" name="page" th:value="${posts.getNumber()}">
+                                        <input type="hidden" name="size" th:value="${posts.getSize()}">
+                                        <input type="hidden" name="query" th:value="${query}">
+                                        <li class="page-item"><button type="submit" name="totalPage"
+                                                th:value="${posts.getTotalPages()} - 1"
+                                                class="page-link">Наступна</button>
+                                        </li>
+                                    </form>
+                                </div>
+                            </ul>
+                        </nav>
+
+                        <div class="mt-2 ml-5 btn-group">
+                            <form action="/pageSize" method="post" class="form-horizontal">
+                                <div class="btn-group">
+                                    <input type="number" class="form-control" name="size" min="1" max="100">
+                                    <input type="hidden" name="query" th:value="${query}">
+                                    <button type="submit" class="btn btn-outline-success">Переглянути</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+
+</html>
+<!--https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css-->

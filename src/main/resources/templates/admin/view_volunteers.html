@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="shortcun icon" href="/icon/logo.ico">
+        <title>Перегляд кандидатів</title>
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body>
+
+        <header th:insert="blocks\admin_header :: header"></header>
+
+        <div th:if="${volunteers.getContent()} == []" class="alert alert-danger text-center">
+            По вашому запиту нічого не знайдено!
+        </div>
+
+        <div th:if="${param.VolunteerNotFound}" class="alert alert-danger text-center">
+            Волонтера не знайдено!
+        </div>
+
+        <div th:if=" ${param.ItLastPage}" class="alert alert-info text-center">
+            Це остання сторінка!
+        </div>
+
+        <div th:if=" ${param.NotExistsNextPage}" class="alert alert-info text-center">
+            Не існує наступної сторінки!
+        </div>
+
+        <div th:if="${param.IncorrectQuery}" class="alert alert-info text-center">
+            Неправильний запит!
+        </div>
+
+        <div th:if="${param.NotFoundByQuery}" class="alert alert-info text-center">
+            Нічого не знайдено по вашому запиту!
+        </div>
+
+        <div class="mb-2 btn-group">
+            <a href="/user/csv_volunteers" class="btn btn-danger">Експортувати у файл</a>
+        </div>
+
+        <main class="container">
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="mt-for-header mb-2">
+
+                    <!--search-->
+                    <div class="mb-2">
+                        <div class="input-group">
+                            <form action="search_volunteers" method="post">
+                                <div class="btn-group">
+                                    <input type="search" name="query" class="form-control width-1000" />
+                                    <input type="hidden" name="page" th:value="${volunteers.getNumber()}">
+                                    <input type="hidden" name="size" th:value="${volunteers.getSize()}">
+                                    <input type="hidden" name="filter" th:value="${currentFilter}">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                                <select name="field" class="form-control mb-2 width-1020">
+                                    <option selected value="name">ПІБ</option>
+                                    <option value="email">Електронна адреса</option>
+                                    <option value="phone">Номер телефону</option>
+                                    <option value="city">Місто</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+
+
+                    <div class="text-center mb-3">
+                        <form th:action="view_volunteers_filter" method="post" class="form-horizontal ml-2"
+                            enctype="multipart/form-data" name="form1">
+                            <h2>Фільтри по статусу:</h2>
+                            <button type="submit" class="btn btn-warning" name="filter" value="waiting">Нові</button>
+                            <button type="submit" class="btn btn-danger" name="filter" value="deny">Відмовленні</button>
+                            <button type="submit" class="btn btn-success" name="filter" value="accept">Прийняті</button>
+                        </form>
+                    </div>
+                    <div th:each="volunteer : ${volunteers}" th:with="ids=${volunteer.id} - 1">
+                        <div class="container content-lg">
+                            <div class="row">
+                                <div class="col-md-6 sm-margin-b-60 mb-4">
+                                    <img class="full-width img-responsive" th:src="${filePath} + ${volunteer.photo}"
+                                        th:alt="${filePath} + ${volunteer.photo}">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="section-seperator margin-b-50">
+                                        <div class="margin-b-50">
+                                            <div class="margin-b-30">
+                                                <h2 th:inline="text" class="font-weight-bold">Кандидат
+                                                    №[[${volunteer.id}]]
+                                                </h2>
+                                                <h5 th:inline="text"><b class="font-weight-bold">ПІБ:</b>
+                                                    [[${volunteer.name}]]
+                                                </h5>
+                                                <h5 th:inline="text"><b class="font-weight-bold">Місце проживання:</b>
+                                                    [[${volunteer.city}]]</h5>
+                                                <h5 th:inline="text"><b class="font-weight-bold">Опис:</b>
+                                                    [[${volunteer.description}]]</h5>
+                                                <h5 th:inline="text"><b class="font-weight-bold">Зв'язок:</b> <i
+                                                        class="fa fa-envelope" aria-hidden="true"></i>
+                                                    [[${volunteer.email}]] або <i class="fa fa-phone"
+                                                        aria-hidden="true"></i>
+                                                    [[${volunteer.phone}]]
+                                                </h5>
+                                                <th:block th:switch="${volunteer.status}">
+                                                    <h5 th:inline="text">
+                                                        <h5 th:case="waiting"><b class="font-weight-bold">Статус: </b><b
+                                                                class="text-warning">ОЧІКУВАННЯ</b></h5>
+                                                        <h5 th:case="deny"><b class="font-weight-bold">Статус: </b><b
+                                                                class="text-danger">ВІДМОВЛЕНО</b></h5>
+                                                        <h5 th:case="accept"><b class="font-weight-bold">Статус: </b> <b
+                                                                class="text-success">ПРИЙНЯТО</b></h5>
+                                                    </h5>
+                                                </th:block>
+                                                <th:block th:if="${volunteer.activation} != confirmed">
+                                                    <h5 th:inline="text"><b class="font-weight-bold">Активація:</b>
+                                                        <b class="text-danger">Не Підтверджено</b>
+                                                    </h5>
+                                                </th:block>
+                                                <th:block th:unless="${volunteer.activation} != confirmed">
+                                                    <h5 th:inline="text"><b class="font-weight-bold">Активація:</b>
+                                                        <b class="text-success">Підтверджено</b>
+                                                    </h5>
+                                                </th:block>
+                                            </div>
+                                            <th:block th:if="${currentFilter} == waiting">
+                                                <div class="btn-group mr-3">
+                                                    <form action="accept_user" method="post"
+                                                        enctype="multipart/form-data" class="mr-3">
+                                                        <button type="submit" class="btn btn-success" name="id"
+                                                            th:value="${volunteer.id}">Прийняти</button>
+                                                    </form>
+                                                    <form action="deny_user" method="post" enctype="multipart/form-data"
+                                                        class="ml-2">
+                                                        <button type="submit" class="btn btn-danger" name="id"
+                                                            th:value="${volunteer.id}">Відмовити</button>
+                                                    </form>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--pagination-->
+                    <div class="d-flex justify-content-center">
+                        <nav class="mt-5">
+                            <ul class="pagination">
+
+                                <div>
+                                    <form action="previous_page_volunteers" method="post">
+                                        <input type="hidden" name="page" th:value="${volunteers.getNumber()}">
+                                        <input type="hidden" name="size" th:value="${volunteers.getSize()}">
+                                        <input type="hidden" name="filter" th:value="${currentFilter}">
+                                        <input type="hidden" name="query" th:value="${query}">
+                                        <input type="hidden" name="field" th:value="${field}">
+                                        <li class="page-item"><button type="submit" class="page-link">Попередня</button>
+                                        </li>
+                                    </form>
+                                </div>
+
+                                <th:block th:each="page : ${pages}">
+
+                                    <th:block th:if="${volunteers.getNumber()} == ${page}" th:with="count=${page} + 1">
+                                        <li class="page-item active"><a class="page-link"
+                                                th:href="${URI_page} + ${page} + ${URI_size} + ${URI_filter} + ${URI_field} + ${URI_query}">[[${page}
+                                                + 1]]</a>
+                                        </li>
+                                    </th:block>
+
+                                    <th:block th:if="${URI_query} != null">
+                                        <th:block th:unless="${volunteers.getNumber()} == ${page}">
+                                            <li class="page-item"><a class="page-link"
+                                                    th:href="${URI_page} + ${page} + ${URI_size} + ${URI_filter} + ${URI_field} + ${URI_query}">[[${page}
+                                                    + 1]]</a>
+                                            </li>
+                                        </th:block>
+                                    </th:block>
+
+                                    <th:block th:unless="${URI_query} != null">
+                                        <th:block th:unless="${volunteers.getNumber()} == ${page}">
+                                            <li class="page-item"><a class="page-link"
+                                                    th:href="${URI_page} + ${page} + ${URI_size} + ${URI_filter} + ${URI_field}">[[${page}
+                                                    + 1]]</a>
+                                            </li>
+                                        </th:block>
+                                    </th:block>
+                                </th:block>
+
+                                <div>
+                                    <form action="next_page_volunteers" method="post">
+                                        <input type="hidden" name="page" th:value="${volunteers.getNumber()}">
+                                        <input type="hidden" name="size" th:value="${volunteers.getSize()}">
+                                        <input type="hidden" name="filter" th:value="${currentFilter}">
+                                        <input type="hidden" name="query" th:value="${query}">
+                                        <input type="hidden" name="field" th:value="${field}">
+                                        <li class="page-item"><button type="submit" name="totalPage"
+                                                th:value="${volunteers.getTotalPages()} - 1"
+                                                class="page-link">Наступна</button>
+                                        </li>
+                                    </form>
+                                </div>
+                            </ul>
+                        </nav>
+
+                        <div class="mt-5 ml-5 btn-group">
+                            <form action="pageSize_volunteers" method="post" class="form-horizontal">
+                                <div class="btn-group">
+                                    <input type="number" class="form-control" name="size" min="1" max="100">
+                                    <input type="hidden" name="currentFilter" th:value="${currentFilter}">
+                                    <input type="hidden" name="query" th:value="${query}">
+                                    <input type="hidden" name="field" th:value="${field}">
+                                    <button type="submit" class="btn btn-outline-success">Переглянути</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+
+</html>
