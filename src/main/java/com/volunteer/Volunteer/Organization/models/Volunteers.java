@@ -3,12 +3,12 @@ package com.volunteer.Volunteer.Organization.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "candidates")
-public class Candidates {
+@Table(name = "volunteers")
+public class Volunteers {
 
-    public Candidates()   {}
+    public Volunteers()   {}
 
-    public Candidates(String name, String email, String phone, String city, String description, String filename) {
+    public Volunteers(String name, String email, String phone, String city, String description, String filename) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -25,7 +25,7 @@ public class Candidates {
     @Column
     private String name, email, phone, city, description, photo, status, activation;
 
-    @OneToOne(mappedBy = "candidate")
+    @OneToOne(mappedBy = "volunteer")
     private Users user;
 
     public String getEmail() {
@@ -108,12 +108,7 @@ public class Candidates {
         this.activation = activation;
     }
 
-    public Users getUser() {
-        return user;
-    }
 
-    public void setUser(Users user) {
-        this.user = user;
-    }
 }
+
 

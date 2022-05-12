@@ -8,102 +8,244 @@
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/main.css">
         <link rel="shortcun icon" href="/icon/logo.ico">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
-            integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
         <title>Перегляд користувачів</title>
         <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
     </head>
 
     <body>
-        <th:block th:with="newHeader=${header} + header">
-            <header class="navbar-inverse" th:insert="${blocks} + ${newHeader} :: ${newHeader}"></header>
-        </th:block>
+        <header th:insert="blocks\admin_header :: header"></header>
+
+        <div th:if="${param.ItLastPage}" class="alert alert-info text-center">
+            Це остання сторінка!
+        </div>
+
+        <div th:if="${param.NotExistsNextPage}" class="alert alert-info text-center">
+            Не існує наступної сторінки!
+        </div>
+
+        <div th:if="${param.IncorrectQuery}" class="alert alert-info text-center">
+            Неправильний запит!
+        </div>
+
+        <div th:if="${param.NotFoundByQuery}" class="alert alert-info text-center">
+            Нічого не знайдено по вашому запиту!
+        </div>
+
+        <div class="mb-2">
+            <a href="csv_users" class="btn btn-danger">Експортувати у файл</a>
+        </div>
+
         <main>
-            <div class="container mt-for-header mb-4">
-                <div class="col-lg-9 mt-4 mt-lg-0">
-                    <div class="mb-2">
-                        <a href="csv_users" class="btn btn-danger">Експортувати у файл</a>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm">
-                                <div class="">
+            <div class="container mb-4">
+                <div class="">
+
+                    <!--search-->
+                    <div class="mb-2 d-flex justify-content-center">
+                        <div class="input-group">
+                            <form action="search_users" method="post">
+                                <div class="btn-group">
+                                    <input type="search" name="query" class="form-control width-1000" />
+                                    <input type="hidden" name="page" th:value="${users.getNumber()}">
+                                    <input type="hidden" name="size" th:value="${users.getSize()}">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-search"></i>
+                                    </button>
                                 </div>
-                                <div th:each="user : ${users}">
-                                    <table class="table manage-candidates-top mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Ім'я користувача</th>
-                                                <th>Роль</th>
-                                                <th:block th:if="${user.candidate != null}">
-                                                    <th>Місце проживання</th>
-                                                    <th>Номер телефону</th>
-                                                    <th>Опис</th>
-                                                    <th>Активація</th>
-                                                </th:block>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="candidates-list">
-                                                <td class="title">
-                                                    <div class="thumb">
-                                                        <img class="img-fluid"
-                                                            src="/icon/uploads/users/default_avatar.jpg"
-                                                            alt="Фотографія користувача">
-                                                    </div>
-                                                    <div class="candidate-list-details">
-                                                        <div class="candidate-list-info">
-                                                            <div class="candidate-list-title">
-                                                                <h5 class="mb-0"><a href="#">[[${user.username}]]</a>
-                                                                </h5>
-                                                            </div>
-                                                            <div class="candidate-list-option">
-                                                                <ul class="list-unstyled">
-                                                                    <li><i class="fas fa-user" aria-hidden="true"></i>
-                                                                        [[${user.name}]]
-                                                                    </li>
-                                                                    <li><i class="fa fa-envelope"
-                                                                            aria-hidden="true"></i>[[${user.email}]]
-                                                                    </li>
-                                                                </ul>
+                                <select name="field" class="form-control mb-2 width-1020">
+                                    <option selected value="email">Електронна адреса</option>
+                                    <option value="name">ПІБ</option>
+                                    <option value="active">Активні</option>
+                                    <option value="blocked">Заблоковані</option>
+                                    <option value="admin">Адміністратори</option>
+                                    <option value="user">користувачі</option>
+                                    <option value="editor">Редактори</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9 mt-4 mt-lg-0">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm">
+                                    <div class="">
+                                    </div>
+                                    <div th:each="user : ${users}">
+                                        <table class="table manage-volunteer-top mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Ім'я користувача</th>
+                                                    <th:block th:if="${user.volunteer != null}">
+                                                        <th>Місце проживання</th>
+                                                        <th>Номер телефону</th>
+                                                        <th>Опис</th>
+                                                        <th>Активація</th>
+                                                    </th:block>
+                                                    <th>Роль</th>
+                                                    <th:block th:if="${user.roles.role} != admin">
+                                                        <th>Активність</th>
+                                                    </th:block>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="volunteer-list">
+                                                    <td class="title">
+                                                        <div class="thumb">
+                                                            <img class="img-fluid"
+                                                                src="/img/uploads/users/default_avatar.jpg"
+                                                                alt="Фотографія користувача">
+                                                        </div>
+                                                        <div class="candidate-list-details">
+                                                            <div class="candidate-list-info">
+                                                                <div class="candidate-list-option">
+                                                                    <ul class="list-unstyled">
+                                                                        <li><i class="fa fa-user"
+                                                                                aria-hidden="true"></i>
+                                                                            [[${user.name}]]
+                                                                        </li>
+                                                                        <li><i class="fa fa-envelope"
+                                                                                aria-hidden="true"></i>[[${user.email}]]
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </td>
+                                                    </td>
 
-                                                <td class="candidate-list-favourite-time">
-                                                    <span class="candidate-list-time"
-                                                        data-tooltip="ddd">[[${user.roles}]]</span>
-                                                </td>
-                                                <th:block th:each="candidate : ${user.candidate}">
-                                                    <th:block th:if="${user.candidate != null}">
-                                                        <td class="candidate-list-favourite-time">
-                                                            <span class="candidate-list-time"
-                                                                th:text="${candidate.city}"></span>
-                                                        </td>
-                                                        <td class="candidate-list-favourite-time">
-                                                            <span class="candidate-list-time"
-                                                                th:text="${candidate.phone}"></span>
-                                                        </td>
-                                                        <td class="candidate-list-favourite-time">
-                                                            <span class="candidate-list-time"
-                                                                th:text="${candidate.description}"></span>
-                                                        </td>
-                                                        <th:block th:if="${candidate.activation} != confirmed">
+                                                    <th:block th:each="volunteer : ${user.volunteer}">
+                                                        <th:block th:if="${user.volunteer != null}">
                                                             <td class="candidate-list-favourite-time">
-                                                                <span class="candidate-list-time">Не Підтверджено</span>
+                                                                <span class="candidate-list-time"
+                                                                    th:text="${volunteer.city}"></span>
+                                                            </td>
+                                                            <td class="candidate-list-favourite-time">
+                                                                <span class="candidate-list-time"
+                                                                    th:text="${volunteer.phone}"></span>
+                                                            </td>
+                                                            <td class="candidate-list-favourite-time">
+                                                                <span class="candidate-list-time"
+                                                                    th:text="${volunteer.description}"></span>
+                                                            </td>
+                                                            <th:block th:if="${volunteer.activation} != confirmed">
+                                                                <td class="candidate-list-favourite-time">
+                                                                    <span class="candidate-list-time">Не
+                                                                        Підтверджено</span>
+                                                                </td>
+                                                            </th:block>
+                                                            <th:block th:unless="${volunteer.activation} != confirmed">
+                                                                <td class="candidate-list-favourite-time">
+                                                                    <span
+                                                                        class="candidate-list-time">Підтверджено</span>
+                                                                </td>
+                                                            </th:block>
+                                                        </th:block>
+                                                    </th:block>
+                                                    <td class="candidate-list-favourite-time">
+                                                        <span class="candidate-list-time"
+                                                            data-tooltip="ddd">[[${user.roles.role}]]</span>
+                                                    </td>
+                                                    <th:block th:if="${user.roles.role} != admin">
+                                                        <th:block th:if="${user.blocked} == false">
+                                                            <td class="candidate-list-favourite-time">
+                                                                <form action="block_user" method="post">
+                                                                    <button type="submit" class="btn btn-danger"
+                                                                        name="id"
+                                                                        th:value="${user.id}">Заблокувати</button>
+                                                                </form>
                                                             </td>
                                                         </th:block>
-                                                        <th:block th:unless="${candidate.activation} != confirmed">
+                                                        <th:block th:if="${user.blocked} == true">
                                                             <td class="candidate-list-favourite-time">
-                                                                <span class="candidate-list-time">Підтверджено</span>
+                                                                <form action="unblock_user" method="post">
+                                                                    <button type="submit" class="btn btn-success"
+                                                                        name="id"
+                                                                        th:value="${user.id}">Розблокувати</button>
+                                                                </form>
                                                             </td>
                                                         </th:block>
                                                     </th:block>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!--pagination-->
+                                    <div class="d-flex justify-content-center">
+                                        <nav class="mt-5">
+                                            <ul class="pagination">
+
+                                                <div>
+                                                    <form action="previous_page_users" method="post">
+                                                        <input type="hidden" name="page"
+                                                            th:value="${users.getNumber()}">
+                                                        <input type="hidden" name="size" th:value="${users.getSize()}">
+                                                        <input type="hidden" name="query" th:value="${query}">
+                                                        <input type="hidden" name="field" th:value="${field}">
+                                                        <li class="page-item"><button type="submit"
+                                                                class="page-link">Попередня</button>
+                                                        </li>
+                                                    </form>
+                                                </div>
+
+                                                <th:block th:each="page : ${pages}">
+
+                                                    <th:block th:if="${users.getNumber()} == ${page}"
+                                                        th:with="count=${page} + 1">
+                                                        <li class="page-item active"><a class="page-link"
+                                                                th:href="${URI_page} + ${page} + ${URI_size} + ${URI_field} + ${URI_query}">[[${page}
+                                                                + 1]]</a>
+                                                        </li>
+                                                    </th:block>
+
+                                                    <th:block th:if="${URI_query} != null">
+                                                        <th:block th:unless="${users.getNumber()} == ${page}">
+                                                            <li class="page-item"><a class="page-link"
+                                                                    th:href="${URI_page} + ${page} + ${URI_size} + ${URI_field} + ${URI_query}">[[${page}
+                                                                    + 1]]</a>
+                                                            </li>
+                                                        </th:block>
+                                                    </th:block>
+
+                                                    <th:block th:unless="${URI_query} != null">
+                                                        <th:block th:unless="${users.getNumber()} == ${page}">
+                                                            <li class="page-item"><a class="page-link"
+                                                                    th:href="${URI_page} + ${page} + ${URI_size} + ${URI_field}">[[${page}
+                                                                    + 1]]</a>
+                                                            </li>
+                                                        </th:block>
+                                                    </th:block>
                                                 </th:block>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+
+                                                <div>
+                                                    <form action="next_page_users" method="post">
+                                                        <input type="hidden" name="page"
+                                                            th:value="${users.getNumber()}">
+                                                        <input type="hidden" name="size" th:value="${users.getSize()}">
+                                                        <input type="hidden" name="query" th:value="${query}">
+                                                        <input type="hidden" name="field" th:value="${field}">
+                                                        <li class="page-item"><button type="submit" name="totalPage"
+                                                                th:value="${users.getTotalPages()} - 1"
+                                                                class="page-link">Наступна</button>
+                                                        </li>
+                                                    </form>
+                                                </div>
+                                            </ul>
+                                        </nav>
+
+                                        <div class="mt-5 ml-5 btn-group">
+                                            <form action="pageSize_users" method="post" class="form-horizontal">
+                                                <div class="btn-group">
+                                                    <input type="number" class="form-control" name="size" min="1"
+                                                        max="100">
+                                                    <input type="hidden" name="query" th:value="${query}">
+                                                    <input type="hidden" name="field" th:value="${field}">
+                                                    <button type="submit"
+                                                        class="btn btn-outline-success">Переглянути</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

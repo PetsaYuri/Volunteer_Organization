@@ -1,7 +1,7 @@
 package com.volunteer.Volunteer.Organization.service;
 
-import com.volunteer.Volunteer.Organization.models.Candidates;
 import com.volunteer.Volunteer.Organization.models.Users;
+import com.volunteer.Volunteer.Organization.models.Volunteers;
 import org.springframework.stereotype.Service;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
@@ -24,15 +24,15 @@ public class ExportCSVService {
         return response;
     }
 
-    public void createAndSendCsvFileCandidates(HttpServletResponse response, Iterable<Candidates> candidates)
+    public void createAndSendCsvFileVolunteers(HttpServletResponse response, Iterable<Volunteers> volunteers)
             throws IOException {
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
         String[] csvHeader = {"Name", "Email", "Phone", "City", "Description", "Status"};
         String[] candidatesMapping = {"name", "email", "phone", "city", "description", "status"};
         csvWriter.writeHeader(csvHeader);
 
-        for(Candidates candidate : candidates)    {
-            csvWriter.write(candidate, candidatesMapping);
+        for(Volunteers volunteer : volunteers)    {
+            csvWriter.write(volunteer, candidatesMapping);
         }
 
         csvWriter.close();
@@ -41,8 +41,8 @@ public class ExportCSVService {
     public void createAndSendCsvFileUsers(HttpServletResponse response, Iterable<Users> users)
             throws IOException {
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
-        String[] csvHeader = {"Username", "Role"};
-        String[] usersMapping = {"username", "roles"};
+        String[] csvHeader = {"Name", "Email", "Role", "Blocked"};
+        String[] usersMapping = {"name", "email", "role", "blocked"};
         csvWriter.writeHeader(csvHeader);
 
         for(Users user : users)    {

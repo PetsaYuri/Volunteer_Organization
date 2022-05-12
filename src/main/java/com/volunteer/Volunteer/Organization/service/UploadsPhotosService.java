@@ -1,34 +1,30 @@
 package com.volunteer.Volunteer.Organization.service;
 
-import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
+import com.volunteer.Volunteer.Organization.repository.VolunteersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
 public class UploadsPhotosService {
 
     @Autowired
-    private CandidatesRepository candidatesRepository;
+    private VolunteersRepository volunteersRepository;
 
-    private final String UPLOAD_PATH = System.getProperty("user.dir") + "/src/main/resources/static/icon/uploads/candidates";
+    @Value("${upload.path}")
+    private String UPLOAD_PATH;
 
-    private final String UPLOAD_PATH_TARGET = System.getProperty("user.dir") + "/target/classes/static/icon/uploads/candidates";
+    public static final String PATH_TO_PHOTO = "/image/volunteers/";
 
     private String filenameWithUUID;
 
     public UploadsPhotosService()  {
-        checkFolderOnExist();
+       // checkFolderOnExist();
     }
 
     public Boolean isAllowedFileFormat(String namefile)    {
@@ -44,43 +40,16 @@ public class UploadsPhotosService {
     }
 
     public void checkFolderOnExist()  {
+        System.out.println(UPLOAD_PATH);
         File uploadDir = new File(UPLOAD_PATH);
         if(!uploadDir.exists()) {
             uploadDir.mkdir();
         }
-
-        File uploadDirTarget = new File(UPLOAD_PATH_TARGET);
-        if(!uploadDirTarget.exists()){
-            uploadDirTarget.mkdir();
-        }
     }
 
     public void saveFileToServer(MultipartFile file) throws IOException {
-        File dirUpload = new File(getUPLOAD_PATH() + File.separator + getFilenameWithUUID());
-        File dirUploadTarget = new File(getUPLOAD_PATH_TARGET() + File.separator + getFilenameWithUUID());
+        File dirUpload = new File(System.getProperty("user.dir") + "/uploads/" + getFilenameWithUUID());
         file.transferTo( new File(String.valueOf(dirUpload)));
-        Files.copy(Paths.get(String.valueOf(dirUpload)), Paths.get(String.valueOf(dirUploadTarget)));
-    }
-
-    public BufferedImage cropImageSquare(byte[] image) throws IOException {
-        InputStream in = new ByteArrayInputStream(image);
-        BufferedImage originalImage = ImageIO.read(in);
-
-        int height = originalImage.getHeight();
-        int width = originalImage.getWidth();
-
-        int squareSize = (height > width ? width : height);
-
-        int xc = width / 2;
-        int yc = height / 2;
-
-        BufferedImage croppedImage = originalImage.getSubimage(
-                xc - (squareSize / 2),
-                yc - (squareSize / 2),
-                squareSize,
-                squareSize
-        );
-        return croppedImage;
     }
 
     public String createFilenameWithUUID(String filename)    {
@@ -95,9 +64,5 @@ public class UploadsPhotosService {
 
     public String getUPLOAD_PATH() {
         return UPLOAD_PATH;
-    }
-
-    public String getUPLOAD_PATH_TARGET()   {
-        return UPLOAD_PATH_TARGET;
     }
 }

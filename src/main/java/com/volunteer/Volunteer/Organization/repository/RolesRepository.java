@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RolesRepository extends JpaRepository<Roles, Long> {
     Iterable<Roles> findAllByOrderById();
+
+    Roles findByRole(String role);
 }

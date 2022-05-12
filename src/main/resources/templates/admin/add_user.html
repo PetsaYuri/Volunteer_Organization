@@ -12,9 +12,7 @@
     </head>
 
     <body>
-        <th:block th:with="newHeader=${header} + header">
-            <header class="navbar-inverse" th:insert="${blocks} + ${newHeader} :: ${newHeader}"></header>
-        </th:block>
+        <header th:insert="blocks\admin_header :: header"></header>
         <main>
             <div class="container">
                 <div th:if="${param.UserAdded}" class="alert alert-success text-center" role="alert">
@@ -32,9 +30,9 @@
                 </h1>
                 <form action="/admin/add_user" method="post" class="form-horizontal" enctype="multipart/form-data">
                     <div class="form-group">
-                        <h4>Нікнейм:
-                            <input type="text" name="username" placeholder="Введіть нікнейм" class="form-control mb-2"
-                                required maxlength="15">
+                        <h4>Емайл:
+                            <input type="email" name="email" placeholder="Введіть емайл" class="form-control mb-2"
+                                required maxlength="30">
                         </h4>
                         <h4>Пароль:
                             <input type="password" name="password" placeholder="Введіть пароль"
@@ -43,10 +41,6 @@
                         <h4>Повторіть пароль:
                             <input type="password" name="repeatedPassword" placeholder="Повторно введіть пароль"
                                 class="form-control mb-2" required maxlength="15">
-                        </h4>
-                        <h4>Емайл:
-                            <input type="email" name="email" placeholder="Введіть емайл" class="form-control mb-2"
-                                required maxlength="30">
                         </h4>
                         <h4>ПІБ:
                             <input type="text" name="name" ,
@@ -57,7 +51,7 @@
                             <select name="selectedRole" id="select_role" class="form-select form-select-sm mb-2">
                                 <option selected>Виберіть роль</option>
                                 <th:block th:each="role : ${roles}">
-                                    <option th:value="${role.roles}">[[${role.roles}]]</option>
+                                    <option th:value="${role.role}">[[${role.role}]]</option>
                                 </th:block>
                         </h4>
                         </select>

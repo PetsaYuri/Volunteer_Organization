@@ -7,32 +7,29 @@
         <title>Волонтерська організація</title>
         <link rel="stylesheet" href="/css/bootstrap.css">
         <link rel="stylesheet" href="/css/main.css">
-        <link rel="shortcun icon" href="/icon/logo.ico">
+        <link rel="shortcun icon" href="/img/logo.ico">
         <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
     </head>
 
-    <body class="background-image background-color">
-        <header th:insert="blocks\header :: header"></header>
+    <body background="/img/background12.jpg">
+        <header th:insert="blocks\header :: _header"></header>
+
+        <div class="alert alert-info text-center" th:if="${param.SendingMessageToEmail}">
+            <h5 class=""> Лист із підтвердженням відправлено на вашу електронну адресу:
+                [[${email}]]. Без
+                підтвердження
+                ваша заявка не буде розглянута.
+            </h5>
+        </div>
+
         <main>
+            <div class="mb-3 text-center">
+                <img src="/img/image.jpg" alt="Волонтерська організація">
+            </div>
             <div class="container">
-                <div class="alert alert-info text-center" th:if="${param.SendingMessageToEmail}">
-                    <h5 class=""> Лист із підтвердженням відправлено на вашу електронну адресу:
-                        [[${email}]]. Без
-                        підтвердження
-                        ваша заявка не буде розглянута.
-                    </h5>
-                </div>
-                <div class="p-lg-5 mx-auto my-5 text-center">
-                    <h1 class="color-yellow header-font mb-4">Ми волонтери!</h1>
-                    <h3 class="color-yellow mb-4">Наша мета - залучити як можна більше людей до волонтерської справи,
-                        <br> щоб допомогти всім, кому це потрібно!
-                    </h3>
-                    <a class="btn btn-outline-secondary color-black" href="#">Стати волонтером</a>
-                    <h1>Чому потрібно займатись волонтерством в наш час?</h1>
-                </div>
             </div>
         </main>
-        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+        <!--<footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>-->
     </body>
 
 </html>

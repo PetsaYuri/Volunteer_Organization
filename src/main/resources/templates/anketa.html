@@ -13,7 +13,7 @@
     </head>
 
     <body class="anketa">
-        <header class="navbar-inverse" th:insert="blocks\header :: header"></header>
+        <header class="navbar-inverse" th:insert="blocks\header :: _header"></header>
         <main>
             <div class="container text-start">
                 <div th:if="${param.EmailAlreadyExistsException}" class="alert alert-warning text-center">

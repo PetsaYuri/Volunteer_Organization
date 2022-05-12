@@ -1,8 +1,8 @@
 package com.volunteer.Volunteer.Organization.config;
 
+import com.volunteer.Volunteer.Organization.exceptions.NotAllowedFileFormatException;
 import com.volunteer.Volunteer.Organization.models.Users;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
-import com.volunteer.Volunteer.Organization.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,25 +21,28 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String username = authentication.getName();
+        String email = authentication.getName();
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         String password = authentication.getCredentials().toString();
-        Users user = usersRepository.findByUsername(username);
+        Users user = usersRepository.findByEmail(email);
         Boolean istruepass = bcrypt.matches(password, user.getPassword());
-        UserService.setCurrentRole(user.getRoles());
 
         if(user == null)    {
-            throw new BadCredentialsException("Невідомий користувач: " + username);
+            throw new BadCredentialsException("Невідомий користувач: " + email);
         }
 
         if(!istruepass) {
             throw new BadCredentialsException("Невірний пароль");
         }
 
+        if (user.getBlocked())  {
+            throw new BadCredentialsException("Обліковий запис заблоковано");
+        }
+
         UserDetails principal = org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
+                .username(user.getEmail())
                 .password(user.getPassword())
-                .roles(user.getRoles())
+                .roles(user.getRoles().getRole())
                 .build();
         return new UsernamePasswordAuthenticationToken(principal, password, principal.getAuthorities());
     }

@@ -8,21 +8,21 @@ public class Users {
 
     public Users()  {}
 
-    public Users(String username, String password, String role, String email, String name)  {
-        this.username = username;
+    public Users(String password, Roles role, String email, String name)  {
         this.password = password;
         this.roles = role;
         this.email = email;
         this.name = name;
+        this.blocked = false;
     }
 
-    public Users(String username, String password, String role, Candidates candidate, String email, String name)   {
-        this.username = username;
+    public Users(String password, Roles role, Volunteers volunteer, String email, String name)   {
         this.password = password;
         this.roles = role;
-        this.candidate = candidate;
+        this.volunteer = volunteer;
         this.email = email;
         this.name = name;
+        this.blocked = false;
     }
 
     @Id
@@ -30,11 +30,18 @@ public class Users {
     private Long id;
 
     @Column
-    private String username, password, roles, email, name;
+    private String password, email, name;
 
-    @OneToOne()
-    @JoinColumn(name = "id_candidate")
-    private Candidates candidate;
+    @Column
+    private Boolean blocked;
+
+    @OneToOne
+    @JoinColumn(name = "id_volunteer")
+    private Volunteers volunteer;
+
+    @ManyToOne
+    @JoinColumn(name = "id_roles")
+    private Roles roles;
 
     public Long getId() {
         return id;
@@ -44,36 +51,12 @@ public class Users {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
-    }
-
-    public Candidates getCandidate() {
-        return candidate;
-    }
-
-    public void setCandidate(Candidates candidate) {
-        this.candidate = candidate;
     }
 
     public String getEmail() {
@@ -90,5 +73,33 @@ public class Users {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Roles getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Roles role) {
+        this.roles = role;
+    }
+
+    public Boolean getBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public Volunteers getVolunteer() {
+        return volunteer;
+    }
+
+    public void setVolunteer(Volunteers volunteer) {
+        this.volunteer = volunteer;
+    }
+
+    public String getRole() {
+        return roles.getRole();
     }
 }

@@ -13,7 +13,7 @@
     </head>
 
     <body class="">
-        <header th:insert="blocks\header :: header"></header>
+        <header th:insert="blocks\header :: _header"></header>
         <main>
             <div class="container-fluid mt-5">
                 <div class="alert alert-info text-center" th:if="${param.logout}">
@@ -28,8 +28,8 @@
                         <h1 class="title text-center">Вхід</h1>
                         <form class="form-horizontal" action="/login" method="post">
                             <div class="form-group">
-                                <h3> Ім'я користувача:
-                                    <input class="form-control mb-2" type="text" name="username"
+                                <h3> Електронна адреса користувача:
+                                    <input class="form-control mb-2" type="email" name="username"
                                         placeholder="Користувач" minlength="3" maxlength="20" required>
                                 </h3>
                             </div>
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </main>
-        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+        <footer class="navbar-inverse mt-135" th:insert="blocks\footer :: footer"></footer>
     </body>
 
 </html>

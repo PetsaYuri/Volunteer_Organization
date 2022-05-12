@@ -1,62 +1,76 @@
 package com.volunteer.Volunteer.Organization.service;
 
-import com.volunteer.Volunteer.Organization.exceptions.UserAlreadyExistsException;
-import com.volunteer.Volunteer.Organization.models.Candidates;
+import com.volunteer.Volunteer.Organization.exceptions.IncorrectQueryException;
+import com.volunteer.Volunteer.Organization.models.Roles;
 import com.volunteer.Volunteer.Organization.models.Users;
-import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
+import com.volunteer.Volunteer.Organization.models.Volunteers;
+import com.volunteer.Volunteer.Organization.repository.RolesRepository;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
+import com.volunteer.Volunteer.Organization.repository.VolunteersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
     @Autowired
+    private MainService mainService;
+
+    @Autowired
+    private RolesRepository rolesRepository;
+
+    @Autowired
     private UsersRepository usersRepository;
 
     @Autowired
-    private CandidatesRepository candidatesRepository;
+    private VolunteersRepository volunteersRepository;
 
-    private static String currentRole = "guest";
+    @Autowired
+    private MailSenderService mailSender;
 
-    public static final String PATH_TO_ADMIN_FOLDER = "admin/";
-    public static final String PATH_TO_ADMIN_HEADER = "admin_";
+    public String sendActivationMessageToEmail(Volunteers volunteer)    {
+        String message = String.format("Доброго дня %s! \n" +
+                        "Будь ласка, перейдіть по посиланню ниже " +
+                        "http://localhost:8081/activate/%s",
+                volunteer.getName(),
+                volunteer.getActivationCode());
+        return message;
+    }
 
-    public static final String PATH_TO_EDITOR_FOLDER = "editor/";
-    public static final String PATH_TO_EDITOR_HEADER = "editor_";
+    public boolean activateEmail(String code) {
+        Volunteers volunteer = volunteersRepository.findByActivation(code);
 
-    public static final String PATH_TO_USER_FOLDER = "user/";
-    public static final String PATH_TO_USER_HEADER = "user_";
+        if(volunteer == null)    {
+            return false;
+        }
 
-    public static final String PATH_TO_BLOCKS = "blocks" + File.separator;
+        volunteer.setActivationCode("confirmed");
+        volunteersRepository.save(volunteer);
 
-    public static final String PATH_TO_PHOTO = "/icon/uploads/candidates/";
+        return true;
+    }
 
-    public void addUser(String username, String password, String role, String email, String name)   {
-        String encodedPassword = passwordEncoder(password);
-        Users user = new Users(username, encodedPassword, role, email, name);
+    public void addUser(String password, String sRole, String email, String name)   {
+        String encodedPassword = mainService.passwordEncoder(password);
+        Roles role = rolesRepository.findByRole(sRole);
+        Users user = new Users(encodedPassword, role, email, name);
         usersRepository.save(user);
     }
 
-    public void addUser(String username, String password, String role, Candidates candidate)    {
-        String encodedPassword = passwordEncoder(password);
-        Users user = new Users(username, encodedPassword, role, candidate,
-                candidate.getEmail(), candidate.getName());
+    public void addUser(String password, String sRole, Volunteers volunteer)    {
+        String encodedPassword = mainService.passwordEncoder(password);
+        Roles role = rolesRepository.findByRole(sRole);
+        Users user = new Users(encodedPassword, role, volunteer,
+                volunteer.getEmail(), volunteer.getName());
         usersRepository.save(user);
     }
 
-    public String passwordEncoder(String password)    {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(password);
-        return encodedPassword;
-    }
-
-    public boolean isAlreadyExistsUser(String username) {
-        Users user = usersRepository.findByUsername(username);
+    public boolean isAlreadyExistsEmail(String email) {
+        Users user = usersRepository.findByEmail(email);
         if(user == null)    {
             return false;
         }   else {
@@ -64,21 +78,41 @@ public class UserService {
         }
     }
 
-    public Iterable<Users> findAllUsers()  {
-        Iterable<Users> user = usersRepository.findAllByOrderById();
-        return user;
+    public Page<Users> searchByField(String field, String query, Pageable pageable) throws IncorrectQueryException {
+        Page<Users> users;
+        Roles roles;
+        switch (field)  {
+            case "name":
+                return users = usersRepository.findByNameContainingIgnoreCase(query, pageable);
+            case "email":
+                return users = usersRepository.findByEmailContainingIgnoreCase(query, pageable);
+            case "active":
+                    return users = usersRepository.findByBlocked(false, pageable);
+            case "blocked":
+                return users = usersRepository.findByBlocked(true, pageable);
+            case "admin":
+                roles = rolesRepository.findByRole("admin");
+                return users = usersRepository.findByRoles(roles, pageable);
+            case "user":
+                roles = rolesRepository.findByRole("user");
+                return users = usersRepository.findByRoles(roles, pageable);
+            case "editor":
+                roles = rolesRepository.findByRole("editor");
+                return users = usersRepository.findByRoles(roles, pageable);
+            default:
+                throw new IncorrectQueryException();
+        }
     }
 
-    public static String getCurrentRole() {
-        return currentRole;
+    public void blockUser(long id) {
+        Optional<Users> user = usersRepository.findById(id);
+        user.get().setBlocked(true);
+        usersRepository.save(user.get());
     }
 
-    public static void setCurrentRole(String currentRole) {
-        UserService.currentRole = currentRole;
-    }
-
-    public Candidates findCandidateByEmail(String email)    {
-        Candidates candidate = candidatesRepository.findByEmail(email);
-        return candidate;
+    public void unblockUser(long id) {
+        Optional<Users> user = usersRepository.findById(id);
+        user.get().setBlocked(false);
+        usersRepository.save(user.get());
     }
 }

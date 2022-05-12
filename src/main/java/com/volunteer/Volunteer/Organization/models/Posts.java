@@ -1,6 +1,6 @@
 package com.volunteer.Volunteer.Organization.models;
 
-import com.volunteer.Volunteer.Organization.service.PostService;
+import com.volunteer.Volunteer.Organization.service.EditorService;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,10 +12,11 @@ public class Posts {
 
     public Posts()  {}
 
-    public Posts(String title, String description)  {
+    public Posts(String title, String description, String filename)  {
         this.title = title;
         this.description = description;
-        this.date = PostService.getCurrentDate();
+        this.date = EditorService.getCurrentDate();
+        this.image = filename;
     }
 
     @Id

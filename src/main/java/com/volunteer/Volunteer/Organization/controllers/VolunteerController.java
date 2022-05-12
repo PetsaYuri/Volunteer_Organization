@@ -2,10 +2,13 @@ package com.volunteer.Volunteer.Organization.controllers;
 
 import com.volunteer.Volunteer.Organization.exceptions.EmailAlreadyExistsException;
 import com.volunteer.Volunteer.Organization.exceptions.NotAllowedFileFormatException;
-import com.volunteer.Volunteer.Organization.models.Candidates;
-import com.volunteer.Volunteer.Organization.service.CandidatesService;
+import com.volunteer.Volunteer.Organization.models.Users;
+import com.volunteer.Volunteer.Organization.models.Volunteers;
+import com.volunteer.Volunteer.Organization.repository.UsersRepository;
 import com.volunteer.Volunteer.Organization.service.MailSenderService;
 import com.volunteer.Volunteer.Organization.service.UploadsPhotosService;
+import com.volunteer.Volunteer.Organization.service.UserService;
+import com.volunteer.Volunteer.Organization.service.VolunteerService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,24 +19,35 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.image.BufferedImage;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Controller
-public class CandidateController {
+public class VolunteerController {
 
     @Autowired
     private UploadsPhotosService uploadsPhotos;
 
     @Autowired
-    private CandidatesService candidatesService;
+    private UserService userService;
+
+    @Autowired
+    private UsersRepository usersRepository;
+
+    @Autowired
+    private VolunteerService volunteerService;
 
     @Autowired
     private MailSenderService mailSenderService;
 
     @GetMapping("/anketa")
-    public String anketa(Model model)    {
+    public String anketa(Model model, HttpServletRequest request)    {
         model.addAttribute("active", "anketa");
+
+        Users user = usersRepository.findByEmail(request.getRemoteUser());
+        if (user != null) {
+            model.addAttribute("role", user.getRoles().getRole());
+        }
         return "anketa";
     }
 
@@ -45,15 +59,14 @@ public class CandidateController {
             model.addAttribute("email", email);
         try {
             String filename = file.getOriginalFilename();
-            if(!candidatesService.isAlreadyExistsEmail(email))   {
+            if(!volunteerService.isAlreadyExistsEmail(email))   {
                 if(uploadsPhotos.isAllowedFileFormat(filename))   {
+                    System.out.println(file.getSize());
                     String filenameWithUUID = uploadsPhotos.createFilenameWithUUID(filename);
-                    Candidates candidates = candidatesService.addCandidate(name, email, phone, city, description, filenameWithUUID);
-                  //  BufferedImage croppedImage = uploadsPhotos.cropImageSquare(file.getBytes());
-                 //   MultipartFile multipartFile = (MultipartFile) croppedImage;
+                    Volunteers volunteer = volunteerService.addVolunteer(name, email, phone, city, description, filenameWithUUID);
                     uploadsPhotos.saveFileToServer(file);
 
-                    String message = candidatesService.sendMessageToEmail(candidates);
+                    String message = userService.sendActivationMessageToEmail(volunteer);
                   //  mailSenderService.send(email, "Активація коду", message);
                 } else {
                     throw new NotAllowedFileFormatException();
@@ -71,7 +84,7 @@ public class CandidateController {
 
     @GetMapping("/activate/{code}")
     public String activate(Model model, @PathVariable String code) throws IOException {
-        boolean isActivated = candidatesService.activateEmail(code);
+        boolean isActivated = userService.activateEmail(code);
 
         if(isActivated) {
             model.addAttribute("message", "Активація пройшла успішно");

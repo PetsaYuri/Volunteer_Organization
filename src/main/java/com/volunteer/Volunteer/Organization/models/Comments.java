@@ -1,6 +1,6 @@
 package com.volunteer.Volunteer.Organization.models;
 
-import com.volunteer.Volunteer.Organization.service.PostService;
+import com.volunteer.Volunteer.Organization.service.EditorService;
 
 import javax.persistence.*;
 
@@ -14,7 +14,7 @@ public class Comments {
     public Comments(String author, String comment, Posts post) {
         this.author = author;
         this.comment = comment;
-        this.date = PostService.getCurrentDate();
+        this.date = EditorService.getCurrentDate();
         this.post = post;
     }
 

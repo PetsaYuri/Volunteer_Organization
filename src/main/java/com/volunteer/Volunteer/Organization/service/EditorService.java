@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PostService {
+public class EditorService {
 
     @Autowired
     private PostsRepository postsRepository;
@@ -22,8 +22,11 @@ public class PostService {
     @Autowired
     private CommentsRepository commentsRepository;
 
-    public void addNewPost(String title, String description)    {
-        Posts post = new Posts(title, description);
+    public static final String PATH_TO_EDITOR_FOLDER = "editor/";
+    public static final String PATH_TO_EDITOR_HEADER = "editor_";
+
+    public void addNewPost(String title, String description, String image)    {
+        Posts post = new Posts(title, description, image);
         Posts p = postsRepository.save(post);
     }
 
