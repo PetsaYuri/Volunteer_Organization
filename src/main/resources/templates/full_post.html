@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="shortcun icon" th:href="${pathProjectInfo} + ${projectInfo.logo}">
+        <title>Допис</title>
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body>
+        <header class="navbar-inverse" th:insert="blocks\header :: _header"></header>
+
+        <div class="alert alert-success text-center" th:if="${param.AddedComment}">
+            <h5>
+                Ваш коментар додано!
+            </h5>
+        </div>
+
+        <div class="alert alert-danger text-center" th:if="${param.DeletedComment}">
+            <h5>
+                Ваш коментар видалено!
+            </h5>
+        </div>
+
+        <div class="alert alert-danger text-center" th:if="${param.VolunteerNotFound}">
+            <h5>
+                Користувача не знайдено!
+            </h5>
+        </div>
+
+        <div class="alert alert-success text-center" th:if="${param.CommentEdited}">
+            <h5>
+                Коментар відредаговано!
+            </h5>
+        </div>
+
+        <div class="alert alert-success text-center" th:if="${param.PostEdited}">
+            <h5>
+                Допис відредаговано!
+            </h5>
+        </div>
+
+        <main>
+            <div class="container pb50">
+                <div class="row">
+                    <div class="col-md-9 mb40">
+                        <article>
+                            <img th:src="${filePath} + ${post.image}" alt="Зображення допису" class="img-fluid mb30">
+                            <div class="post-content">
+                                <h3>[[${post.title}]]</h3>
+                                <ul class="post-meta list-inline">
+                                    <li class="list-inline-item">
+                                        <i class="fa fa-user-circle-o"></i> <a href="#">[[${post.user.name}]]</a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <i class="fa fa-calendar-o"></i> <a href="#">[[${post.date}]]</a>
+                                    </li>
+                                </ul>
+                                <th:block th:each="paragraph : ${description}">
+                                    <p class="style-for-description">[[${paragraph}]]</p>
+                                </th:block>
+                                <ul class="list-inline share-buttons">
+                                    <li class="list-inline-item">Share Post:</li>
+                                    <li class="list-inline-item">
+                                        <a href="https://www.facebook.com" target="_blank"
+                                            class="social-icon-sm si-dark si-colored-facebook si-gray-round">
+                                            <i class="fa fa-facebook"></i>
+                                            <i class="fa fa-facebook"></i>
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a href="https://www.twitter.com" target="_blank"
+                                            class="social-icon-sm si-dark si-colored-twitter si-gray-round">
+                                            <i class="fa fa-twitter"></i>
+                                            <i class="fa fa-twitter"></i>
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a href="https://www.linkedin.com" target="_blank"
+                                            class="social-icon-sm si-dark si-colored-linkedin si-gray-round">
+                                            <i class="fa fa-linkedin"></i>
+                                            <i class="fa fa-linkedin"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <hr class="mb40">
+                                <h4 class="mb40 text-uppercase font500">Коментарі ([[${post.comments.size()}]])</h4>
+                                <!--    <form action="/blog" method="post" class="form-horizontal"
+                                    enctype="multipart/form-data">
+                                    <select class="form-select" name="sorting" aria-label="Default select example">
+                                        <option selected>Сортувати за</option>
+                                        <option value="1">Новішими коментарями</option>
+                                        <option value="2">Давнішими коментарями</option>
+                                    </select>
+                                    <button type="submit">Відправити</button>
+                                </form>
+                                <div th:if="${param.name == n}">
+                                    <p>ddddddddddddddd</p>
+                                </div>-->
+                                <th:block th:each="comment : ${post.comments}">
+                                    <div class="media mb40">
+
+                                        <th:block th:if="${comment.user} != null">
+                                            <i class="d-flex mr-3 fa fa-user-circle-o fa-3x mb-2"
+                                                th:text="${comment.user.name}"></i>
+                                        </th:block>
+
+                                        <th:block th:if="${comment.volunteer} != null">
+                                            <i class="d-flex mr-3 fa fa-user-circle-o fa-3x mb-2"
+                                                th:text="${comment.volunteer.name}"></i>
+                                        </th:block>
+
+                                        <th:block th:if="${role} == editor">
+                                            <div class="text-start">
+                                                <form action="/delete_comment" method="post">
+                                                    <input type="hidden" name="idPost" th:value="${post.id}">
+                                                    <button type="submit" name="id" th:value="${comment.id}">
+                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </th:block>
+
+                                        <th:block th:if="${comment.volunteer} != null">
+                                            <th:block
+                                                th:if="${#httpServletRequest.getRemoteUser()} == ${comment.volunteer.email}">
+                                                <div class="btn-group">
+                                                    <form action="/delete_comment" method="post">
+                                                        <input type="hidden" name="idPost" th:value="${post.id}">
+                                                        <button type="submit" name="id" th:value="${comment.id}">
+                                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form action="/allow_editing_comment" method="post">
+                                                        <input type="hidden" name="idPost" th:value="${post.id}">
+                                                        <input type="hidden" name="idComment" th:value="${comment.id}">
+                                                        <button type="submit"><i class="fa fa-pencil"
+                                                                aria-hidden="true"></i></button>
+                                                    </form>
+                                                </div>
+                                            </th:block>
+                                        </th:block>
+
+                                        <th:block th:if="${comment.user} != null">
+                                            <th:block
+                                                th:if="${#httpServletRequest.getRemoteUser()} == ${comment.user.email}">
+                                                <div class="text-start">
+                                                    <form action="/delete_comment" method="post">
+                                                        <input type="hidden" name="idPost" th:value="${post.id}">
+                                                        <button type="submit" class="btn" name="id"
+                                                            th:value="${comment.id}">
+                                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form action="/allow_editing_comment" method="post">
+                                                        <input type="hidden" name="idPost" th:value="${post.id}">
+                                                        <input type="hidden" name="idComment" th:value="${comment.id}">
+                                                        <button type="submit" class="btn"><i class="fa fa-pencil"
+                                                                aria-hidden="true"></i></button>
+                                                    </form>
+                                                </div>
+                                            </th:block>
+                                        </th:block>
+
+                                        <div class="media-body">
+
+                                            <th:block th:if="${currentComment} == ${comment.id}">
+                                                <th:block th:if="${edit} == true">
+                                                    <form action="/edit_comment" method="post">
+                                                        <input type="text" name="comment" th:value="${comment.comment}">
+                                                        <input type="hidden" name="idComment" th:value="${comment.id}">
+                                                        <input type="hidden" name="idPost" th:value="${post.id}">
+                                                        <button type="submit"
+                                                            class="btn btn-outline-success">Зберегти</button>
+                                                    </form>
+                                                </th:block>
+                                            </th:block>
+
+                                            <th:block th:unless="${currentComment} == ${comment.id}">
+                                                <h4 th:text="${comment.comment}" class="mb-1"></h4>
+                                                <p th:text="${comment.date}" class="mt-1"></p>
+                                            </th:block>
+
+                                        </div>
+                                    </div>
+                                </th:block>
+                                <hr class="mb40">
+                                <h4 class="mb40 text-uppercase font500">Додати власний коментар</h4>
+                                <form role="form" action="/add_comment" method="post">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <label>Коментар:</label>
+                                            <textarea class="form-control" rows="5" name="comment"
+                                                placeholder="Прокоментуйте даний допис"></textarea>
+                                        </div>
+                                        <input type="hidden" name="id_post" th:value="${post.id}">
+                                        <div class="clearfix float-right">
+                                            <button type="submit"
+                                                class="btn btn-primary btn-lg text-center mb-2 mt-2">Додати
+                                                коментар</button>
+                                        </div>
+                                </form>
+                            </div>
+                        </article>
+                        <!-- post article-->
+
+                    </div>
+                    <div class="col-md-3 mb40">
+                        <h4 class="sidebar-title">Останні новини ([[${post.category.category}]])</h4>
+                        <div th:each="post : ${lastPosts}">
+                            <ul class="list-unstyled">
+                                <li class="media">
+                                    <img class="d-flex mr-3 img-fluid" width="64" th:src="${filePath} + ${post.image}"
+                                        alt="Зображення допису">
+                                    <div class="media-body">
+                                        <h5 class="mt-1 mb-1"><a th:href="${post.id}">[[${post.title}]]</a>
+                                        </h5> [[${post.date}]]
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+    <script src="/js/boot.js"></script>
+
+</html>

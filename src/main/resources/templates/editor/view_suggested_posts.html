@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head class="blue">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Волонтерська організація</title>
+        <link rel="stylesheet" href="/css/bootstrap.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="shortcun icon" th:href="${pathProjectInfo} + ${projectInfo.logo}">
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body>
+        <header class="navbar-inverse" th:insert="blocks\editor_header :: header"></header>
+
+        <div th:if=" ${param.ItLastPage}" class="alert alert-info text-center">
+            Це остання сторінка!
+        </div>
+
+        <div th:if=" ${param.NotExistsNextPage}" class="alert alert-info text-center">
+            Не існує наступної сторінки!
+        </div>
+
+        <div th:if="${param.NotFoundByQuery}" class="alert alert-info text-center">
+            Нічого не знайдено по вашому запиту!
+        </div>
+
+        <div th:if="${param.PostNotFound}" class="alert alert-danger text-center">
+            Пост не знайдено!
+        </div>
+
+        <div th:if="${param.PublishedSuggestedPost}" class="alert alert-success text-center">
+            Опубліковано запропонований пост!
+        </div>
+
+        <div th:if="${param.DeletedSuggestedPost}" class="alert alert-danger text-center">
+            Видалено запропонований пост!
+        </div>
+
+        <main>
+            <section>
+                <div class="container">
+
+                    <!--search-->
+                    <div class="items-center text-center mb-2 mt-2">
+                        <div class="input-group">
+                            <form action="/posts_search" method="post">
+                                <div class="btn-group">
+                                    <input type="search" name="query" th:value="${query}"
+                                        class="form-control width-1000" />
+                                    <input type="hidden" name="page" th:value="${posts.getNumber()}">
+                                    <input type="hidden" name="size" th:value="${posts.getSize()}">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                                <select name="idCategory" class="form-control mb-2 width-1020">
+                                    <th:block th:if="currentCategory != null">
+                                        <option selected th:value="${currentCategory.id}">
+                                            [[${currentCategory.category}]]
+                                        </option>
+                                    </th:block>
+
+                                    <th:block th:each="category : ${categories}">
+                                        <th:block th:if="${category} != ${currentCategory}">
+                                            <option th:value="${category.id}">[[${category.category}]]</option>
+                                        </th:block>
+                                    </th:block>
+
+                                    <option value="0">Пошук по ключовим словам</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!--post-->
+                    <div class="row">
+                        <th:block th:each="post : ${posts}">
+                            <div class="col-lg-4 col-md-6 mb-2-6">
+                                <article class="card card-style2">
+                                    <div class="card-img">
+                                        <img class="rounded-top" th:src="${filePath} + ${post.image}"
+                                            th:alt="${filePath} + ${post.image}">
+                                        <div th:text="${post.date}"></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h3 class="h5"><a th:href="${URI} + ${post.id}" th:text="${post.title}"></a>
+                                        </h3>
+                                    </div>
+                                    <div class="card-footer">
+                                        <ul>
+                                            <li><i class="fa fa-user"></i> <a href="#!">[[${post.user.name}]]</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </article>
+                            </div>
+                        </th:block>
+                    </div>
+
+                    <!--pagination-->
+                    <div class="d-flex justify-content-center">
+                        <nav class="mt-2">
+                            <ul class="pagination">
+
+                                <div>
+                                    <form action="/previous_page" method="post">
+                                        <input type="hidden" name="page" th:value="${posts.getNumber()}">
+                                        <input type="hidden" name="size" th:value="${posts.getSize()}">
+                                        <input type="hidden" name="query" th:value="${query}">
+                                        <li class="page-item"><button type="submit" class="page-link">Попередня</button>
+                                        </li>
+                                    </form>
+                                </div>
+
+                                <th:block th:each="page : ${pages}">
+
+                                    <th:block th:if="${posts.getNumber()} == ${page}">
+                                        <li class="page-item active"><a class="page-link"
+                                                th:href="${URI_page} + ${page} + ${URI_size} + ${URI_query}">[[${page}
+                                                + 1]]</a>
+                                        </li>
+                                    </th:block>
+
+                                    <th:block th:if="${URI_query} != null">
+                                        <th:block th:unless="${posts.getNumber()} == ${page}">
+                                            <li class="page-item"><a class="page-link"
+                                                    th:href="${URI_page} + ${page} + ${URI_size} + ${URI_query}">[[${page}
+                                                    + 1]]</a>
+                                            </li>
+                                        </th:block>
+                                    </th:block>
+
+                                    <th:block th:unless="${URI_query} != null">
+                                        <th:block th:unless="${posts.getNumber()} == ${page}">
+                                            <li class="page-item"><a class="page-link"
+                                                    th:href="${URI_page} + ${page} + ${URI_size}">[[${page}
+                                                    + 1]]</a>
+                                            </li>
+                                        </th:block>
+                                    </th:block>
+                                </th:block>
+
+                                <div>
+                                    <form action="/next_page" method="post">
+                                        <input type="hidden" name="page" th:value="${posts.getNumber()}">
+                                        <input type="hidden" name="size" th:value="${posts.getSize()}">
+                                        <input type="hidden" name="query" th:value="${query}">
+                                        <li class="page-item"><button type="submit" name="totalPage"
+                                                th:value="${posts.getTotalPages()} - 1"
+                                                class="page-link">Наступна</button>
+                                        </li>
+                                    </form>
+                                </div>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <form action="/pageSize" method="post" class="form-horizontal">
+                            <div class="btn-group">
+                                <input type="number" class="form-control" name="size" min="1" max="100">
+                                <input type="hidden" name="query" th:value="${query}">
+                                <button type="submit" class="btn btn-outline-success">Переглянути</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+    <script src="/js/boot.js"></script>
+
+</html>

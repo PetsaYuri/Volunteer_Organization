@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="shortcun icon" th:href="${pathProjectInfo} + ${projectInfo.logo}">
+        <title>Допис</title>
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body>
+        <header class="navbar-inverse" th:insert="blocks\editor_header :: header"></header>
+
+        <div class="alert alert-danger text-center" th:if="${param.VolunteerNotFound}">
+            <h5>
+                Користувача не знайдено!
+            </h5>
+        </div>
+
+        <main>
+            <div class="container pb50">
+                <div class="row">
+                    <div class="d-flex justify-content-center">
+                        <div class="col-md-9 mb40">
+                            <article>
+                                <img th:src="${filePath} + ${post.image}" alt="Зображення допису"
+                                    class="img-fluid mb30">
+                                <div class="post-content">
+                                    <ul class="post-meta list-inline">
+                                        <li class="list-inline-item">
+                                            <i class="fa fa-user-circle-o"></i> <a href="#">[[${post.user.name}]]</a>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="fa fa-calendar-o"></i> <a href="#">[[${post.date}]]</a>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <form action="delete" method="post">
+                                                <button type="submit" class="btn btn-outline-danger" name="idPost"
+                                                    th:value="${post.id}"><i class="fa fa-trash-o"
+                                                        aria-hidden="true"></i></button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                    <form action="publish" method="post" class="form-horizontal"
+                                        enctype="multipart/form-data">
+                                        <h3>
+                                            <input type="text" name="title" th:value="${post.title}"
+                                                class="form-control mt-2" required minlength="5" maxlength="254">
+                                        </h3>
+                                        <textarea name="description" rows="5" class="form-control mb-2" required
+                                            minlength="20" maxlength="9999">[[${post.description}]]</textarea>
+                                        <h3>Змінити зображення:
+                                            <input type="file" name="image" class="mb-2">
+                                        </h3>
+                                        <center><button type="submit" class="btn btn-outline-success" name="idPost"
+                                                th:value="${post.id}">Опублікувати</button></center>
+                                    </form>
+                                </div>
+                            </article>
+                            <!-- post article-->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+    <script src="/js/boot.js"></script>
+
+</html>

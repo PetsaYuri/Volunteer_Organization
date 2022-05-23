@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head class="blue">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" />
+        <title>Волонтерська організація</title>
+        <link rel="stylesheet" href="/css/bootstrap.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="shortcun icon" th:href="${pathProjectInfo} + ${projectInfo.logo}">
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body background="/img/background12.jpg">
+        <header th:insert="blocks\editor_header :: header"></header>
+
+        <main>
+            <div class="mb-3 text-center">
+                <img src="/img/image.jpg" alt="Волонтерська організація">
+            </div>
+            <div class="container">
+            </div>
+        </main>
+
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+    <script src="/js/boot.js"></script>
+
+</html>
