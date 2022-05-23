@@ -1,8 +1,0 @@
-ALTER SEQUENCE form_id_seq RESTART WITH 1
-logging.level.org.springframework=OFF
-logging.level.root=OFF
-
-змінювати назву
-доробити блог
-доробити коментарі
-консультація по БД

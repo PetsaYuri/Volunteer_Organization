@@ -62,8 +62,8 @@ hr {
 }
 
 .navbar-inverse {
-    background: #2d2d2d;
-    border-color: #2d2d2d;
+    background: #fff;
+    border-color: #fff;
 }
 
 .navbar-inverse .navbar-nav>.active>a {
@@ -94,7 +94,7 @@ hr {
 }
 
 .mb-for-header {
-    margin-top: 88px;
+    margin-top: 110px;
 }
 
 #content {
@@ -172,15 +172,60 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .width-1000 {
-    width: 1000px;
+    width: 80%;
 }
 
 .width-1020 {
-    width: 1040px;
+    width: 80%;
+}
+
+.width-500 {
+    width: 300px;
+}
+
+.width-100p {
+    width: 100%;
 }
 
 .items-center {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+img {
+    width: 100%;
+    max-width: 100%;
+}
+
+.menu-btn {
+    width: 30px;
+    height: 30px;
+    z-index: 2;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    transform: translateX(100%);
+    transition: transform 0.5s;
+}
+
+.menu.active {
+    transform: translateX(50%);
+}
+
+.nav-item {
+    white-space: nowrap;
+}
+
+.style-for-description {
+    text-align: justify;
+    text-indent: 30px;
 }

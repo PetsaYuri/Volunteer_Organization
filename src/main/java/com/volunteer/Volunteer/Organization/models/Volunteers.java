@@ -1,6 +1,7 @@
 package com.volunteer.Volunteer.Organization.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "volunteers")
@@ -8,14 +9,13 @@ public class Volunteers {
 
     public Volunteers()   {}
 
-    public Volunteers(String name, String email, String phone, String city, String description, String filename) {
+    public Volunteers(String name, String email, String phone, String city, String description) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.city = city;
         this.description = description;
         this.status = "waiting";
-        this.photo = filename;
     }
 
     @Id
@@ -27,6 +27,9 @@ public class Volunteers {
 
     @OneToOne(mappedBy = "volunteer")
     private Users user;
+
+    @OneToMany(mappedBy = "volunteer")
+    private List<Comments> comments;
 
     public String getEmail() {
         return email;

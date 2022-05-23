@@ -1,6 +1,7 @@
 package com.volunteer.Volunteer.Organization.models;
 
 import com.volunteer.Volunteer.Organization.service.EditorService;
+import com.volunteer.Volunteer.Organization.service.MainService;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,23 +13,47 @@ public class Posts {
 
     public Posts()  {}
 
-    public Posts(String title, String description, String filename)  {
+    public Posts(String title, String description, Users user, Categories category)  {
         this.title = title;
         this.description = description;
-        this.date = EditorService.getCurrentDate();
+        this.date = MainService.getCurrentDate();
+        this.user = user;
+        this.category = category;
+    }
+
+    public Posts(String title, String description, String date, String filename, Users user, Categories category)  {
+        this.title = title;
+        this.description = description;
+        this.date = date;
         this.image = filename;
+        this.user = user;
+        this.category = category;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column()
-    private String title, description, image, date, author;
+    @Column(nullable = false)
+    private String title, date;
+
+    @Column(nullable = false, length = 10000)
+    private String description;
+
+    @Column
+    private String image;
 
     @OneToMany(mappedBy = "post")
     @OrderBy("id")
     private List<Comments> comments = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private Users user;
+
+    @ManyToOne
+    @JoinColumn(name = "id_category")
+    private Categories category;
 
     public Long getId() {
         return id;
@@ -70,19 +95,27 @@ public class Posts {
         this.image = image;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public List<Comments> getComments() {
         return comments;
     }
 
     public void setComments(List<Comments> comments) {
         this.comments = comments;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
+    public Categories getCategory() {
+        return category;
+    }
+
+    public void setCategory(Categories category) {
+        this.category = category;
     }
 }

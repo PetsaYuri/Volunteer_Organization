@@ -1,6 +1,7 @@
 package com.volunteer.Volunteer.Organization.models;
 
 import com.volunteer.Volunteer.Organization.service.EditorService;
+import com.volunteer.Volunteer.Organization.service.MainService;
 
 import javax.persistence.*;
 
@@ -11,11 +12,18 @@ public class Comments {
     public Comments() {
     }
 
-    public Comments(String author, String comment, Posts post) {
-        this.author = author;
+    public Comments(String comment, Posts post, Volunteers volunteer) {
         this.comment = comment;
-        this.date = EditorService.getCurrentDate();
+        this.date = MainService.getCurrentDate();
         this.post = post;
+        this.volunteer = volunteer;
+    }
+
+    public Comments(String comment, Posts post, Users user) {
+        this.comment = comment;
+        this.date = MainService.getCurrentDate();
+        this.post = post;
+        this.user = user;
     }
 
     @Id
@@ -23,11 +31,19 @@ public class Comments {
     private Long id;
 
     @Column
-    private String comment, author, date;
+    private String comment, date;
 
     @ManyToOne
     @JoinColumn(name = "id_post")
     private Posts post;
+
+    @ManyToOne
+    @JoinColumn(name = "id_volunteer")
+    private Volunteers volunteer;
+
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private Users user;
 
     public Long getId() {
         return id;
@@ -45,14 +61,6 @@ public class Comments {
         this.comment = comment;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public String getDate() {
         return date;
     }
@@ -67,5 +75,21 @@ public class Comments {
 
     public void setPost(Posts post) {
         this.post = post;
+    }
+
+    public Volunteers getVolunteer() {
+        return volunteer;
+    }
+
+    public void setVolunteer(Volunteers volunteer) {
+        this.volunteer = volunteer;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }

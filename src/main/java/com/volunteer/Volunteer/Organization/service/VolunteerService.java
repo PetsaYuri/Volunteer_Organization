@@ -17,8 +17,8 @@ public class VolunteerService {
     private VolunteersRepository volunteersRepository;
 
     public Volunteers addVolunteer(String name, String email, String phone, String city,
-                                   String description, String filename)    {
-        Volunteers volunteer = new Volunteers(name, email, phone, city, description, filename);
+                                   String description)    {
+        Volunteers volunteer = new Volunteers(name, email, phone, city, description);
         volunteer.setActivationCode(UUID.randomUUID().toString());
         volunteersRepository.save(volunteer);
         return volunteer;

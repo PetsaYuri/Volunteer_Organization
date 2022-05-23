@@ -1,8 +1,10 @@
 package com.volunteer.Volunteer.Organization.controllers;
 
 import com.volunteer.Volunteer.Organization.exceptions.*;
+import com.volunteer.Volunteer.Organization.models.ProjectInfo;
 import com.volunteer.Volunteer.Organization.models.Users;
 import com.volunteer.Volunteer.Organization.models.Volunteers;
+import com.volunteer.Volunteer.Organization.repository.ProjectInfoRepository;
 import com.volunteer.Volunteer.Organization.repository.RolesRepository;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
 import com.volunteer.Volunteer.Organization.repository.VolunteersRepository;
@@ -18,12 +20,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_PHOTO;
+import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_PROJECT_INFO_UPLOADS;
+import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_VOLUNTEERS_UPLOADS;
 
 @Controller
 @RequestMapping("/admin")
@@ -50,11 +55,31 @@ public class AdminController {
     private UserService userService;
 
     @Autowired
+    private ProjectInfoRepository projectInfoRepository;
+
+    @Autowired
     private MainService mainService;
 
+    @Autowired
+    private UploadsPhotosService uploadsPhotosService;
+
     @GetMapping("/")
-    public String admin(Model model) {
+    public String admin(Model model, HttpServletRequest request) {
+        Users user = usersRepository.findByEmail(request.getRemoteUser());
+        if (user != null) {
+            model.addAttribute("role", user.getRoles().getRole());
+        }
+
+        ProjectInfo projectInfo = projectInfoRepository.getById(Long.valueOf(1));
+        model.addAttribute("projectInfo", projectInfo);
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
         return PATH_TO_ADMIN_FOLDER + "admin_page";
+    }
+
+    @PostMapping("/edit_project_name")
+    public String editProjectName(@RequestParam String projectName) {
+        mainService.editProjectName(projectName);
+        return "redirect:/admin/";
     }
 
     @GetMapping("/view_volunteers")
@@ -67,10 +92,9 @@ public class AdminController {
                 volunteers = volunteersRepository.findByStatus(filter, pageable);
             } else {
                 volunteers = volunteerService.searchByField(field, query, pageable);
-            }
-
-            if (!volunteers.hasContent()) {
-                throw new NotFoundByQueryException();
+                if (!volunteers.hasContent()) {
+                    throw new NotFoundByQueryException();
+                }
             }
             model.addAttribute("volunteers", volunteers);
 
@@ -88,7 +112,9 @@ public class AdminController {
             model.addAttribute("currentFilter", filter);
             model.addAttribute("query", query);
             model.addAttribute("field", field);
-            model.addAttribute("filePath", PATH_TO_PHOTO);
+            model.addAttribute("filePath", PATH_TO_VOLUNTEERS_UPLOADS);
+            model.addAttribute("projectInfo", mainService.getProjectInfo());
+            model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
             return PATH_TO_ADMIN_FOLDER + "view_volunteers";
         }   catch (IncorrectQueryException ex)  {
             return "redirect:/admin/view_volunteers?IncorrectQuery";
@@ -213,7 +239,9 @@ public class AdminController {
             //values necessary for work
             model.addAttribute("query", query);
             model.addAttribute("field", field);
-            model.addAttribute("filePath", PATH_TO_PHOTO);
+            model.addAttribute("filePath", PATH_TO_VOLUNTEERS_UPLOADS);
+            model.addAttribute("projectInfo", mainService.getProjectInfo());
+            model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
         }   catch (IncorrectQueryException ex)  {
             return "redirect:/admin/view_users?IncorrectQuery";
         }   catch (NotFoundByQueryException ex)  {
@@ -288,13 +316,15 @@ public class AdminController {
     @GetMapping("/add_user")
     public String addUser(Model model)  {
         model.addAttribute("roles", rolesRepository.findAll());
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
         return PATH_TO_ADMIN_FOLDER + "add_user";
     }
 
     @PostMapping("/add_user")
     public String postAddUser(@RequestParam String password, @RequestParam String selectedRole,
                               @RequestParam String repeatedPassword, @RequestParam String email,
-                              @RequestParam(required = false) String name, Model model)    {
+                              @RequestParam(required = false) String name)    {
         try {
             if(userService.isAlreadyExistsEmail(email))   {
                 throw new UserAlreadyExistsException();
@@ -324,5 +354,35 @@ public class AdminController {
         Iterable<Users> users = usersRepository.findAll();
         csvService.createAndSendCsvFileUsers(response, users);
         return "redirect:/view_users";
+    }
+
+    @GetMapping("/upload_logo")
+    public String uploadLogo(Model model)  {
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
+        return PATH_TO_ADMIN_FOLDER + "upload_logo";
+    }
+
+    @PostMapping("upload_logo")
+    public String ulpoadLogo(@RequestParam(required = false) MultipartFile logo, HttpServletRequest request,
+                             @RequestParam(required = false) MultipartFile imageNavbar, Model model) throws IOException {
+        try {
+            ProjectInfo projectInfo = projectInfoRepository.getById(Long.valueOf(1));
+            if (!logo.isEmpty()) {
+                String filename = uploadsPhotosService.createFilenameWithUUID(logo.getOriginalFilename());
+                if (uploadsPhotosService.isIcoFile(filename)) {
+                    uploadsPhotosService.saveFile(logo, filename, projectInfo);
+                } else {
+                    throw new NotAllowedFileFormatException();
+                }
+            }
+            if (!imageNavbar.isEmpty()) {
+                String filename = uploadsPhotosService.createFilenameWithUUID(imageNavbar.getOriginalFilename());
+                uploadsPhotosService.saveFile(imageNavbar, filename, projectInfo);
+            }
+            return "redirect:/admin/?ImageDownload";
+        }   catch (NotAllowedFileFormatException ex)    {
+            return "redirect:/admin/upload_logo?NotAllowedFileFormatException";
+        }
     }
 }

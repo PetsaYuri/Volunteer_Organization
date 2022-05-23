@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                    .authorizeRequests()
                    .antMatchers("/user/**").hasAnyRole("user", "admin")
                     .antMatchers("/admin/**").hasRole("admin")
-                   .antMatchers("/editor/**").hasRole("editor")
+                   .antMatchers("/editor/**").hasAnyRole("editor", "admin")
                    .antMatchers("/**", "/login*").permitAll()
                    .antMatchers("/css/**", "/icon/**").permitAll()
                    .anyRequest().authenticated()
@@ -67,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                        httpServletResponse.sendRedirect(context + "/user/");
                        break;
                    case "editor":
-                       httpServletResponse.sendRedirect(context + "/blog");
+                       httpServletResponse.sendRedirect(context + "/editor/");
                        break;
                    default:
                        httpServletResponse.sendRedirect(context + "/");

@@ -1,6 +1,7 @@
 package com.volunteer.Volunteer.Organization.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -42,6 +43,15 @@ public class Users {
     @ManyToOne
     @JoinColumn(name = "id_roles")
     private Roles roles;
+
+    @OneToMany(mappedBy = "user")
+    private List<Posts> post;
+
+    @OneToMany(mappedBy = "user")
+    private List<Comments> comments;
+
+    @OneToMany(mappedBy = "user")
+    private List<SuggestedPosts> suggestedPosts;
 
     public Long getId() {
         return id;
@@ -101,5 +111,29 @@ public class Users {
 
     public String getRole() {
         return roles.getRole();
+    }
+
+    public List<Posts> getPost() {
+        return post;
+    }
+
+    public void setPost(List<Posts> post) {
+        this.post = post;
+    }
+
+    public List<Comments> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comments> comments) {
+        this.comments = comments;
+    }
+
+    public List<SuggestedPosts> getSuggestedPosts() {
+        return suggestedPosts;
+    }
+
+    public void setSuggestedPosts(List<SuggestedPosts> suggestedPosts) {
+        this.suggestedPosts = suggestedPosts;
     }
 }

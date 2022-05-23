@@ -5,10 +5,7 @@ import com.volunteer.Volunteer.Organization.exceptions.NotAllowedFileFormatExcep
 import com.volunteer.Volunteer.Organization.models.Users;
 import com.volunteer.Volunteer.Organization.models.Volunteers;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
-import com.volunteer.Volunteer.Organization.service.MailSenderService;
-import com.volunteer.Volunteer.Organization.service.UploadsPhotosService;
-import com.volunteer.Volunteer.Organization.service.UserService;
-import com.volunteer.Volunteer.Organization.service.VolunteerService;
+import com.volunteer.Volunteer.Organization.service.*;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,9 +37,14 @@ public class VolunteerController {
     @Autowired
     private MailSenderService mailSenderService;
 
+    @Autowired
+    private MainService mainService;
+
     @GetMapping("/anketa")
     public String anketa(Model model, HttpServletRequest request)    {
         model.addAttribute("active", "anketa");
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
 
         Users user = usersRepository.findByEmail(request.getRemoteUser());
         if (user != null) {
@@ -56,15 +58,15 @@ public class VolunteerController {
                            @RequestParam String city, @RequestParam String description,
                            @RequestParam("file") MultipartFile file, Model model)
             throws NotAllowedFileFormatException, IOException {
-            model.addAttribute("email", email);
+        model.addAttribute("email", email);
         try {
             String filename = file.getOriginalFilename();
             if(!volunteerService.isAlreadyExistsEmail(email))   {
                 if(uploadsPhotos.isAllowedFileFormat(filename))   {
                     System.out.println(file.getSize());
                     String filenameWithUUID = uploadsPhotos.createFilenameWithUUID(filename);
-                    Volunteers volunteer = volunteerService.addVolunteer(name, email, phone, city, description, filenameWithUUID);
-                    uploadsPhotos.saveFileToServer(file);
+                    Volunteers volunteer = volunteerService.addVolunteer(name, email, phone, city, description);
+                    uploadsPhotos.saveFile(file, filenameWithUUID, volunteer);
 
                     String message = userService.sendActivationMessageToEmail(volunteer);
                   //  mailSenderService.send(email, "Активація коду", message);
@@ -92,7 +94,8 @@ public class VolunteerController {
         else {
             model.addAttribute("message", "Активація не здійснилась");
         }
-
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
         return "anketa-sucessful_send";
     }
 }

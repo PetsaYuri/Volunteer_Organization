@@ -7,35 +7,49 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/main.css">
-        <link rel="shortcun icon" href="/icon/logo.ico">
+        <link rel="shortcun icon" th:href="${pathProjectInfo} + ${projectInfo.logo}">
         <title>Добавлення нового допису</title>
         <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
     </head>
 
     <body>
-        <header class="navbar-inverse" th:insert="blocks\header :: _header"></header>
+        <header class="navbar-inverse" th:insert="blocks\editor_header :: header"></header>
+
+        <div th:if="${param.AddedPost}" class="alert alert-success text-center">
+            <h5>Допис додано!</h5>
+        </div>
+
+        <div th:if="${param.UserNotFound}" class="alert alert-danger text-center">
+            <h5>Користувача не знайдено</h5>
+        </div>
+
         <main>
             <div class="container">
-                <div th:if="${param.AddedPost}" class="alert alert-success text-center">
-                    <h5>Допис додано!</h5>
-                </div>
                 <div class="mr-300">
                     <div class="col-md-8 offset-md-4">
                         <div class="form-container mb-5">
                             <h1 class="title text-center">Добавлення нового допису</h1>
-                            <form action="/add_post" method="post" class="form-horizontal"
+                            <form action="/editor/add_post" method="post" class="form-horizontal"
                                 enctype="multipart/form-data">
                                 <div class="form-group">
                                     <h4>Назва допису:
                                         <input type="text" name="title" placeholder="Введіть назву допису"
-                                            class="form-control mb-2" maxlength=" 50" required>
+                                            class="form-control mb-2" maxlength="254" required>
                                     </h4>
                                     <h4>Текст допису:
-                                        <input type="text" name="description" class="form-control mb-2"
-                                            placeholder="Введіть основну частину допису" maxlength="500" required>
+                                        <textarea rows="5" type="text" name="description" class="form-control mb-2"
+                                            placeholder="Введіть основну частину допису" maxlength="10000"
+                                            required></textarea>
+                                    </h4>
+                                    <h4>Виберіть категорію:
+                                        <select name="idCategory" class="form-select" required>
+                                            <th:block th:each="category : ${categories}">
+                                                <option th:value="${category.id}">[[${category.category}]]</option>
+                                            </th:block>
+                                        </select>
                                     </h4>
                                     <h4>Прикріпіть світлину, яка освітлює даний допис.
-                                        <input type="file" name="image">
+                                        <input type="file" name="image" required>
                                     </h4>
                                 </div>
                                 <center>
@@ -49,5 +63,6 @@
         </main>
         <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
     </body>
+    <script src="/js/boot.js"></script>
 
 </html>
