@@ -1,43 +1,45 @@
 <div th:fragment="_header">
     <div class="container mb-for-header">
-        <div class="d-flex flex-wrap py-3 mb-4 border-bottom fixed-top navbar-inverse">
-            <a href="/"
-                class="d-flex align-items-start mb-3 mb-md-0 me-md-auto text-dark text-decoration-none mx-2"><img
-                    th:src="${pathProjectInfo} + ${projectInfo.image}" alt="Зображення сайту">
-                <h4 class="nav-item">[[${projectInfo.name}]]</h4>
+        <div class="d-flex flex-wrap py-3 mb-4 border-bottom fixed-top navbar-expand-lg navbar-light bg-light">
+            <a href="/" class="d-flex align-items-start mb-3 mb-md-0 me-md-auto text-dark text-decoration-none mx-2">
+                <img th:src="${pathProjectInfo} + ${projectInfo.image}" alt="Зображення сайту">
+                <h4 class="nav-item navbar-brand">[[${projectInfo.name}]]</h4>
             </a>
 
-            <div class="menu-btn justify-content-end">
-                <i class="fa fa-bars fa-3x" aria-hidden="true">Menu</i>
+            <div class="navbar-toggler">
+                <button class="d-flex align-items-end" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
             </div>
 
-            <div class="menu">
-                <ul class="nav nav-pills">
-                    <li class="nav-item"><a href="#" class="nav-link" aria-current="page">
-                            <h4>Про нас</h4>
-                        </a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">
-                            <h4>Проекти</h4>
-                        </a></li>
-                    <li class="nav-item"><a href="/blog" class="nav-link">
-                            <h4>Блог</h4>
-                        </a></li>
-                    <li class="nav-item"><a href="/anketa" class="nav-link">
-                            <h4>Стати волонтером</h4>
-                        </a></li>
-
-                    <th:block th:if="${role} == null">
-                        <li class="nav-item"><a href="/login" class="nav-link">
-                                <h4>Вхід</h4>
+            <div class="d-flex justify-content-end">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item"><a href="#" class="nav-link" aria-current="page">
+                                <h4>Про нас</h4>
                             </a></li>
-                    </th:block>
-
-                    <th:block th:unless="${role} == null">
-                        <li class="nav-item"><a href="/logout" class="nav-link">
-                                <h4>Вихід</h4>
+                        <li class="nav-item"><a href="/blog" class="nav-link">
+                                <h4>Блог</h4>
                             </a></li>
-                    </th:block>
-                </ul>
+                        <li class="nav-item"><a href="/anketa" class="nav-link">
+                                <h4>Стати волонтером</h4>
+                            </a></li>
+
+                        <th:block th:if="${role} == null">
+                            <li class="nav-item"><a href="/login" class="nav-link">
+                                    <h4>Вхід</h4>
+                                </a></li>
+                        </th:block>
+
+                        <th:block th:unless="${role} == null">
+                            <li class="nav-item"><a href="/logout" class="nav-link">
+                                    <h4>Вихід</h4>
+                                </a></li>
+                        </th:block>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

@@ -9,34 +9,45 @@
                 <div class="col-6 col-md">
                     <h5 class="text-white">Навігація</h5>
                     <ul class="list-unstyled text-small">
-                        <li><a class="link-secondary" href="#">Головна</a></li>
-                        <li><a class="link-secondary" href="#">Наша команда</a></li>
-                        <li><a class="link-secondary" href="#">Проекти</a></li>
-                        <li><a class="link-secondary" href="#">Блог</a></li>
-                        <li><a class="link-secondary" href="#">Стати волонтером</a></li>
-                        <li><a class="link-secondary" href="#">Знайти волонтерів</a></li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md">
-                    <h5 class="text-white">Проекти</h5>
-                    <ul class="list-unstyled text-small">
-                        <li><a class="link-secondary" href="#">Проект 1</a></li>
-                        <li><a class="link-secondary" href="#">Проект 2</a></li>
-                        <li><a class="link-secondary" href="#">Проект 3</a></li>
-                        <li><a class="link-secondary" href="#">Проект 4</a></li>
+                        <li><a class="link-secondary" href="/">Головна</a></li>
+                        <li><a class="link-secondary" href="/blog">Блог</a></li>
+                        <li><a class="link-secondary" href="/anketa">Стати волонтером</a></li>
+                        <li><a class="link-secondary" href="/login">Вхід</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md">
                     <h5 class="text-white">Контакти</h5>
-                    <ul class="list-unstyled text-small">
-                        <li><a class="link-secondary" href="#">Телеграм <i class="fa fa-telegram"
-                                    aria-hidden="true"></i></a></li>
-                        <li><a class="link-secondary" href="#">Емейл <i class="fa fa-envelope" aria-hidden="true"></i>
-                            </a></li>
-                        <li><a class="link-secondary" href="#">Телефон <i class="fa fa-phone"
-                                    aria-hidden="true"></i></a>
-                        </li>
-                    </ul>
+                    <th:block th:unless="${role} == admin">
+                        <ul class="list-unstyled text-small">
+                            <li><a class="link-secondary" th:href="${projectInfo.telegram}" target="_blank">Telegram
+                                    <i class="fa fa-telegram" aria-hidden="true"></i></a></li>
+                            <li><a class="link-secondary space-nowrap" href="">Email<i class="fa fa-envelope"
+                                        aria-hidden="true"></i> [[${projectInfo.email}]]</a></li>
+                            <li><a class="link-secondary space-nowrap" href="">Phone<i class="fa fa-phone"
+                                        aria-hidden="true"></i> [[${projectInfo.phone}]]</a>
+                            </li>
+                        </ul>
+                    </th:block>
+
+                    <th:block th:if="${role} == admin">
+                        <form action="edit_contacts" method="post" enctype="multipart/form-data">
+                            <ul class="list-unstyled text-small">
+                                <li>Telegram: <input type="text" name="telegram" th:value="${projectInfo.telegram}"
+                                        class="form-control" minlength="1" maxlength="254" required
+                                        placeholder="посилання Telegram"></li>
+                                <li>Електронна адреса: <input type="email" name="email" th:value="${projectInfo.email}"
+                                        class="form-control" minlength="1" maxlength="254" required
+                                        placeholder="електронна адреса"></li>
+                                <li>Номер телефону: <input type="number" name="phone" th:value="${projectInfo.phone}"
+                                        class="form-control" minlength="1" maxlength="254" required
+                                        placeholder="Номер телефону"></li>
+                                </li>
+                                <li>
+                                    <button type="submit" class="btn btn-success">Зберегти</button>
+                                </li>
+                            </ul>
+                        </form>
+                    </th:block>
                 </div>
             </div>
         </div>

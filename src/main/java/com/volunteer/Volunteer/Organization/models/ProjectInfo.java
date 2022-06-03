@@ -11,7 +11,7 @@ public class ProjectInfo {
     private Long id;
 
     @Column(nullable = false)
-    private String name, image, logo;
+    private String name, image, logo, telegram, email, phone;
 
     public Long getId() {
         return id;
@@ -43,5 +43,29 @@ public class ProjectInfo {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public String getTelegram() {
+        return telegram;
+    }
+
+    public void setTelegram(String telegram) {
+        this.telegram = telegram;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

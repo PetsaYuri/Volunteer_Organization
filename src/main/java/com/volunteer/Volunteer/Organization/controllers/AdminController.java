@@ -3,11 +3,11 @@ package com.volunteer.Volunteer.Organization.controllers;
 import com.volunteer.Volunteer.Organization.exceptions.*;
 import com.volunteer.Volunteer.Organization.models.ProjectInfo;
 import com.volunteer.Volunteer.Organization.models.Users;
-import com.volunteer.Volunteer.Organization.models.Volunteers;
+import com.volunteer.Volunteer.Organization.models.Candidates;
 import com.volunteer.Volunteer.Organization.repository.ProjectInfoRepository;
 import com.volunteer.Volunteer.Organization.repository.RolesRepository;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
-import com.volunteer.Volunteer.Organization.repository.VolunteersRepository;
+import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
 import com.volunteer.Volunteer.Organization.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_PROJECT_INFO_UPLOADS;
 import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_VOLUNTEERS_UPLOADS;
 
 @Controller
@@ -43,10 +42,10 @@ public class AdminController {
     private ExportCSVService csvService;
 
     @Autowired
-    private VolunteersRepository volunteersRepository;
+    private CandidatesRepository candidatesRepository;
 
     @Autowired
-    private VolunteerService volunteerService;
+    private CandidateService candidateService;
 
     @Autowired
     private UsersRepository usersRepository;
@@ -62,6 +61,9 @@ public class AdminController {
 
     @Autowired
     private UploadsPhotosService uploadsPhotosService;
+
+    @Autowired
+    private MailSenderService mailSenderService;
 
     @GetMapping("/")
     public String admin(Model model, HttpServletRequest request) {
@@ -82,24 +84,24 @@ public class AdminController {
         return "redirect:/admin/";
     }
 
-    @GetMapping("/view_volunteers")
+    @GetMapping("/view_candidates")
     public String viewVolunteers(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 5) Pageable pageable,
                                   @RequestParam(defaultValue = "waiting") String filter, @RequestParam(defaultValue = "name") String field,
                                  @RequestParam(required = false) String query, Model model)    {
         try {
-            Page<Volunteers> volunteers;
+            Page<Candidates> candidates;
             if (query == null) {
-                volunteers = volunteersRepository.findByStatus(filter, pageable);
+                candidates = candidatesRepository.findByStatus(filter, pageable);
             } else {
-                volunteers = volunteerService.searchByField(field, query, pageable);
-                if (!volunteers.hasContent()) {
+                candidates = candidateService.searchByField(field, query, filter, pageable);
+                if (!candidates.hasContent()) {
                     throw new NotFoundByQueryException();
                 }
             }
-            model.addAttribute("volunteers", volunteers);
+            model.addAttribute("candidates", candidates);
 
             //pagination
-            model.addAttribute("pages", mainService.getPages(volunteers.getTotalPages()));
+            model.addAttribute("pages", mainService.getPages(candidates.getTotalPages()));
             model.addAttribute("URI_page", "/admin/view_volunteers?page=");
             model.addAttribute("URI_size", "&&size=" + pageable.getPageSize());
             model.addAttribute("URI_filter", "&&filter=" + filter);
@@ -115,54 +117,46 @@ public class AdminController {
             model.addAttribute("filePath", PATH_TO_VOLUNTEERS_UPLOADS);
             model.addAttribute("projectInfo", mainService.getProjectInfo());
             model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
-            return PATH_TO_ADMIN_FOLDER + "view_volunteers";
+            return PATH_TO_ADMIN_FOLDER + "view_candidates";
         }   catch (IncorrectQueryException ex)  {
-            return "redirect:/admin/view_volunteers?IncorrectQuery";
+            return "redirect:/admin/view_candidates?IncorrectQuery";
         }   catch (NotFoundByQueryException ex)  {
-            return "redirect:/admin/view_volunteers?NotFoundByQuery";
+            return "redirect:/admin/view_candidates?NotFoundByQuery";
         }
     }
 
-    @PostMapping("/view_volunteers_filter")
+    @PostMapping("/view_candidates_filter")
     public String viewPostFilter(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 5) Pageable pageable,
                                  @RequestParam String filter, Model model)  {
-        return "redirect:/admin/view_volunteers?page=" + pageable.getPageNumber() + "&&size=" + pageable.getPageSize() + "&&filter=" + filter;
+        return "redirect:/admin/view_candidates?page=" + pageable.getPageNumber() + "&&size=" + pageable.getPageSize() + "&&filter=" + filter;
     }
 
     @PostMapping("/accept_user")
     public String acceptUser(@RequestParam long id)  {
         try {
-            Volunteers volunteer = volunteersRepository.findById(id);
-            if (volunteer != null) {
-                volunteer.setStatus("accept");
-                volunteersRepository.save(volunteer);
-
-                String password = UUID.randomUUID().toString();
-                userService.addUser(password, "user", volunteer);
-            } else {
-                throw new VolunteerNotFoundException();
-            }
-        }   catch (VolunteerNotFoundException ex)   {
-            return "redirect:/admin/view_volunteers?VolunteerNotFound";
+            Users user = userService.acceptUser(id);
+            String message = userService.sendAcceptanceMessage(id);
+            mailSenderService.send(user.getEmail(), "Відповідь на заявку", message);
+        }   catch (CandidateNotFoundException ex)   {
+            return "redirect:/admin/view_candidates?CandidateNotFound";
         }
-        return "redirect:/admin/view_volunteers";
+        return "redirect:/admin/view_candidates";
     }
 
     @PostMapping("/deny_user")
     public String denyUser(@RequestParam long id)   {
-        //write and send message about deny by volunteers
-        Volunteers volunteer = volunteersRepository.findById(id);
-        volunteer.setStatus("deny");
-        volunteersRepository.save(volunteer);
-        return "redirect:/admin/view_volunteers";
+        Candidates candidate = userService.denyUser(id);
+        String message = userService.sendDenialMessage(id);
+        mailSenderService.send(candidate.getEmail(), "Відповідь на заявку", message);
+        return "redirect:/admin/view_candidates";
     }
 
-    @PostMapping("/previous_page_volunteers")
+    @PostMapping("/previous_page_candidates")
     public String previousPageVolunteers(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 5) Pageable pageable,
                                @RequestParam String filter, @RequestParam(defaultValue = "name") String field,
                                @RequestParam(required = false) String query)  {
         try {
-            String URI = "redirect:/admin/view_volunteers";
+            String URI = "redirect:/admin/view_candidates";
             String paramPageable = mainService.previousPage(pageable);
             URI += paramPageable + "&&filter=" + filter;
             if (query != null)  {
@@ -170,16 +164,16 @@ public class AdminController {
             }
             return URI;
         }   catch (ItLastPageException ex)  {
-            return "redirect:/admin/view_volunteers?ItLastPage";
+            return "redirect:/admin/view_candidates?ItLastPage";
         }
     }
 
-    @PostMapping("/next_page_volunteers")
+    @PostMapping("/next_page_candidates")
     public String nextPageVolunteers(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 5) Pageable pageable,
                            @RequestParam String filter, @RequestParam(defaultValue = "name") String field,
                            @RequestParam(required = false) String query, @RequestParam int totalPage)  {
         try {
-            String URI = "redirect:/admin/view_volunteers";
+            String URI = "redirect:/admin/view_candidates";
             String paramPageable = mainService.nextPage(pageable, totalPage);
             URI += paramPageable + "&&filter=" + filter;
             if (query != null)  {
@@ -187,15 +181,15 @@ public class AdminController {
             }
             return URI;
         }   catch (NotExistsNextPageException ex)  {
-            return "redirect:/admin/view_volunteers?NotExistsNextPage";
+            return "redirect:/admin/view_candidates?NotExistsNextPage";
         }
     }
 
-    @PostMapping("pageSize_volunteers")
+    @PostMapping("pageSize_candidates")
     public String pageSizeVolunteers(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 5) Pageable pageable,
                            @RequestParam String currentFilter, @RequestParam(defaultValue = "name") String field,
                            @RequestParam(required = false) String query)    {
-        String URI = "redirect:/admin/view_volunteers?page=" + pageable.getPageNumber() + "" +
+        String URI = "redirect:/admin/view_candidates?page=" + pageable.getPageNumber() + "" +
                 "&&size=" + pageable.getPageSize() + "&&filter=" + currentFilter;
         if (query != null)  {
             URI += "&&field=" + field + "&&query=" + query;
@@ -203,10 +197,10 @@ public class AdminController {
         return URI;
     }
 
-    @PostMapping("/search_volunteers")
+    @PostMapping("/search_candidates")
     public String searchVolunteers(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 5) Pageable pageable,
                          @RequestParam String filter, @RequestParam String query, @RequestParam String field)  {
-        return "redirect:/admin/view_volunteers?page=" + pageable.getPageNumber() + "&&size=" + pageable.getPageSize() +
+        return "redirect:/admin/view_candidates?page=" + pageable.getPageNumber() + "&&size=" + pageable.getPageSize() +
                 "&&filter=" + filter + "&&field=" + field + "&&query=" + query;
     }
 
@@ -334,11 +328,11 @@ public class AdminController {
                 throw new RepeatedPasswordIsInvalidException();
             }
 
-            Volunteers volunteer = volunteersRepository.findByEmail(email);
-            if (volunteer == null)  {
+            Candidates candidate = candidatesRepository.findByEmail(email);
+            if (candidate == null)  {
                 userService.addUser(password, selectedRole, email, name);
             }   else {
-                userService.addUser(password, selectedRole, volunteer);
+                userService.addUser(password, selectedRole, candidate);
             }
         }   catch (UserAlreadyExistsException ex)   {
             return "redirect:add_user?UserAlreadyExistsException";
@@ -384,5 +378,12 @@ public class AdminController {
         }   catch (NotAllowedFileFormatException ex)    {
             return "redirect:/admin/upload_logo?NotAllowedFileFormatException";
         }
+    }
+
+    @PostMapping("edit_contacts")
+    public String saveContacts(@RequestParam String telegram, @RequestParam String email,
+                               @RequestParam String phone)    {
+        mainService.editContacts(telegram, email, phone);
+        return "redirect:/admin/";
     }
 }

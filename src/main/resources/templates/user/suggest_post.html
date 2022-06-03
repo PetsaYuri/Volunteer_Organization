@@ -13,7 +13,7 @@
     </head>
 
     <body>
-        <header class="navbar-inverse" th:insert="blocks\header :: _header"></header>
+        <header class="navbar-inverse" th:insert="blocks\user_header :: header"></header>
 
         <div th:if="${param.AddedPost}" class="alert alert-success text-center">
             <h5>Допис додано!</h5>

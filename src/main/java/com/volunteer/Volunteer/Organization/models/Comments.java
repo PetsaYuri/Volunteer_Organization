@@ -1,6 +1,5 @@
 package com.volunteer.Volunteer.Organization.models;
 
-import com.volunteer.Volunteer.Organization.service.EditorService;
 import com.volunteer.Volunteer.Organization.service.MainService;
 
 import javax.persistence.*;
@@ -10,13 +9,6 @@ import javax.persistence.*;
 public class Comments {
 
     public Comments() {
-    }
-
-    public Comments(String comment, Posts post, Volunteers volunteer) {
-        this.comment = comment;
-        this.date = MainService.getCurrentDate();
-        this.post = post;
-        this.volunteer = volunteer;
     }
 
     public Comments(String comment, Posts post, Users user) {
@@ -36,10 +28,6 @@ public class Comments {
     @ManyToOne
     @JoinColumn(name = "id_post")
     private Posts post;
-
-    @ManyToOne
-    @JoinColumn(name = "id_volunteer")
-    private Volunteers volunteer;
 
     @ManyToOne
     @JoinColumn(name = "id_user")
@@ -75,14 +63,6 @@ public class Comments {
 
     public void setPost(Posts post) {
         this.post = post;
-    }
-
-    public Volunteers getVolunteer() {
-        return volunteer;
-    }
-
-    public void setVolunteer(Volunteers volunteer) {
-        this.volunteer = volunteer;
     }
 
     public Users getUser() {

@@ -7,6 +7,13 @@ import java.util.List;
 @Table(name = "categories_of_posts")
 public class Categories {
 
+    public Categories() {}
+
+    public Categories(String title, String description) {
+        this.category = title;
+        this.description = description;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

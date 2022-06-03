@@ -172,11 +172,11 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .width-1000 {
-    width: 80%;
+    max-width: 1000px;
 }
 
 .width-1020 {
-    width: 80%;
+    max-width: 1020px;
 }
 
 .width-500 {
@@ -198,31 +198,12 @@ img {
     max-width: 100%;
 }
 
-.menu-btn {
-    width: 30px;
-    height: 30px;
-    z-index: 2;
-    overflow: hidden;
-    margin-right: 10px;
-}
-
-.menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding: 15px;
-    transform: translateX(100%);
-    transition: transform 0.5s;
-}
-
-.menu.active {
-    transform: translateX(50%);
-}
-
-.nav-item {
+.space-nowrap {
     white-space: nowrap;
+}
+
+.space-normal {
+    white-space: normal;
 }
 
 .style-for-description {

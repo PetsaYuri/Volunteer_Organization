@@ -31,37 +31,34 @@
             Нічого не знайдено по вашому запиту!
         </div>
 
-        <div class="mb-2">
-            <a href="csv_users" class="btn btn-danger">Експортувати у файл</a>
-        </div>
-
         <main>
             <div class="container mb-4">
                 <div class="">
 
+                    <div class="mb-2 btn-group">
+                        <a href="csv_users" class="btn btn-danger">Експортувати у файл</a>
+                        <a href="/admin/add_user" class="btn btn-info">Додати користувача</a>
+                    </div>
+
                     <!--search-->
                     <div class="mb-2 d-flex justify-content-center">
-                        <div class="input-group">
-                            <form action="search_users" method="post">
-                                <div class="btn-group">
-                                    <input type="search" name="query" class="form-control width-1000" />
-                                    <input type="hidden" name="page" th:value="${users.getNumber()}">
-                                    <input type="hidden" name="size" th:value="${users.getSize()}">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
-                                <select name="field" class="form-control mb-2 width-1020">
-                                    <option selected value="email">Електронна адреса</option>
-                                    <option value="name">ПІБ</option>
-                                    <option value="active">Активні</option>
-                                    <option value="blocked">Заблоковані</option>
-                                    <option value="admin">Адміністратори</option>
-                                    <option value="user">користувачі</option>
-                                    <option value="editor">Редактори</option>
-                                </select>
-                            </form>
-                        </div>
+                        <form action="search_users" method="post" class="form-control">
+                            <input type="search" name="query" class="form-control" />
+                            <input type="hidden" name="page" th:value="${users.getNumber()}">
+                            <input type="hidden" name="size" th:value="${users.getSize()}">
+                            <select name="field" class="form-control">
+                                <option selected value="email">Електронна адреса</option>
+                                <option value="name">ПІБ</option>
+                                <option value="active">Активні</option>
+                                <option value="blocked">Заблоковані</option>
+                                <option value="admin">Адміністратори</option>
+                                <option value="user">користувачі</option>
+                                <option value="editor">Редактори</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary form-control">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </form>
                     </div>
 
                     <div class="col-lg-9 mt-4 mt-lg-0">
@@ -71,11 +68,11 @@
                                     <div class="">
                                     </div>
                                     <div th:each="user : ${users}">
-                                        <table class="table manage-volunteer-top mb-0">
+                                        <table class="table manage-candidate-top mb-0">
                                             <thead>
                                                 <tr>
                                                     <th>Ім'я користувача</th>
-                                                    <th:block th:if="${user.volunteer != null}">
+                                                    <th:block th:if="${user.candidate != null}">
                                                         <th>Місце проживання</th>
                                                         <th>Номер телефону</th>
                                                         <th>Опис</th>
@@ -88,7 +85,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="volunteer-list">
+                                                <tr class="candidate-list">
                                                     <td class="title">
                                                         <div class="thumb">
                                                             <img class="img-fluid"
@@ -112,27 +109,27 @@
                                                         </div>
                                                     </td>
 
-                                                    <th:block th:each="volunteer : ${user.volunteer}">
-                                                        <th:block th:if="${user.volunteer != null}">
+                                                    <th:block th:each="candidate : ${user.candidate}">
+                                                        <th:block th:if="${user.candidate != null}">
                                                             <td class="candidate-list-favourite-time">
                                                                 <span class="candidate-list-time"
-                                                                    th:text="${volunteer.city}"></span>
+                                                                    th:text="${candidate.city}"></span>
                                                             </td>
                                                             <td class="candidate-list-favourite-time">
                                                                 <span class="candidate-list-time"
-                                                                    th:text="${volunteer.phone}"></span>
+                                                                    th:text="${candidate.phone}"></span>
                                                             </td>
                                                             <td class="candidate-list-favourite-time">
                                                                 <span class="candidate-list-time"
-                                                                    th:text="${volunteer.description}"></span>
+                                                                    th:text="${candidate.description}"></span>
                                                             </td>
-                                                            <th:block th:if="${volunteer.activation} != confirmed">
+                                                            <th:block th:if="${candidate.activation} != confirmed">
                                                                 <td class="candidate-list-favourite-time">
                                                                     <span class="candidate-list-time">Не
                                                                         Підтверджено</span>
                                                                 </td>
                                                             </th:block>
-                                                            <th:block th:unless="${volunteer.activation} != confirmed">
+                                                            <th:block th:unless="${candidate.activation} != confirmed">
                                                                 <td class="candidate-list-favourite-time">
                                                                     <span
                                                                         class="candidate-list-time">Підтверджено</span>

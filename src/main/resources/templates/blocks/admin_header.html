@@ -8,16 +8,16 @@
 
             <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none mx-2">
                 <form action="edit_project_name" method="post">
-                    <input type="text" name="projectName" th:value="${projectInfo.name}" class="width-500">
+                    <input type="text" name="projectName" th:value="${projectInfo.name}" class="width-500" minlength="3"
+                        maxlength="30">
                     <button type="submit" class="btn btn-success">Зберегти</button>
                 </form>
             </div>
 
             <ul class="nav nav-pills">
                 <li class="nav-item"><a href="/admin/upload_logo" class="nav-link">Завантажити логотип</a></li>
-                <li class="nav-item"><a href="/admin/view_volunteers" class="nav-link">Переглянути волонтерів</a></li>
-                <li class="nav-item"><a href="/admin/view_users" class="nav-link">Переглянути користувачів</a></li>
-                <li class="nav-item"><a href="/admin/add_user" class="nav-link">Додати користувача</a></li>
+                <li class="nav-item"><a href="/admin/view_candidates" class="nav-link">Керувати кандидатами</a></li>
+                <li class="nav-item"><a href="/admin/view_users" class="nav-link">Керувати користувачами</a></li>
                 <form th:action="@{/logout}" method="post" class="nav-item">
                     <input type="submit" value="Sign Out" class="nav-link" />
                 </form>

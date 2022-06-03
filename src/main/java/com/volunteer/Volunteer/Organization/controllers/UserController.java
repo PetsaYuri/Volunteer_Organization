@@ -1,12 +1,17 @@
 package com.volunteer.Volunteer.Organization.controllers;
 
+import com.volunteer.Volunteer.Organization.exceptions.*;
+import com.volunteer.Volunteer.Organization.models.Roles;
 import com.volunteer.Volunteer.Organization.models.SuggestedPosts;
-import com.volunteer.Volunteer.Organization.models.Volunteers;
+import com.volunteer.Volunteer.Organization.models.Candidates;
 import com.volunteer.Volunteer.Organization.repository.CategoriesRepository;
-import com.volunteer.Volunteer.Organization.repository.VolunteersRepository;
+import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
 import com.volunteer.Volunteer.Organization.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +36,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private VolunteersRepository volunteersRepository;
+    private CandidatesRepository candidatesRepository;
 
     @Autowired
     private ExportCSVService csvService;
@@ -48,6 +53,9 @@ public class UserController {
     @Autowired
     private CategoriesRepository categoriesRepository;
 
+    @Autowired
+    private CandidateService candidateService;
+
     @GetMapping("/")
     public String userPage(Model model, HttpServletRequest request)    {
         model.addAttribute("projectInfo", mainService.getProjectInfo());
@@ -55,21 +63,57 @@ public class UserController {
         return PATH_TO_USER_FOLDER + "user_page";
     }
 
-    @GetMapping("/view_volunteers")
-    public String viewCandidates(Model model)  {
-        model.addAttribute("filePath", PATH_TO_VOLUNTEERS_UPLOADS);
-        model.addAttribute("candidates", volunteersRepository.findAll());
-        model.addAttribute("projectInfo", mainService.getProjectInfo());
-        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
-        return PATH_TO_USER_FOLDER + "view_volunteers";
+    @GetMapping("/view_candidates")
+    public String viewVolunteers(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 5) Pageable pageable,
+                                 @RequestParam(defaultValue = "waiting") String filter, @RequestParam(defaultValue = "name") String field,
+                                 @RequestParam(required = false) String query, Model model)    {
+        try {
+            System.out.println("query = " + query);
+            Page<Candidates> candidates;
+            if (query == null) {
+                candidates = candidatesRepository.findByStatus(filter, pageable);
+            } else {
+                candidates = candidateService.searchByField(field, query, filter, pageable);
+                if (!candidates.hasContent()) {
+                    throw new NotFoundByQueryException();
+                }
+            }
+            model.addAttribute("candidates", candidates);
+
+            //pagination
+            model.addAttribute("pageable", pageable);
+            model.addAttribute("pages", mainService.getPages(candidates.getTotalPages()));
+            model.addAttribute("URI_page", "/user/view_candidates?page=");
+            model.addAttribute("URI_size", "&&size=" + pageable.getPageSize());
+            model.addAttribute("URI_filter", "&&filter=" + filter);
+            model.addAttribute("URI_field", "&&field=" + field);
+            if (query != null) {
+                model.addAttribute("URI_query", "&&query=" + query);
+            }
+
+            //values necessary for work
+            model.addAttribute("currentFilter", filter);
+            model.addAttribute("query", query);
+            model.addAttribute("field", field);
+            model.addAttribute("filePath", PATH_TO_VOLUNTEERS_UPLOADS);
+            model.addAttribute("projectInfo", mainService.getProjectInfo());
+            model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
+            return PATH_TO_USER_FOLDER + "view_candidates";
+        }   catch (IncorrectQueryException ex)  {
+            return "redirect:/user/view_candidates?IncorrectQuery";
+        }   catch (NotFoundByQueryException ex)  {
+            return "redirect:/user/view_candidates?NotFoundByQuery";
+        }
     }
 
-    @PostMapping("/view_volunteers_filter")
+    @PostMapping("/view_candidates_filter")
     public String viewPostFilter(@RequestParam String filter, Model model)  {
         model.addAttribute("filePath", PATH_TO_VOLUNTEERS_UPLOADS);
         model.addAttribute("currentFilter", filter);
-        model.addAttribute("volunteers", volunteersRepository.findByStatusOrderById(filter));
-        return PATH_TO_USER_FOLDER + "view_volunteers";
+        model.addAttribute("candidates", candidatesRepository.findByStatusOrderById(filter));
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
+        return PATH_TO_USER_FOLDER + "view_candidates";
     }
 
     @GetMapping("/suggest_post")
@@ -90,11 +134,37 @@ public class UserController {
         return "redirect:/user/?SuggestedPosts";
     }
 
-    @GetMapping("/csv_volunteers")
+    @GetMapping("/csv_candidates")
     public String csvReport(HttpServletResponse response) throws IOException {
         response = csvService.settingsOfResponse(response, "candidates");
-        Iterable<Volunteers> volunteers = volunteersRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        Iterable<Candidates> volunteers = candidatesRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         csvService.createAndSendCsvFileVolunteers(response, volunteers);
-        return "redirect:/view_volunteers";
+        return "redirect:/view_candidates";
+    }
+
+    @GetMapping("/change_password")
+    public String changePassword(Model model)  {
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
+        return PATH_TO_USER_FOLDER + "change_password";
+    }
+
+    @PostMapping("/change_password")
+    public String changePassword(@RequestParam String curPassword, @RequestParam String password,
+                                 @RequestParam String rePassword, HttpServletRequest request)   {
+        try {
+            if (password.equals(rePassword)) {
+                Roles roles = userService.changePassword(request, curPassword, password);
+                return "redirect:/" + roles.getRole() + "/";
+            }   else {
+                throw new RepeatedPasswordIsInvalidException();
+            }
+        }  catch (UserNotFoundException ex) {
+            return "redirect:/user/change_password?UserNotFound";
+        }   catch (RepeatedPasswordIsInvalidException ex)   {
+            return "redirect:/user/change_password?RepeatedPasswordIsInvalid";
+        }   catch (CurrentPassIsInvalid ex) {
+            return "redirect:/user/change_password?CurrentPassIsInvalid";
+        }
     }
 }

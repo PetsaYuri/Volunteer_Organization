@@ -35,12 +35,6 @@ public class MainService {
         return date;
     }
 
-    public String passwordEncoder(String password)    {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(password);
-        return encodedPassword;
-    }
-
     public List<Integer> getPages(int totalPages)   {
         List<Integer> pages = new ArrayList<>();
         for (int i = 0; i < totalPages; i++)    {
@@ -67,11 +61,18 @@ public class MainService {
         }
     }
 
-    public ProjectInfo editProjectName(String name)   {
+    public void editProjectName(String name)   {
         ProjectInfo projectInfo = projectInfoRepository.getById(Long.valueOf(1));
         projectInfo.setName(name);
         projectInfoRepository.save(projectInfo);
-        return projectInfo;
+    }
+
+    public void editContacts(String telegram, String email, String phone)  {
+        ProjectInfo projectInfo = projectInfoRepository.getById(Long.valueOf(1));
+        projectInfo.setTelegram(telegram);
+        projectInfo.setEmail(email);
+        projectInfo.setPhone(phone);
+        projectInfoRepository.save(projectInfo);
     }
 
     public ProjectInfo getProjectInfo() {

@@ -2,12 +2,10 @@ package com.volunteer.Volunteer.Organization.service;
 
 import com.volunteer.Volunteer.Organization.exceptions.PostNotFoundException;
 import com.volunteer.Volunteer.Organization.exceptions.UserNotFoundException;
-import com.volunteer.Volunteer.Organization.exceptions.VolunteerNotFoundException;
 import com.volunteer.Volunteer.Organization.models.*;
 import com.volunteer.Volunteer.Organization.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +26,7 @@ public class EditorService {
     private CommentsRepository commentsRepository;
 
     @Autowired
-    private VolunteersRepository volunteersRepository;
+    private CandidatesRepository candidatesRepository;
 
     @Autowired
     private UsersRepository usersRepository;
@@ -56,20 +54,14 @@ public class EditorService {
         return post;
     }
 
-    public void addComment(String comment, Long id_post, HttpServletRequest request) throws VolunteerNotFoundException {
+    public void addComment(String comment, Long id_post, HttpServletRequest request) throws UserNotFoundException {
         Optional<Posts> post = postsRepository.findById(id_post);
-        Volunteers volunteer = volunteersRepository.findByEmail(request.getRemoteUser());
-        if (volunteer != null) {
-            Comments newComment = new Comments(comment, post.get(), volunteer);
+        Users user = usersRepository.findByEmail(request.getRemoteUser());
+        if (user != null) {
+            Comments newComment = new Comments(comment, post.get(), user);
             commentsRepository.save(newComment);
-        }   else {
-            Users user = usersRepository.findByEmail(request.getRemoteUser());
-            if (user != null)   {
-                Comments newComment = new Comments(comment, post.get(), user);
-                commentsRepository.save(newComment);
-            }   else {
-                throw new VolunteerNotFoundException();
-            }
+        } else {
+            throw new UserNotFoundException();
         }
     }
 
@@ -130,5 +122,25 @@ public class EditorService {
         Posts post = new Posts(title, description, suggestedPost.getDate(), filename, suggestedPost.getUser(), suggestedPost.getCategory());
         postsRepository.save(post);
         return post;
+    }
+
+    public void addCategory(String title, String description)   {
+        Categories category = new Categories(title, description);
+        categoriesRepository.save(category);
+    }
+
+    public void editCategory(long id, String title, String description)   {
+        Categories category = categoriesRepository.getById(id);
+        category.setCategory(title);
+        category.setDescription(description);
+        categoriesRepository.save(category);
+    }
+
+    public void deleteCategory(long id) {
+        Categories category = categoriesRepository.getById(id);
+        if (category.getPosts() != null)    {
+            postsRepository.deleteAll(category.getPosts());
+        }
+        categoriesRepository.delete(category);
     }
 }

@@ -4,7 +4,7 @@
     <head class="blue">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" />
-        <title>Волонтерська організація</title>
+        <title>[[${projectInfo.name}]]</title>
         <link rel="stylesheet" href="/css/bootstrap.css">
         <link rel="stylesheet" href="/css/main.css">
         <link rel="shortcun icon" th:href="${pathProjectInfo} + ${projectInfo.logo}">
@@ -15,11 +15,7 @@
         <header th:insert="blocks\header :: _header"></header>
 
         <div class="alert alert-info text-center" th:if="${param.SendingMessageToEmail}">
-            <h5 class=""> Лист із підтвердженням відправлено на вашу електронну адресу:
-                [[${email}]]. Без
-                підтвердження
-                ваша заявка не буде розглянута.
-            </h5>
+            <h5> Лист відправлено на вашу електронну адресу: [[${email}]].</h5>
         </div>
 
         <main>

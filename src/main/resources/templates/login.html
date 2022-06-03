@@ -14,40 +14,54 @@
 
     <body class="">
         <header th:insert="blocks\header :: _header"></header>
+
+        <div class="alert alert-info text-center" th:if="${param.logout}">
+            Ви вийшли з системи.
+        </div>
+
+        <div class="alert alert-info text-center" th:if="${param.error}">
+            Невірний пароль або користувач.
+        </div>
+
         <main>
-            <div class="container-fluid mt-5">
-                <div class="alert alert-info text-center" th:if="${param.logout}">
-                    Ви вийшли з системи.
-                </div>
-                <div class="alert alert-info text-center" th:if="${param.error}">
-                    Невірний пароль або користувач.
-                </div>
-                <div class="col-md-4 offset-md-4">
-                    <div class="form-container mt-for-header mb-5">
-                        <div class="form-icon text-center"><i class="fa fa-user"></i></div>
-                        <h1 class="title text-center">Вхід</h1>
-                        <form class="form-horizontal" action="/login" method="post">
-                            <div class="form-group">
-                                <h3> Електронна адреса користувача:
-                                    <input class="form-control mb-2" type="email" name="username"
-                                        placeholder="Користувач" minlength="3" maxlength="20" required>
-                                </h3>
+            <div class="container mt-5">
+
+                <h1 class="title text-center mb-4">Вхід</h1>
+
+                <div class="d-flex justify-content-center">
+                    <form action="/login" method="post" class="form-horizontal">
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <input class="form-control" type="email" name="username" placeholder="email" minlength="3"
+                                maxlength="50" required>
+                            <label class="form-label" for="form2Example1">Електронна адреса</label>
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-4">
+                            <input class="form-control" type="password" name="password" placeholder="password"
+                                minlength="3" maxlength="30" required>
+                            <label class="form-label" for="form2Example2">Пароль</label>
+                        </div>
+
+                        <!-- 2 column grid layout for inline styling -->
+                        <div class="row mb-4">
+                            <div class="col">
+                                <!-- Simple link -->
+                                <a href="/verification">Забули пароль?</a>
                             </div>
-                            <div class="form-group">
-                                <h3>Пароль:
-                                    <input class="form-control" type="password" name="password" placeholder="Пароль"
-                                        minlength="3" maxlength="20" required>
-                                </h3>
-                            </div>
-                            <center> <button type="submit" class="btn btn-outline-success btn-block">Увійти</button>
-                            </center>
-                        </form>
-                    </div>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary form-control btn-block mb-4">Sign in</button>
+
+                    </form>
                 </div>
             </div>
         </main>
         <footer class="navbar-inverse mt-135" th:insert="blocks\footer :: footer"></footer>
     </body>
     <script src="/js/boot.js"></script>
+    <script src="/js/bootstrap.js"></script>
 
 </html>

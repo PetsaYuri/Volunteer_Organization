@@ -4,20 +4,16 @@
             <a href="/"
                 class="d-flex align-items-start mb-3 mb-md-0 me-md-auto text-dark text-decoration-none mx-2"><img
                     th:src="${pathProjectInfo} + ${projectInfo.image}" alt="Зображення сайту">
-                <h4 class="nav-item">[[${projectInfo.name}]]</h4>
+                <h4 class="nav-item navbar-brand">[[${projectInfo.name}]]</h4>
             </a>
-
-            <div class="menu-btn justify-content-end">
-                <i class="fa fa-bars fa-3x" aria-hidden="true">Menu</i>
-            </div>
 
             <div class="menu">
                 <ul class="nav nav-pills">
                     <li class="nav-item"><a href="/blog" class="nav-link">
                             <h4>Блог</h4>
                         </a></li>
-                    <li class="nav-item"><a href="/editor/add_post" class="nav-link">
-                            <h4>Додати допис</h4>
+                    <li class="nav-item"><a href="/editor/categories" class="nav-link">
+                            <h4>Категорії</h4>
                         </a></li>
                     <li class="nav-item"><a href="/editor/view_suggested_posts" class="nav-link">
                             <h4>Запропоновані дописи</h4>

@@ -1,17 +1,17 @@
 <div th:fragment="header">
     <div class="container mb-for-header">
-        <div class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom fixed-top navbar-inverse">
+        <div class="d-flex flex-wrap justify-content-center py-3 border-bottom fixed-top navbar-inverse">
             <a href="/user/"
                 class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none mx-2"><img
                     th:src="${pathProjectInfo} + ${projectInfo.image}" alt="Іконка сайту">
-                <b class=" nav-link">[[${projectInfo.name}]]</b>
+                <b class=" nav-link navbar-brand">[[${projectInfo.name}]]</b>
             </a>
             <ul class="nav nav-pills">
                 <li class="nav-item"><a href="/blog" class="nav-link">Блог</a></li>
-                <li class="nav-item"><a href="/user/view_volunteers" class="nav-link">Переглянути волонтерів</a></li>
+                <li class="nav-item"><a href="/user/view_candidates" class="nav-link">Переглянути кандидатів</a></li>
                 <li class="nav-item"><a href="/user/suggest_post" class="nav-link">Запропонувати допис</a></li>
                 <form th:action="@{/logout}" method="post" class="nav-item">
-                    <input type="submit" value="Sign Out" class="nav-link" />
+                    <input type="submit" value="Вихід" class="nav-link" />
                 </form>
             </ul>
         </div>

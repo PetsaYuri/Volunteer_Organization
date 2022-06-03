@@ -1,7 +1,7 @@
 package com.volunteer.Volunteer.Organization.service;
 
 import com.volunteer.Volunteer.Organization.models.Users;
-import com.volunteer.Volunteer.Organization.models.Volunteers;
+import com.volunteer.Volunteer.Organization.models.Candidates;
 import org.springframework.stereotype.Service;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
@@ -24,14 +24,14 @@ public class ExportCSVService {
         return response;
     }
 
-    public void createAndSendCsvFileVolunteers(HttpServletResponse response, Iterable<Volunteers> volunteers)
+    public void createAndSendCsvFileVolunteers(HttpServletResponse response, Iterable<Candidates> volunteers)
             throws IOException {
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
         String[] csvHeader = {"Name", "Email", "Phone", "City", "Description", "Status"};
         String[] candidatesMapping = {"name", "email", "phone", "city", "description", "status"};
         csvWriter.writeHeader(csvHeader);
 
-        for(Volunteers volunteer : volunteers)    {
+        for(Candidates volunteer : volunteers)    {
             csvWriter.write(volunteer, candidatesMapping);
         }
 

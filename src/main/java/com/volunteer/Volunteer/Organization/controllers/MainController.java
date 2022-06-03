@@ -3,7 +3,7 @@ package com.volunteer.Volunteer.Organization.controllers;
 import com.volunteer.Volunteer.Organization.exceptions.ItLastPageException;
 import com.volunteer.Volunteer.Organization.exceptions.NotExistsNextPageException;
 import com.volunteer.Volunteer.Organization.exceptions.NotFoundByQueryException;
-import com.volunteer.Volunteer.Organization.exceptions.VolunteerNotFoundException;
+import com.volunteer.Volunteer.Organization.exceptions.UserNotFoundException;
 import com.volunteer.Volunteer.Organization.models.Categories;
 import com.volunteer.Volunteer.Organization.models.Posts;
 import com.volunteer.Volunteer.Organization.models.Users;
@@ -11,7 +11,9 @@ import com.volunteer.Volunteer.Organization.repository.CategoriesRepository;
 import com.volunteer.Volunteer.Organization.repository.PostsRepository;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
 import com.volunteer.Volunteer.Organization.service.EditorService;
+import com.volunteer.Volunteer.Organization.service.MailSenderService;
 import com.volunteer.Volunteer.Organization.service.MainService;
+import com.volunteer.Volunteer.Organization.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +48,12 @@ public class MainController {
 
     @Autowired
     private CategoriesRepository categoriesRepository;
+
+    @Autowired
+    private MailSenderService mailSenderService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/")
     public String main(Model model, HttpServletRequest request) {
@@ -166,7 +174,7 @@ public class MainController {
 
             editorService.addComment(comment, id_post, request);
             return "redirect:blog/" + id_post + "?AddedComment";
-        }   catch (VolunteerNotFoundException ex)   {
+        }   catch (UserNotFoundException ex)   {
             return "redirect:blog/" + id_post + "?VolunteerNotFound";
         }
 
@@ -242,4 +250,22 @@ public class MainController {
         return blog(pageable, query, model, request, idCategory);
     }
 
+    @GetMapping("/verification")
+    public String verification(Model model)    {
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
+        return "verification";
+    }
+
+    @PostMapping("/verification")
+    public String verification(@RequestParam String email)    {
+        try {
+            Users user = userService.verification(email);
+            String message = userService.sendRecoveryMessage(user);
+            mailSenderService.send(email, "Відновлення доступу", message);
+            return "redirect:/?SendingMessageToEmail";
+        }   catch (NullPointerException ex) {
+            return "redirect:/verification?UserNotFound";
+        }
+    }
 }

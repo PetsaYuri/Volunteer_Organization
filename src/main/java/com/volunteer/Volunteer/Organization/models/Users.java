@@ -17,12 +17,12 @@ public class Users {
         this.blocked = false;
     }
 
-    public Users(String password, Roles role, Volunteers volunteer, String email, String name)   {
+    public Users(String password, Roles role, Candidates candidate)   {
         this.password = password;
         this.roles = role;
-        this.volunteer = volunteer;
-        this.email = email;
-        this.name = name;
+        this.candidate = candidate;
+        this.email = candidate.getEmail();
+        this.name = candidate.getName();
         this.blocked = false;
     }
 
@@ -37,8 +37,8 @@ public class Users {
     private Boolean blocked;
 
     @OneToOne
-    @JoinColumn(name = "id_volunteer")
-    private Volunteers volunteer;
+    @JoinColumn(name = "id_candidate")
+    private Candidates candidate;
 
     @ManyToOne
     @JoinColumn(name = "id_roles")
@@ -101,12 +101,12 @@ public class Users {
         this.blocked = blocked;
     }
 
-    public Volunteers getVolunteer() {
-        return volunteer;
+    public Candidates getCandidate() {
+        return candidate;
     }
 
-    public void setVolunteer(Volunteers volunteer) {
-        this.volunteer = volunteer;
+    public void setCandidate(Candidates candidate) {
+        this.candidate = candidate;
     }
 
     public String getRole() {

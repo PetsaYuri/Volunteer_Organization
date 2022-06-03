@@ -27,7 +27,7 @@
             </h5>
         </div>
 
-        <div class="alert alert-danger text-center" th:if="${param.VolunteerNotFound}">
+        <div class="alert alert-danger text-center" th:if="${param.UserNotFound}">
             <h5>
                 Користувача не знайдено!
             </h5>
@@ -100,7 +100,6 @@
                                     <button type="submit">Відправити</button>
                                 </form>
                                 <div th:if="${param.name == n}">
-                                    <p>ddddddddddddddd</p>
                                 </div>-->
                                 <th:block th:each="comment : ${post.comments}">
                                     <div class="media mb40">
@@ -110,37 +109,16 @@
                                                 th:text="${comment.user.name}"></i>
                                         </th:block>
 
-                                        <th:block th:if="${comment.volunteer} != null">
-                                            <i class="d-flex mr-3 fa fa-user-circle-o fa-3x mb-2"
-                                                th:text="${comment.volunteer.name}"></i>
-                                        </th:block>
-
-                                        <th:block th:if="${role} == editor">
-                                            <div class="text-start">
-                                                <form action="/delete_comment" method="post">
-                                                    <input type="hidden" name="idPost" th:value="${post.id}">
-                                                    <button type="submit" name="id" th:value="${comment.id}">
-                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </th:block>
-
-                                        <th:block th:if="${comment.volunteer} != null">
-                                            <th:block
-                                                th:if="${#httpServletRequest.getRemoteUser()} == ${comment.volunteer.email}">
-                                                <div class="btn-group">
+                                        <th:block
+                                            th:unless="${#httpServletRequest.getRemoteUser()} == ${comment.user.email}">
+                                            <th:block th:if="${role} == editor">
+                                                <div class="text-start">
                                                     <form action="/delete_comment" method="post">
                                                         <input type="hidden" name="idPost" th:value="${post.id}">
-                                                        <button type="submit" name="id" th:value="${comment.id}">
+                                                        <button type="submit" name="id" th:value="${comment.id}"
+                                                            class="btn btn-outline-danger" aria-placeholder="Видалити">
                                                             <i class="fa fa-trash-o" aria-hidden="true"></i>
                                                         </button>
-                                                    </form>
-                                                    <form action="/allow_editing_comment" method="post">
-                                                        <input type="hidden" name="idPost" th:value="${post.id}">
-                                                        <input type="hidden" name="idComment" th:value="${comment.id}">
-                                                        <button type="submit"><i class="fa fa-pencil"
-                                                                aria-hidden="true"></i></button>
                                                     </form>
                                                 </div>
                                             </th:block>
@@ -149,18 +127,19 @@
                                         <th:block th:if="${comment.user} != null">
                                             <th:block
                                                 th:if="${#httpServletRequest.getRemoteUser()} == ${comment.user.email}">
-                                                <div class="text-start">
+                                                <div class="text-start btn-group">
                                                     <form action="/delete_comment" method="post">
                                                         <input type="hidden" name="idPost" th:value="${post.id}">
-                                                        <button type="submit" class="btn" name="id"
-                                                            th:value="${comment.id}">
+                                                        <button type="submit" class="btn btn-outline-danger" name="id"
+                                                            th:value="${comment.id}" aria-placeholder="Видалити">
                                                             <i class="fa fa-trash-o" aria-hidden="true"></i>
                                                         </button>
                                                     </form>
                                                     <form action="/allow_editing_comment" method="post">
                                                         <input type="hidden" name="idPost" th:value="${post.id}">
                                                         <input type="hidden" name="idComment" th:value="${comment.id}">
-                                                        <button type="submit" class="btn"><i class="fa fa-pencil"
+                                                        <button type="submit" class="btn btn-outline-warning"
+                                                            aria-placeholder="Редагувати"><i class="fa fa-pencil"
                                                                 aria-hidden="true"></i></button>
                                                     </form>
                                                 </div>

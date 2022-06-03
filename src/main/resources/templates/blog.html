@@ -8,6 +8,15 @@
         <link rel="stylesheet" href="/css/bootstrap.css">
         <link rel="stylesheet" href="/css/main.css">
         <link rel="shortcun icon" th:href="${pathProjectInfo} + ${projectInfo.logo}">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
         <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
     </head>
 
@@ -47,35 +56,29 @@
                     </th:block>
 
                     <!--search-->
-                    <div class="items-center text-center mb-2 mt-2">
-                        <div class="input-group">
-                            <form action="/posts_search" method="post">
-                                <div class="btn-group">
-                                    <input type="search" name="query" th:value="${query}"
-                                        class="form-control width-1000" />
-                                    <input type="hidden" name="page" th:value="${posts.getNumber()}">
-                                    <input type="hidden" name="size" th:value="${posts.getSize()}">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
-                                <select name="idCategory" class="form-control mb-2 width-1020">
-                                    <th:block th:if="currentCategory != null">
-                                        <option selected th:value="${currentCategory.id}">
-                                            [[${currentCategory.category}]]
-                                        </option>
-                                    </th:block>
+                    <div class="mb-150 mt-2">
+                        <form action="/posts_search" method="post">
+                            <input type="search" name="query" th:value="${query}" class="form-control" />
+                            <input type="hidden" name="page" th:value="${posts.getNumber()}">
+                            <input type="hidden" name="size" th:value="${posts.getSize()}">
+                            <select name="idCategory" class="form-control">
+                                <th:block th:if="currentCategory != null">
+                                    <option selected th:value="${currentCategory.id}">
+                                        [[${currentCategory.category}]]
+                                    </option>
+                                </th:block>
 
-                                    <th:block th:each="category : ${categories}">
-                                        <th:block th:if="${category} != ${currentCategory}">
-                                            <option th:value="${category.id}">[[${category.category}]]</option>
-                                        </th:block>
+                                <th:block th:each="category : ${categories}">
+                                    <th:block th:if="${category} != ${currentCategory}">
+                                        <option th:value="${category.id}">[[${category.category}]]</option>
                                     </th:block>
-
-                                    <option value="0">Пошук по ключовим словам</option>
-                                </select>
-                            </form>
-                        </div>
+                                </th:block>
+                                <option value="0">Пошук по ключовим словам</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary form-control mb-4">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </form>
                     </div>
 
                     <!--post-->
@@ -186,6 +189,5 @@
         </main>
         <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
     </body>
-    <script src="/js/boot.js"></script>
 
 </html>

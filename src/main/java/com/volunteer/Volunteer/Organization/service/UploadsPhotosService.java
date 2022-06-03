@@ -3,11 +3,11 @@ package com.volunteer.Volunteer.Organization.service;
 import com.volunteer.Volunteer.Organization.models.Posts;
 import com.volunteer.Volunteer.Organization.models.ProjectInfo;
 import com.volunteer.Volunteer.Organization.models.SuggestedPosts;
-import com.volunteer.Volunteer.Organization.models.Volunteers;
+import com.volunteer.Volunteer.Organization.models.Candidates;
 import com.volunteer.Volunteer.Organization.repository.PostsRepository;
 import com.volunteer.Volunteer.Organization.repository.ProjectInfoRepository;
 import com.volunteer.Volunteer.Organization.repository.SuggestedPostsRepository;
-import com.volunteer.Volunteer.Organization.repository.VolunteersRepository;
+import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.UUID;
 public class UploadsPhotosService {
 
     @Autowired
-    private VolunteersRepository volunteersRepository;
+    private CandidatesRepository candidatesRepository;
 
     @Autowired
     private PostsRepository postsRepository;
@@ -81,9 +81,9 @@ public class UploadsPhotosService {
         }
     }
 
-    public void saveFile(MultipartFile file, String filename, Volunteers volunteer) throws IOException {
+    public void saveFile(MultipartFile file, String filename, Candidates volunteer) throws IOException {
         volunteer.setPhoto(filename);
-        volunteersRepository.save(volunteer);
+        candidatesRepository.save(volunteer);
         File dirUpload = new File(System.getProperty("user.dir") + "/uploads/volunteers/" + filename);
         file.transferTo( new File(String.valueOf(dirUpload)));
     }

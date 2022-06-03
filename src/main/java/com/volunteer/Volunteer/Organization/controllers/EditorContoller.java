@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 import static com.volunteer.Volunteer.Organization.service.EditorService.PATH_TO_EDITOR_FOLDER;
 import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_SUGGESTED_POSTS_UPLOADS;
@@ -151,8 +152,9 @@ public class EditorContoller {
             model.addAttribute("currentCategory", category);
 
             //pagination
+            model.addAttribute("pageable", pageable);
             model.addAttribute("pages", mainService.getPages(posts.getTotalPages()));
-            model.addAttribute("URI_page", "/view_suggested_posts?page=");
+            model.addAttribute("URI_page", "/editor/view_suggested_posts?page=");
             model.addAttribute("URI_size", "&&size=" + pageable.getPageSize());
             if (query != null) {
                 model.addAttribute("URI_query", "&&query=" + query);
@@ -161,7 +163,7 @@ public class EditorContoller {
             //values necessary for work
             model.addAttribute("query", query);
             model.addAttribute("filePath", PATH_TO_SUGGESTED_POSTS_UPLOADS);
-            model.addAttribute("URI", "view_suggested_posts/");
+            model.addAttribute("URI", "/editor/view_suggested_posts/");
             model.addAttribute("pathEdit", "/editor/edit_post/");
             model.addAttribute("projectInfo", mainService.getProjectInfo());
             model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
@@ -217,5 +219,51 @@ public class EditorContoller {
         SuggestedPosts suggestedPost = suggestedPostsRepository.getById(idPost);
         suggestedPostsRepository.delete(suggestedPost);
         return "redirect:/editor/view_suggested_posts?DeletedSuggestedPost";
+    }
+
+    @GetMapping("/categories")
+    public String categories(Model model)  {
+        List<Categories> categories = categoriesRepository.findAll();
+        model.addAttribute("categories", categories);
+
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
+        return PATH_TO_EDITOR_FOLDER + "categories";
+    }
+
+    @GetMapping("/add_category")
+    public String addCategory(Model model) {
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
+        return PATH_TO_EDITOR_FOLDER + "add_category";
+    }
+
+    @PostMapping("add_category")
+    public String addCategory(@RequestParam String title, @RequestParam String description) {
+        editorService.addCategory(title, description);
+        return "redirect:/editor/categories?AddedCategory";
+    }
+
+    @PostMapping("/edit_category")
+    public String editCategory(@RequestParam long idCategory, Model model)   {
+        Categories category = categoriesRepository.getById(idCategory);
+        model.addAttribute("category", category);
+
+        model.addAttribute("projectInfo", mainService.getProjectInfo());
+        model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
+        return PATH_TO_EDITOR_FOLDER + "edit_category";
+    }
+
+    @PostMapping("/save_category")
+    public String saveCategory(@RequestParam long idCategory, @RequestParam String title,
+                               @RequestParam String description, Model model)   {
+        editorService.editCategory(idCategory, title, description);
+        return "redirect:/editor/categories?EditedCategory";
+    }
+
+    @PostMapping("/delete_category")
+    public String deleteCategory(@RequestParam long idCategory) {
+        editorService.deleteCategory(idCategory);
+        return "redirect:/editor/categories?DeletedCategory";
     }
 }

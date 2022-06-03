@@ -44,34 +44,29 @@
 
                     <!--search-->
                     <div class="items-center text-center mb-2 mt-2">
-                        <div class="input-group">
-                            <form action="/posts_search" method="post">
-                                <div class="btn-group">
-                                    <input type="search" name="query" th:value="${query}"
-                                        class="form-control width-1000" />
-                                    <input type="hidden" name="page" th:value="${posts.getNumber()}">
-                                    <input type="hidden" name="size" th:value="${posts.getSize()}">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
-                                <select name="idCategory" class="form-control mb-2 width-1020">
-                                    <th:block th:if="currentCategory != null">
-                                        <option selected th:value="${currentCategory.id}">
-                                            [[${currentCategory.category}]]
-                                        </option>
-                                    </th:block>
+                        <form action="/editor/view_suggested_posts" method="get" class="form-horizontal">
+                            <input type="search" name="query" th:value="${query}" class="form-control" />
+                            <input type="hidden" name="page" th:value="${posts.getNumber()}">
+                            <input type="hidden" name="size" th:value="${posts.getSize()}">
+                            <select name="idCategory" class="form-control">
+                                <th:block th:if="currentCategory != null">
+                                    <option selected th:value="${currentCategory.id}">
+                                        [[${currentCategory.category}]]
+                                    </option>
+                                </th:block>
 
-                                    <th:block th:each="category : ${categories}">
-                                        <th:block th:if="${category} != ${currentCategory}">
-                                            <option th:value="${category.id}">[[${category.category}]]</option>
-                                        </th:block>
+                                <th:block th:each="category : ${categories}">
+                                    <th:block th:if="${category} != ${currentCategory}">
+                                        <option th:value="${category.id}">[[${category.category}]]</option>
                                     </th:block>
+                                </th:block>
 
-                                    <option value="0">Пошук по ключовим словам</option>
-                                </select>
-                            </form>
-                        </div>
+                                <option value="0">Пошук по ключовим словам</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary form-control">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </form>
                     </div>
 
                     <!--post-->
@@ -104,16 +99,21 @@
                         <nav class="mt-2">
                             <ul class="pagination">
 
-                                <div>
-                                    <form action="/previous_page" method="post">
-                                        <input type="hidden" name="page" th:value="${posts.getNumber()}">
-                                        <input type="hidden" name="size" th:value="${posts.getSize()}">
-                                        <input type="hidden" name="query" th:value="${query}">
-                                        <li class="page-item"><button type="submit" class="page-link">Попередня</button>
-                                        </li>
-                                    </form>
-                                </div>
+                                <!--previous_page-->
+                                <th:block th:if="${pageable.hasPrevious()}">
+                                    <div>
+                                        <form th:action="${URI}" method="get">
+                                            <input type="hidden" name="page" th:value="${posts.getNumber()} - 1">
+                                            <input type="hidden" name="size" th:value="${posts.getSize()}">
+                                            <input type="hidden" name="query" th:value="${query}">
+                                            <li class="page-item"><button type="submit"
+                                                    class="page-link">Попередня</button>
+                                            </li>
+                                        </form>
+                                    </div>
+                                </th:block>
 
+                                <!--pages-->
                                 <th:block th:each="page : ${pages}">
 
                                     <th:block th:if="${posts.getNumber()} == ${page}">
@@ -142,23 +142,26 @@
                                     </th:block>
                                 </th:block>
 
-                                <div>
-                                    <form action="/next_page" method="post">
-                                        <input type="hidden" name="page" th:value="${posts.getNumber()}">
-                                        <input type="hidden" name="size" th:value="${posts.getSize()}">
-                                        <input type="hidden" name="query" th:value="${query}">
-                                        <li class="page-item"><button type="submit" name="totalPage"
-                                                th:value="${posts.getTotalPages()} - 1"
-                                                class="page-link">Наступна</button>
-                                        </li>
-                                    </form>
-                                </div>
+                                <!--next_page-->
+                                <th:block th:if="${pageable.getPageNumber()} != ${pageable.getPageSize()}">
+                                    <div>
+                                        <form th:action="${URI}" method="get">
+                                            <input type="hidden" name="page" th:value="${posts.getNumber()} + 1">
+                                            <input type="hidden" name="size" th:value="${posts.getSize()}">
+                                            <input type="hidden" name="query" th:value="${query}">
+                                            <li class="page-item"><button type="submit"
+                                                    class="page-link">Наступна</button>
+                                            </li>
+                                        </form>
+                                    </div>
+                                </th:block>
                             </ul>
                         </nav>
                     </div>
 
+                    <!--size-->
                     <div class="d-flex justify-content-center">
-                        <form action="/pageSize" method="post" class="form-horizontal">
+                        <form action="/editor/view_suggested_posts" method="get" class="form-horizontal">
                             <div class="btn-group">
                                 <input type="number" class="form-control" name="size" min="1" max="100">
                                 <input type="hidden" name="query" th:value="${query}">
