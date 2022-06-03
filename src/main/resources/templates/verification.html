@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head class="blue">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" />
+        <title>[[${projectInfo.name}]]</title>
+        <link rel="stylesheet" href="/css/bootstrap.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="shortcun icon" th:href="${pathProjectInfo} + ${projectInfo.logo}">
+        <script src="https://use.fontawesome.com/398bb9fadb.js"></script>
+    </head>
+
+    <body>
+        <header th:insert="blocks\header :: _header"></header>
+
+        <div th:if="${param.UserNotFound}" class="alert alert-danger text-center">
+            Користувача не знайдено. Спробуйте ще раз!
+        </div>
+
+        <main>
+            <div class="container">
+                <h1 class="text-center">Відновлення доступу</h1>
+                <form action="/verification" method="post" enctype="multipart/form-data">
+                    <h4>Електронна адреса:
+                        <input type="email" name="email" class="form-control" minlength="3" maxlength="50" required>
+                    </h4>
+                    <button type="submit" class="btn btn-outline-success">Надіслати</button>
+                </form>
+            </div>
+        </main>
+
+        <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>
+    </body>
+    <script src="/js/boot.js"></script>
+
+</html>
