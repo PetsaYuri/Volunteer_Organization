@@ -73,6 +73,11 @@ public class MainController {
         List<Users> users = usersRepository.findAll();
         model.addAttribute("users", users);
 
+        if (!projectInfoRepository.existsById(Long.valueOf(1))) {
+            System.out.println("000000000000000");
+            mainService.addProjectInfo();
+        }
+
         Page<Posts> lastPosts = postsRepository.findAll(PageRequest.of(0, 3, Sort.Direction.DESC, "id"));
         model.addAttribute("posts", lastPosts);
         model.addAttribute("URI", "/blog/");

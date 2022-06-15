@@ -95,8 +95,7 @@ public class MainService {
         if (projectInfo != null)    {
             return projectInfo;
         }   else {
-            projectInfo = addProjectInfo();
-            return projectInfo;
+            return null;
         }
     }
 
@@ -141,6 +140,7 @@ public class MainService {
     public ProjectInfo addProjectInfo()    {
         ProjectInfo projectInfo = new ProjectInfo("Volunteer Org", "https://t.me/V_Zelenskiy_official", "volunteerOrg@gmail.com", "380123456789");
         projectInfoRepository.save(projectInfo);
+        System.out.println("11111111111123");
         return projectInfo;
     }
 }
