@@ -6,6 +6,17 @@ import javax.persistence.*;
 @Table (name = "project_info")
 public class ProjectInfo {
 
+    public ProjectInfo()   {}
+
+    public ProjectInfo(String name, String telegram, String email, String phone)    {
+        this.name = name;
+        this.telegram = telegram;
+        this.email = email;
+        this.phone = phone;
+        this.image = "logo_for_navbar.jpg";
+        this.logo = "logo.ico";
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

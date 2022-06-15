@@ -6,9 +6,11 @@ import com.volunteer.Volunteer.Organization.exceptions.NotFoundByQueryException;
 import com.volunteer.Volunteer.Organization.exceptions.UserNotFoundException;
 import com.volunteer.Volunteer.Organization.models.Categories;
 import com.volunteer.Volunteer.Organization.models.Posts;
+import com.volunteer.Volunteer.Organization.models.ProjectInfo;
 import com.volunteer.Volunteer.Organization.models.Users;
 import com.volunteer.Volunteer.Organization.repository.CategoriesRepository;
 import com.volunteer.Volunteer.Organization.repository.PostsRepository;
+import com.volunteer.Volunteer.Organization.repository.ProjectInfoRepository;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
 import com.volunteer.Volunteer.Organization.service.EditorService;
 import com.volunteer.Volunteer.Organization.service.MailSenderService;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_POSTS_UPLOADS;
 import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_PROJECT_INFO_UPLOADS;
@@ -56,12 +60,18 @@ public class MainController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ProjectInfoRepository projectInfoRepository;
+
     @GetMapping("/")
     public String main(Model model, HttpServletRequest request) {
         Users user = usersRepository.findByEmail(request.getRemoteUser());
         if (user != null) {
             model.addAttribute("role", user.getRoles().getRole());
         }
+
+        List<Users> users = usersRepository.findAll();
+        model.addAttribute("users", users);
 
         Page<Posts> lastPosts = postsRepository.findAll(PageRequest.of(0, 3, Sort.Direction.DESC, "id"));
         model.addAttribute("posts", lastPosts);
@@ -254,6 +264,14 @@ public class MainController {
                          @RequestParam(required = false) String query, @RequestParam long idCategory,
                          Model model, HttpServletRequest request)  {
         return blog(pageable, query, model, request, idCategory);
+    }
+
+    @PostMapping("/add_admin")
+    public String addAdmin()    {
+        mainService.addCategories();
+        mainService.addRoles();
+        mainService.addAdmin();
+        return "redirect:/login";
     }
 
     @GetMapping("/verification")

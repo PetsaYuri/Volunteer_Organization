@@ -2,8 +2,14 @@ package com.volunteer.Volunteer.Organization.service;
 
 import com.volunteer.Volunteer.Organization.exceptions.ItLastPageException;
 import com.volunteer.Volunteer.Organization.exceptions.NotExistsNextPageException;
+import com.volunteer.Volunteer.Organization.models.Categories;
 import com.volunteer.Volunteer.Organization.models.ProjectInfo;
+import com.volunteer.Volunteer.Organization.models.Roles;
+import com.volunteer.Volunteer.Organization.models.Users;
+import com.volunteer.Volunteer.Organization.repository.CategoriesRepository;
 import com.volunteer.Volunteer.Organization.repository.ProjectInfoRepository;
+import com.volunteer.Volunteer.Organization.repository.RolesRepository;
+import com.volunteer.Volunteer.Organization.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +27,15 @@ public class MainService {
 
     @Autowired
     private ProjectInfoRepository projectInfoRepository;
+
+    @Autowired
+    private RolesRepository rolesRepository;
+
+    @Autowired
+    private UsersRepository usersRepository;
+
+    @Autowired
+    private CategoriesRepository categoriesRepository;
 
     public static String getCurrentDate() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -80,7 +95,8 @@ public class MainService {
         if (projectInfo != null)    {
             return projectInfo;
         }   else {
-            return null;
+            projectInfo = addProjectInfo();
+            return projectInfo;
         }
     }
 
@@ -92,5 +108,39 @@ public class MainService {
         String[] str;
         str = description.split("\\n");
         return str;
+    }
+
+    public void addAdmin()  {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        Roles roles = rolesRepository.findByRole("admin");
+        String encodedPass = passwordEncoder.encode("123");
+        Users admin = new Users(encodedPass, roles, "adm@com", "admin");
+        usersRepository.save(admin);
+    }
+
+    public void addRoles()  {
+        Roles roleAdmin = new Roles("admin", "role for administrations");
+        rolesRepository.save(roleAdmin);
+        Roles roleEditor = new Roles("editor", "role for editors");
+        rolesRepository.save(roleEditor);
+        Roles roleUser = new Roles("user", "role for users");
+        rolesRepository.save(roleUser);
+    }
+
+    public void addCategories() {
+        Categories categoryVolunteers = new Categories("Волонтерство", "дана категорія для дописів із тематикою волонтерства");
+        categoriesRepository.save(categoryVolunteers);
+        Categories categoryPersonalExp= new Categories("Особистий досвід", "дана категорія для дописів із тематикою проведення заходів, в яких розповідається про волонтерську справу");
+        categoriesRepository.save(categoryPersonalExp);
+        Categories categoryHowWork= new Categories("Як це працює?", "дана категорія для дописів із тематикою висвітлення не до кінця зрозумілих тем");
+        categoriesRepository.save(categoryHowWork);
+        Categories categoryOther = new Categories("Також варте", "дана категорія для дописів із іншими темами");
+        categoriesRepository.save(categoryOther);
+    }
+
+    public ProjectInfo addProjectInfo()    {
+        ProjectInfo projectInfo = new ProjectInfo("Volunteer Org", "https://t.me/V_Zelenskiy_official", "volunteerOrg@gmail.com", "380123456789");
+        projectInfoRepository.save(projectInfo);
+        return projectInfo;
     }
 }
