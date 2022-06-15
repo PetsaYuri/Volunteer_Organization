@@ -16,6 +16,7 @@ import com.volunteer.Volunteer.Organization.service.MainService;
 import com.volunteer.Volunteer.Organization.service.UploadsPhotosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.volunteer.Volunteer.Organization.service.EditorService.PATH_TO_EDITOR_FOLDER;
+import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_POSTS_UPLOADS;
 import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_SUGGESTED_POSTS_UPLOADS;
 
 @Controller
@@ -58,6 +60,11 @@ public class EditorContoller {
 
     @GetMapping("/")
     public String editorPage(Model model)  {
+        Page<Posts> lastPosts = postsRepository.findAll(PageRequest.of(0, 3, Sort.Direction.DESC, "id"));
+        model.addAttribute("posts", lastPosts);
+        model.addAttribute("URI", "/blog/");
+        model.addAttribute("filePathPosts", PATH_TO_POSTS_UPLOADS);
+
         model.addAttribute("projectInfo", mainService.getProjectInfo());
         model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
         return PATH_TO_EDITOR_FOLDER + "editor_page";
@@ -79,7 +86,7 @@ public class EditorContoller {
             String filename = uploadsPhotosService.createFilenameWithUUID(image.getOriginalFilename());
             Posts post = editorService.addNewPost(title, description, request, idCategory);
             uploadsPhotosService.saveFile(image, filename, post);
-            return "redirect:add_post?AddedPost";
+            return "redirect:/blog?AddedPost";
         }   catch (UserNotFoundException ex)    {
             return "redirect:add_post?UserNotFound";
         }

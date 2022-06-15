@@ -3,7 +3,7 @@
 
     <head class="blue">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" />
+        <meta name="viewport" content="width=device-width" />
         <title>Волонтерська організація</title>
         <link rel="stylesheet" href="/css/bootstrap.css">
         <link rel="stylesheet" href="/css/main.css">
@@ -13,53 +13,72 @@
 
     <body>
         <header th:insert="blocks\admin_header :: header"></header>
+
+        <div th:if="${param.UserAdded}" class="alert alert-success text-center" role="alert">
+            <h2>Користувач доданий!</h2>
+        </div>
+        <div th:if="${param.RepeatedPasswordIsInvalidException}" class="alert alert-warning text-center text-warning"
+            role="alert">
+            <h2>Повторний пароль не співпадає із основним</h2>
+        </div>
+        <div th:if="${param.UserAlreadyExistsException}" class="alert alert-warning text-center" role="alert">
+            <h2>Користувач під таким іменем уже існує</h2>
+        </div>
+
         <main>
             <div class="container">
-                <div th:if="${param.UserAdded}" class="alert alert-success text-center" role="alert">
-                    <h2>Користувач доданий!</h2>
-                </div>
-                <div th:if="${param.RepeatedPasswordIsInvalidException}"
-                    class="alert alert-warning text-center text-warning" role="alert">
-                    <h2>Повторний пароль не співпадає із основним</h2>
-                </div>
-                <div th:if="${param.UserAlreadyExistsException}" class="alert alert-warning text-center" role="alert">
-                    <h2>Користувач під таким іменем уже існує</h2>
-                </div>
-                <h1 class="text-center">
-                    Додати користувача
-                </h1>
-                <form action="/admin/add_user" method="post" class="form-horizontal" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <h4>Емайл:
-                            <input type="email" name="email" placeholder="Введіть емайл" class="form-control mb-2"
-                                required maxlength="30">
-                        </h4>
-                        <h4>Пароль:
-                            <input type="password" name="password" placeholder="Введіть пароль"
-                                class="form-control mb-2" required maxlength="15">
-                        </h4>
-                        <h4>Повторіть пароль:
-                            <input type="password" name="repeatedPassword" placeholder="Повторно введіть пароль"
-                                class="form-control mb-2" required maxlength="15">
-                        </h4>
-                        <h4>ПІБ:
-                            <input type="text" name="name" ,
-                                placeholder="Необов'язково, якщо користувач заповнюв анкету з даним email'ом"
-                                class="form-control mb-2" maxlength="30">
-                        </h4>
-                        <h4>Роль:
+
+                <h1 class="title text-center mb-4">Додати користувача</h1>
+
+                <div class="d-flex justify-content-center">
+                    <form action="/admin/add_user" method="post" enctype="multipart/form-data">
+
+                        <!-- Name input -->
+                        <div class="form-outline mb-4">
+                            <input type="text" name="name" id="inputName" maxlength="30" class="form-control"
+                                placeholder="Необов'язково, якщо користувач заповнюв анкету з даним email'ом">
+                            <label class="form-label" for="inputName">Ім'я та прізвище</label>
+                        </div>
+
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <input type="email" name="email" id="inputEmail" class="form-control"
+                                placeholder="example@gmail.com" required pattern="^[A-Za-z0-9+_.-]+@(.+)$"
+                                minlength="15" maxlength="40" />
+                            <label class="form-label" for="inputEmail">Е-адреса</label>
+                        </div>
+
+                        <!-- Select role -->
+                        <div class="form-outline mb-4">
                             <select name="selectedRole" id="select_role" class="form-select form-select-sm mb-2">
                                 <option selected>Виберіть роль</option>
                                 <th:block th:each="role : ${roles}">
                                     <option th:value="${role.role}">[[${role.role}]]</option>
                                 </th:block>
-                        </h4>
-                        </select>
-                    </div>
-                    <center>
-                        <button type="submit" class="btn btn-outline-success btn-block mb-2">Відправити</button>
-                    </center>
-                </form>
+                            </select>
+                            <label class="form-label" for="select_role">Права доступу</label>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-outline mb-4">
+                            <input type="password" id="inputPass" name="password" placeholder="Введіть пароль"
+                                class="form-control mb-2" required min="5" maxlength="30">
+                            <label class="form-label" for="inputPass">Пароль</label>
+                        </div>
+
+                        <!-- Repeated Password -->
+                        <div class="form-outline mb-4">
+                            <input type="password" id="re-Pass" name="repeatedPassword"
+                                placeholder="Повторно введіть пароль" class="form-control" required min="5"
+                                maxlength="30">
+                            <label class="form-label" for="re-Pass">Повторіть пароль</label>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block mb-4 form-control">Відправити</button>
+                    </form>
+                </div>
+
             </div>
         </main>
         <footer class=" navbar-inverse" th:insert="blocks\footer :: footer"></footer>

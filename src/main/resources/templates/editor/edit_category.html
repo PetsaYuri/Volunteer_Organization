@@ -3,7 +3,7 @@
 
     <head class="blue">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" />
+        <meta name="viewport" content="width=device-width" />
         <title>[[${projectInfo.name}]]</title>
         <link rel="stylesheet" href="/css/bootstrap.css">
         <link rel="stylesheet" href="/css/main.css">
@@ -16,7 +16,36 @@
 
         <main>
             <div class="container">
-                <h1 class="text-center">Редагувати категорію</h1>
+                <h1 class="title text-center mb-4">Редагувати категорію</h1>
+
+                <div class="d-flex justify-content-center">
+                    <form action="save_category" method="post" enctype="multipart/form-data">
+
+                        <!-- Id category -->
+                        <input type="hidden" name="idCategory" th:value="${category.id}">
+
+                        <!-- Title input -->
+                        <div class=" form-outline mb-4">
+                            <input type="text" name="title" th:value="${category.category}" id="inputTitle"
+                                placeholder="Введіть назву категорії" class="form-control" minlength="3" maxlength="50"
+                                required>
+                            <label class="form-label" for="inputTitle">Назва</label>
+                        </div>
+
+                        <!-- Description input -->
+                        <div class="form-outline mb-4">
+                            <textarea rows="5" type="text" id="textAreaDesc" name="description" class="form-control"
+                                placeholder="Введіть опис категорії" maxlength="254"
+                                required>[[${category.description}]]</textarea>
+                            <label class="form-label" for="textAreaDesc">Опис</label>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block mb-4 form-control">Зберегти</button>
+                    </form>
+                </div>
+
+                <!--
                 <form action="save_category" method="post" enctype="multipart/form-data">
                     <h4>Назва категорії:
                         <input type="text" name="title" th:value="${category.category}" class="form-control"
@@ -29,6 +58,8 @@
                     <button type="submit" class="btn btn-outline-success" name="idCategory"
                         th:value="${category.id}">Зберегти</button>
                 </form>
+                -->
+
             </div>
         </main>
         <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>

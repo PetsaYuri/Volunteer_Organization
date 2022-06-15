@@ -46,7 +46,7 @@ public class UploadsPhotosService {
     public static final String PATH_TO_PROJECT_INFO_UPLOADS = "/image/project_info/";
 
     public UploadsPhotosService()  {
-       // checkFolderOnExist();
+        checkFolderOnExist();
     }
 
     public Boolean isAllowedFileFormat(String filename)    {
@@ -74,14 +74,29 @@ public class UploadsPhotosService {
     }
 
     public void checkFolderOnExist()  {
-        System.out.println(UPLOAD_PATH);
-        File uploadDir = new File(UPLOAD_PATH);
-        if(!uploadDir.exists()) {
-            uploadDir.mkdir();
+        File uploadDirVolunteer = new File(System.getProperty("user.dir") + "/uploads/volunteers/");
+        if(!uploadDirVolunteer.exists()) {
+            uploadDirVolunteer.mkdirs();
+        }
+
+        File uploadDirPosts = new File(System.getProperty("user.dir") + "/uploads/posts");
+        if(!uploadDirPosts.exists()) {
+            uploadDirPosts.mkdirs();
+        }
+
+        File uploadDirSuggestedPosts = new File(System.getProperty("user.dir") + "/uploads/suggested_posts");
+        if(!uploadDirSuggestedPosts.exists()) {
+            uploadDirSuggestedPosts.mkdirs();
+        }
+
+        File uploadDirProjectInfo = new File(System.getProperty("user.dir") + "/uploads/project_info");
+        if(!uploadDirProjectInfo.exists()) {
+            uploadDirProjectInfo.mkdirs();
         }
     }
 
     public void saveFile(MultipartFile file, String filename, Candidates volunteer) throws IOException {
+        checkFolderOnExist();
         volunteer.setPhoto(filename);
         candidatesRepository.save(volunteer);
         File dirUpload = new File(System.getProperty("user.dir") + "/uploads/volunteers/" + filename);
@@ -89,6 +104,7 @@ public class UploadsPhotosService {
     }
 
     public void saveFile(MultipartFile file, String filename, Posts post) throws IOException {
+        checkFolderOnExist();
         post.setImage(filename);
         postsRepository.save(post);
         File dirUpload = new File(System.getProperty("user.dir") + "/uploads/posts/" + filename);
@@ -96,6 +112,7 @@ public class UploadsPhotosService {
     }
 
     public void saveFile(MultipartFile file, String filename, SuggestedPosts post) throws IOException {
+        checkFolderOnExist();
         post.setImage(filename);
         suggestedPostsRepository.save(post);
         File dirUpload = new File(System.getProperty("user.dir") + "/uploads/suggested_posts/" + filename);
@@ -103,6 +120,7 @@ public class UploadsPhotosService {
     }
 
     public void saveFile(MultipartFile file, String filename, ProjectInfo projectInfo) throws IOException {
+        checkFolderOnExist();
         if (isIcoFile(filename)) {
             projectInfo.setLogo(filename);
         }   else {
@@ -114,6 +132,7 @@ public class UploadsPhotosService {
     }
 
     public void transferSuggestedImageToDirPosts(String filename) throws IOException {
+        checkFolderOnExist();
         File dirSuggestedPosts = new File(UPLOAD_PATH + "suggested_posts/" + filename);
         File dirPosts = new File(UPLOAD_PATH + "posts/" + filename);
         Files.copy(Paths.get(String.valueOf(dirSuggestedPosts)), Paths.get(String.valueOf(dirPosts)));

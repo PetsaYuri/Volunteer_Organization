@@ -3,7 +3,7 @@
 
     <head class="blue">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" />
+        <meta name="viewport" content="width=device-width" />
         <title>[[${projectInfo.name}]]</title>
         <link rel="stylesheet" href="/css/bootstrap.css">
         <link rel="stylesheet" href="/css/main.css">
@@ -20,13 +20,23 @@
 
         <main>
             <div class="container">
-                <h1 class="text-center">Відновлення доступу</h1>
-                <form action="/verification" method="post" enctype="multipart/form-data">
-                    <h4>Електронна адреса:
-                        <input type="email" name="email" class="form-control" minlength="3" maxlength="50" required>
-                    </h4>
-                    <button type="submit" class="btn btn-outline-success">Надіслати</button>
-                </form>
+                <h1 class="title text-center mb-4">Відновлення доступу</h1>
+
+                <div class="d-flex justify-content-center">
+                    <form action="/verification" method="post" enctype="multipart/form-data">
+
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <input type="email" id="inputEmail" name="email" class="form-control"
+                                placeholder="Введіть електронну адресу" minlength="3" maxlength="50" required>
+                            <label class="form-label" for="inputEmail">Е-адреса</label>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block mb-4 form-control">Надіслати</button>
+                    </form>
+                </div>
+
             </div>
         </main>
 

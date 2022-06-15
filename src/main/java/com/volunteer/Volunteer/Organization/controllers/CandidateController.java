@@ -9,6 +9,7 @@ import com.volunteer.Volunteer.Organization.models.Candidates;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
 import com.volunteer.Volunteer.Organization.service.*;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +67,6 @@ public class CandidateController {
             String filename = file.getOriginalFilename();
             if(!candidateService.isAlreadyExistsEmail(email))   {
                 if(uploadsPhotos.isAllowedFileFormat(filename))   {
-                    System.out.println(file.getSize());
                     String filenameWithUUID = uploadsPhotos.createFilenameWithUUID(filename);
                     Candidates volunteer = candidateService.addVolunteer(name, email, phone, city, description);
                     uploadsPhotos.saveFile(file, filenameWithUUID, volunteer);
@@ -78,7 +79,8 @@ public class CandidateController {
             }   else {
                 throw new EmailAlreadyExistsException();
             }
-        }   catch (FileUploadException ex) {
+        }
+        catch (FileUploadException ex) {
             return "redirect:anketa?NotAllowedFileFormatException";
         }   catch (EmailAlreadyExistsException ex)  {
             return "redirect:anketa?EmailAlreadyExistsException";

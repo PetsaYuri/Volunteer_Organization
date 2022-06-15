@@ -33,44 +33,62 @@
 
         <main>
             <div class="container">
-                <h1 class="text-center">Заповнення анкети на волонтера</h1>
-                <div class="form-container mb-5">
-                    <div class="d-flex justify-content-center text-center">
-                        <form action="/anketa" method="post" class="form-horizontal" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <h4>Введіть ПІБ:
-                                    <input type="text" name="name" placeholder="Іванов Іван Іванович"
-                                        class="form-control mb-2" required maxlength="40">
-                                </h4>
-                                <h4>Введіть ваш електроний адрес:
-                                    <input type="email" name="email" placeholder="example@gmail.com"
-                                        class="form-control mb-2" required pattern="^[A-Za-z0-9+_.-]+@(.+)$"
-                                        minlength="10" maxlength="30">
-                                </h4>
-                                <h4>Введіть номер телефону:
-                                    <input type="number" name="phone" placeholder="+380951234567" value="+380"
-                                        class="form-control mb-2" required minlength="11" maxlength="12">
-                                </h4>
-                                <h4>Введіть ваш населений пункт:
-                                    <input type="text" name="city" placeholder="Закарпатська обл., м. Ужгород"
-                                        class="form-control mb-2" required maxlength="70">
-                                </h4>
-                                <h4>Коротко опишіть себе:
-                                    <textarea placeholder="до 350 символів" name="description" maxlength="350"
-                                        class="form-control mb-4"></textarea>
-                                </h4>
-                                <h4>
-                                    Додайте власну фотографію
-                                    <p class="text-warning">*тип файла: png, jpg або jpeg. Бажаний розмір:
-                                        500х500
-                                    </p>
-                                    <input type="file" name="file" required>
-                                </h4>
-                            </div>
-                            <center> <button type="submit" class="btn btn-outline-success btn-block">Відправити</button>
-                            </center>
-                        </form>
-                    </div>
+                <h1 class="text-center">Анкета волонтера</h1>
+                <div class="d-flex justify-content-center">
+                    <form action="/anketa" method="post" enctype="multipart/form-data">
+
+                        <!-- Name input -->
+                        <div class="form-outline mb-4">
+                            <input type="text" id="inputName" class="form-control" name="name" placeholder="Іванов Іван"
+                                required minlength="5" maxlength="40" />
+                            <label class="form-label" for="inputName">Ім'я та прізвище</label>
+                        </div>
+
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <input type="email" name="email" id="inputEmail" class="form-control"
+                                placeholder="example@gmail.com" required pattern="^[A-Za-z0-9+_.-]+@(.+)$"
+                                minlength="15" maxlength="40" />
+                            <label class="form-label" for="inputEmail">Е-адреса</label>
+                        </div>
+
+                        <!-- Phone number -->
+                        <div class="form-outline mb-4">
+                            <input type="number" name="phone" placeholder="+380951234567" id="inputPhoneNumber"
+                                class="form-control" pattern="^\+380-\d{3}-\d{2}-\d{2}$" required minlength="10"
+                                maxlength="13" />
+                            <label class="form-label" for="inputPhoneNumber">Номер телефону</label>
+                        </div>
+
+                        <!-- City -->
+                        <div class="form-outline mb-4">
+                            <input type="text" id="inputCity" name="city" placeholder="Закарпатська обл., м. Ужгород"
+                                class="form-control" required minlength="5" maxlength="70" />
+                            <label class="form-label" for="inputCity">Місце проживання</label>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="form-outline mb-4">
+                            <textarea id="inputDescription" placeholder="до 350 символів" name="description"
+                                maxlength="350" class="form-control" required></textarea>
+                            <label class="form-label" for="inputDescription">Опишіть себе</label>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="form-outline mb-4">
+                            <input type="file" id="inputImage" max="1048576" name="file" required>
+                            <label class="form-label" for="inputImage">Фотографія</label>
+                        </div>
+
+                        <!-- Checkbox -->
+                        <div class="form-check d-flex justify-content-center mb-4">
+                            <input class="form-check-input me-2" type="checkbox" value="" id="inputCheckbox" required />
+                            <label class="form-check-label" for="inputCheckbox"> Згода на обробку даних</label>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block mb-4 form-control">Відправити</button>
+                    </form>
                 </div>
             </div>
         </main>

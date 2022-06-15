@@ -78,72 +78,75 @@
                         </form>
                     </div>
                     <div th:each="candidate : ${candidates}" th:with="ids=${candidate.id} - 1">
-                        <div class="container content-lg">
-                            <div class="row">
-                                <div class="col-md-6 sm-margin-b-60 mb-4">
-                                    <img class="full-width img-responsive" th:src="${filePath} + ${candidate.photo}"
-                                        th:alt="${filePath} + ${candidate.photo}">
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="section-seperator margin-b-50">
-                                        <div class="margin-b-50">
-                                            <div class="margin-b-30">
-                                                <h2 th:inline="text" class="font-weight-bold">Кандидат
-                                                    №[[${candidate.id}]]
-                                                </h2>
-                                                <h5 th:inline="text"><b class="font-weight-bold">ПІБ:</b>
-                                                    [[${candidate.name}]]
-                                                </h5>
-                                                <h5 th:inline="text"><b class="font-weight-bold">Місце проживання:</b>
-                                                    [[${candidate.city}]]</h5>
-                                                <h5 th:inline="text"><b class="font-weight-bold">Опис:</b>
-                                                    [[${candidate.description}]]</h5>
-                                                <h5 th:inline="text"><b class="font-weight-bold">Зв'язок:</b> <i
-                                                        class="fa fa-envelope" aria-hidden="true"></i>
-                                                    [[${candidate.email}]] або <i class="fa fa-phone"
-                                                        aria-hidden="true"></i>
-                                                    [[${candidate.phone}]]
-                                                </h5>
-                                                <th:block th:switch="${candidate.status}">
-                                                    <h5 th:inline="text">
-                                                        <h5 th:case="waiting"><b class="font-weight-bold">Статус: </b><b
-                                                                class="text-warning">ОЧІКУВАННЯ</b></h5>
-                                                        <h5 th:case="deny"><b class="font-weight-bold">Статус: </b><b
-                                                                class="text-danger">ВІДМОВЛЕНО</b></h5>
-                                                        <h5 th:case="accept"><b class="font-weight-bold">Статус: </b> <b
-                                                                class="text-success">ПРИЙНЯТО</b></h5>
+                        <th:block th:if="${candidate.activation} == confirmed">
+                            <div class="container content-lg">
+                                <div class="row">
+                                    <div class="col-md-6 sm-margin-b-60 mb-4">
+                                        <img class="full-width img-responsive" th:src="${filePath} + ${candidate.photo}"
+                                            th:alt="${filePath} + ${candidate.photo}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="section-seperator margin-b-50">
+                                            <div class="margin-b-50">
+                                                <div class="margin-b-30">
+                                                    <h2 th:inline="text" class="font-weight-bold">Кандидат
+                                                        №[[${candidate.id}]]
+                                                    </h2>
+                                                    <h5 th:inline="text"><b class="font-weight-bold">ПІБ:</b>
+                                                        [[${candidate.name}]]
                                                     </h5>
-                                                </th:block>
-                                                <th:block th:if="${candidate.activation} != confirmed">
-                                                    <h5 th:inline="text"><b class="font-weight-bold">Активація:</b>
-                                                        <b class="text-danger">Не Підтверджено</b>
+                                                    <h5 th:inline="text"><b class="font-weight-bold">Місце
+                                                            проживання:</b>
+                                                        [[${candidate.city}]]</h5>
+                                                    <h5 th:inline="text"><b class="font-weight-bold">Опис:</b>
+                                                        [[${candidate.description}]]</h5>
+                                                    <h5 th:inline="text"><b class="font-weight-bold">Зв'язок:</b> <i
+                                                            class="fa fa-envelope" aria-hidden="true"></i>
+                                                        [[${candidate.email}]] або <i class="fa fa-phone"
+                                                            aria-hidden="true"></i>
+                                                        [[${candidate.phone}]]
                                                     </h5>
-                                                </th:block>
-                                                <th:block th:unless="${candidate.activation} != confirmed">
-                                                    <h5 th:inline="text"><b class="font-weight-bold">Активація:</b>
-                                                        <b class="text-success">Підтверджено</b>
-                                                    </h5>
+                                                    <th:block th:switch="${candidate.status}">
+                                                        <h5 th:inline="text">
+                                                            <h5 th:case="waiting"><b class="font-weight-bold">Статус:
+                                                                </b><b class="text-warning">ОЧІКУВАННЯ</b></h5>
+                                                            <h5 th:case="deny"><b class="font-weight-bold">Статус:
+                                                                </b><b class="text-danger">ВІДМОВЛЕНО</b></h5>
+                                                            <h5 th:case="accept"><b class="font-weight-bold">Статус:
+                                                                </b> <b class="text-success">ПРИЙНЯТО</b></h5>
+                                                        </h5>
+                                                    </th:block>
+                                                    <th:block th:if="${candidate.activation} != confirmed">
+                                                        <h5 th:inline="text"><b class="font-weight-bold">Активація:</b>
+                                                            <b class="text-danger">Не Підтверджено</b>
+                                                        </h5>
+                                                    </th:block>
+                                                    <th:block th:unless="${candidate.activation} != confirmed">
+                                                        <h5 th:inline="text"><b class="font-weight-bold">Активація:</b>
+                                                            <b class="text-success">Підтверджено</b>
+                                                        </h5>
+                                                    </th:block>
+                                                </div>
+                                                <th:block th:if="${currentFilter} == waiting">
+                                                    <div class="btn-group mr-3">
+                                                        <form action="accept_user" method="post"
+                                                            enctype="multipart/form-data" class="mr-3">
+                                                            <button type="submit" class="btn btn-success" name="id"
+                                                                th:value="${candidate.id}">Прийняти</button>
+                                                        </form>
+                                                        <form action="deny_user" method="post"
+                                                            enctype="multipart/form-data" class="ml-2">
+                                                            <button type="submit" class="btn btn-danger" name="id"
+                                                                th:value="${candidate.id}">Відмовити</button>
+                                                        </form>
+                                                    </div>
                                                 </th:block>
                                             </div>
-                                            <th:block th:if="${currentFilter} == waiting">
-                                                <div class="btn-group mr-3">
-                                                    <form action="accept_user" method="post"
-                                                        enctype="multipart/form-data" class="mr-3">
-                                                        <button type="submit" class="btn btn-success" name="id"
-                                                            th:value="${candidate.id}">Прийняти</button>
-                                                    </form>
-                                                    <form action="deny_user" method="post" enctype="multipart/form-data"
-                                                        class="ml-2">
-                                                        <button type="submit" class="btn btn-danger" name="id"
-                                                            th:value="${candidate.id}">Відмовити</button>
-                                                    </form>
-                                                </div>
-                                            </th:block>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </th:block>
                     </div>
 
                     <!--pagination-->

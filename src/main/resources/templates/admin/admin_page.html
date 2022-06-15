@@ -3,7 +3,7 @@
 
     <head class="blue">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" />
+        <meta name="viewport" content="width=device-width" />
         <title>Волонтерська організація</title>
         <link rel="stylesheet" href="/css/bootstrap.css">
         <link rel="stylesheet" href="/css/main.css">
@@ -14,24 +14,73 @@
     <body background="/img/background12.jpg">
         <header th:insert="blocks\admin_header :: header"></header>
 
-        <div class="alert alert-info text-center" th:if="${param.SendingMessageToEmail}">
-            <h5 class=""> Лист із підтвердженням відправлено на вашу електронну адресу:
-                [[${email}]]. Без
-                підтвердження
-                ваша заявка не буде розглянута.
-            </h5>
-        </div>
-
         <div class="alert alert-success text-center" th:if="${param.ImageDownload}">
             <h5> Зображення завантажено!
             </h5>
         </div>
 
         <main>
-            <div class="mb-3 text-center">
+            <div class="">
                 <img src="/img/image.jpg" alt="Волонтерська організація">
             </div>
             <div class="container">
+                <h1 class="title text-center mb-4">[[${projectInfo.name}]]</h1>
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="/img/volunteers.jpg" alt="">
+                    </div>
+                    <div id="about" class="col-md-6">
+                        <h1 class="title text-center mb-4">Що таке волонтерство?</h1>
+                        <h5 class="d-flex justify-content-center align-content-justify">
+                            Волонтерська діяльність – унікальне явище, яке не знає кордонів і не залежить від рівня
+                            матеріального достатку. Волонтерство – не робота. Це на 100% покликання. Це спосіб життя
+                            і мислення. Небайдужість до чужої біди, причетність і співпереживання – те, що веде
+                            волонтерів вперед. Завдяки їхнім старанням, десятки, якщо не сотні тисяч людей отримують
+                            настільки необхідну їм допомогу. Волонтери допомагають дітям і дорослим, вони піклуються
+                            про здоров’я людей, їхній комфорт та безпеку. Часто волонтерам доводиться навіть
+                            ризикувати власним життям заради порятунку інших. Це воістину люди з величезним серцем,
+                            безкорисливі та добрі, готові протягнути руку допомоги та не залишити в біді тих, кому
+                            погано.
+                        </h5>
+                    </div>
+                    <div id="blog" class="mt-4 mb-4">
+                        <h1 class="title text-center mb-4">Останні дописи</h1>
+                        <div class="row">
+                            <th:block th:each="post : ${posts}">
+                                <div class="col-lg-4 col-md-6 mb-2-6">
+                                    <article class="card card-style2">
+                                        <div class="card-img">
+                                            <img class="rounded-top" th:src="${filePathPosts} + ${post.image}"
+                                                alt="Зображення">
+                                            <div th:text="${post.date}"></div>
+                                            <div th:if="${role} == editor" class="mt-2 btn-group">
+                                                <form action="/editor/delete_post" method="post">
+                                                    <button type="submit" name="id" th:value="${post.id}">
+                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                    </button>
+                                                </form>
+                                                <form th:action="${pathEdit} + ${post.id}" method="get">
+                                                    <button type="submit"><i class="fa fa-pencil"
+                                                            aria-hidden="true"></i></button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="h5"><a th:href="${URI} + ${post.id}" th:text="${post.title}"></a>
+                                            </h3>
+                                        </div>
+                                        <div class="card-footer">
+                                            <ul>
+                                                <li><i class="fa fa-user"></i> <a href="#!">[[${post.user.name}]]</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </article>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
         <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>

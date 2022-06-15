@@ -1,14 +1,17 @@
 package com.volunteer.Volunteer.Organization.controllers;
 
 import com.volunteer.Volunteer.Organization.exceptions.*;
+import com.volunteer.Volunteer.Organization.models.Posts;
 import com.volunteer.Volunteer.Organization.models.Roles;
 import com.volunteer.Volunteer.Organization.models.SuggestedPosts;
 import com.volunteer.Volunteer.Organization.models.Candidates;
 import com.volunteer.Volunteer.Organization.repository.CategoriesRepository;
 import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
+import com.volunteer.Volunteer.Organization.repository.PostsRepository;
 import com.volunteer.Volunteer.Organization.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -24,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_POSTS_UPLOADS;
 import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_VOLUNTEERS_UPLOADS;
 
 @Controller
@@ -56,8 +60,16 @@ public class UserController {
     @Autowired
     private CandidateService candidateService;
 
+    @Autowired
+    private PostsRepository postsRepository;
+
     @GetMapping("/")
     public String userPage(Model model, HttpServletRequest request)    {
+        Page<Posts> lastPosts = postsRepository.findAll(PageRequest.of(0, 3, Sort.Direction.DESC, "id"));
+        model.addAttribute("posts", lastPosts);
+        model.addAttribute("URI", "/blog/");
+        model.addAttribute("filePathPosts", PATH_TO_POSTS_UPLOADS);
+
         model.addAttribute("projectInfo", mainService.getProjectInfo());
         model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
         return PATH_TO_USER_FOLDER + "user_page";
@@ -68,7 +80,6 @@ public class UserController {
                                  @RequestParam(defaultValue = "waiting") String filter, @RequestParam(defaultValue = "name") String field,
                                  @RequestParam(required = false) String query, Model model)    {
         try {
-            System.out.println("query = " + query);
             Page<Candidates> candidates;
             if (query == null) {
                 candidates = candidatesRepository.findByStatus(filter, pageable);

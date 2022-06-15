@@ -3,7 +3,7 @@
 
     <head class="blue">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" />
+        <meta name="viewport" content="width=device-width" />
         <title>[[${projectInfo.name}]]</title>
         <link rel="stylesheet" href="/css/bootstrap.css">
         <link rel="stylesheet" href="/css/main.css">
@@ -24,20 +24,36 @@
 
         <main>
             <div class="container">
-                <h1 class="text-center">Встановлення пароля</h1>
-                <form action="/set_password" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="email" th:value="${email}" required>
-                    <input type="hidden" name="link" th:value="${link}" required>
-                    <h4>Новий пароль:
-                        <input type="password" name="password" class="form-control" minlength="3" maxlength="30"
-                            required>
-                    </h4>
-                    <h4>Повторіть пароль:
-                        <input type="password" name="rePassword" class="form-control" minlength="3" maxlength="30"
-                            required>
-                    </h4>
-                    <button type="submit" class="btn btn-outline-success">Зберегти</button>
-                </form>
+                <h1 class="title text-center mb-4">Встановлення пароля</h1>
+
+                <div class="d-flex justify-content-center">
+                    <form action="/set_password" method="post" enctype="multipart/form-data">
+
+                        <!-- Email input hidden -->
+                        <input type="hidden" name="email" th:value="${email}" required>
+
+                        <!-- Link input hidden -->
+                        <input type="hidden" name="link" th:value="${link}" required>
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-4">
+                            <input type="password" id="inputPassword" name="password" class="form-control" minlength="3"
+                                maxlength="30" required placeholder="Введіть новий пароль">
+                            <label class="form-label" for="inputPassword">Пароль</label>
+                        </div>
+
+                        <!-- Repeat Password input -->
+                        <div class="form-outline mb-4">
+                            <input type="password" name="rePassword" id="inputRe-Password" class="form-control"
+                                minlength="3" maxlength="30" required placeholder="Повторно введіть пароль">
+                            <label class="form-label" for="inputRe-Password">Повторити</label>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block mb-4 form-control">Зберегти</button>
+                    </form>
+                </div>
+
             </div>
         </main>
 

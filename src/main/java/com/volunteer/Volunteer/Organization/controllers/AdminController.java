@@ -1,16 +1,15 @@
 package com.volunteer.Volunteer.Organization.controllers;
 
 import com.volunteer.Volunteer.Organization.exceptions.*;
+import com.volunteer.Volunteer.Organization.models.Posts;
 import com.volunteer.Volunteer.Organization.models.ProjectInfo;
 import com.volunteer.Volunteer.Organization.models.Users;
 import com.volunteer.Volunteer.Organization.models.Candidates;
-import com.volunteer.Volunteer.Organization.repository.ProjectInfoRepository;
-import com.volunteer.Volunteer.Organization.repository.RolesRepository;
-import com.volunteer.Volunteer.Organization.repository.UsersRepository;
-import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
+import com.volunteer.Volunteer.Organization.repository.*;
 import com.volunteer.Volunteer.Organization.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -27,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
+import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_POSTS_UPLOADS;
 import static com.volunteer.Volunteer.Organization.service.UploadsPhotosService.PATH_TO_VOLUNTEERS_UPLOADS;
 
 @Controller
@@ -65,12 +65,20 @@ public class AdminController {
     @Autowired
     private MailSenderService mailSenderService;
 
+    @Autowired
+    private PostsRepository postsRepository;
+
     @GetMapping("/")
     public String admin(Model model, HttpServletRequest request) {
         Users user = usersRepository.findByEmail(request.getRemoteUser());
         if (user != null) {
             model.addAttribute("role", user.getRoles().getRole());
         }
+
+        Page<Posts> lastPosts = postsRepository.findAll(PageRequest.of(0, 3, Sort.Direction.DESC, "id"));
+        model.addAttribute("posts", lastPosts);
+        model.addAttribute("URI", "/blog/");
+        model.addAttribute("filePathPosts", PATH_TO_POSTS_UPLOADS);
 
         ProjectInfo projectInfo = projectInfoRepository.getById(Long.valueOf(1));
         model.addAttribute("projectInfo", projectInfo);

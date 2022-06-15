@@ -14,52 +14,62 @@
 
     <body>
         <header class="navbar-inverse" th:insert="blocks\editor_header :: header"></header>
+
+        <div th:if="${param.AddedPost}" class="alert alert-success text-center">
+            <h5>Допис додано!</h5>
+        </div>
+
         <main>
             <div class="container">
-                <div th:if="${param.AddedPost}" class="alert alert-success text-center">
-                    <h5>Допис додано!</h5>
-                </div>
-                <div class="mr-300">
-                    <div class="col-md-8 offset-md-4">
-                        <div class="form-container mb-5">
-                            <h1 class="title text-center">Редагування допису</h1>
-                            <form action="/editor/edit_post" method="post" class="form-horizontal"
-                                enctype="multipart/form-data">
-                                <div class="form-group">
-                                    <input type="hidden" name="id" th:value="${post.id}">
-                                    <h4>Назва допису:
-                                        <input type="text" name="title" th:value="${post.title}"
-                                            placeholder="Введіть назву допису" class="form-control mb-2" maxlength="254"
-                                            required>
-                                    </h4>
-                                    <h4>Текст допису:
-                                        <textarea rows="5" type="text" name="description" class="form-control mb-2"
-                                            placeholder="Введіть основну частину допису" maxlength="10000" required>
-                                        </textarea>
-                                    </h4>
-                                    <h4>Виберіть категорію:
-                                        <select name="idCategory" class="form-select" required>
-                                            <option selected th:value="${post.category.id}">
-                                                [[${post.category.category}]]
-                                            </option>
-                                            <th:block th:each="category : ${categories}">
-                                                <th:block th:if="${category.id} != ${post.category.id}">
-                                                    <option th:value="${category.id}">[[${category.category}]]</option>
-                                                </th:block>
-                                            </th:block>
-                                        </select>
-                                    </h4>
-                                    <h4>Прикріпіть світлину, яка освітлює даний допис.
-                                        <input type="file" name="image">
-                                    </h4>
-                                </div>
-                                <center>
-                                    <button type="submit" class="btn btn-outline-success btn-block">Зберегти</button>
-                                </center>
-                            </form>
+                <h1 class="title text-center mb-4">Редагування допису</h1>
+
+                <div class="d-flex justify-content-center">
+                    <form action="/editor/edit_post" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" name="id" th:value="${post.id}">
+
+                        <!-- Title input -->
+                        <div class="form-outline mb-4">
+                            <input type="text" name="title" id="inputTitle" th:value="${post.title}"
+                                placeholder="Введіть назву допису" class="form-control mb-2" minlength="3"
+                                maxlength="254" required>
+                            <label class="form-label" for="inputTitle">Назва</label>
                         </div>
-                    </div>
+
+                        <!-- Description input -->
+                        <div class="form-outline mb-4">
+                            <textarea rows="5" type="text" id="textAreaDesc" name="description"
+                                class="form-control mb-2" placeholder="Введіть основну частину допису" maxlength="10000"
+                                required>[[${post.description}]]</textarea>
+                            <label class="form-label" for="textAreaDesc">Опис</label>
+                        </div>
+
+                        <!-- Phone number -->
+                        <div class="form-outline mb-4">
+                            <select name="idCategory" id="select" class="form-select" required>
+                                <option selected th:value="${post.category.id}">
+                                    [[${post.category.category}]]
+                                </option>
+                                <th:block th:each="category : ${categories}">
+                                    <th:block th:if="${category.id} != ${post.category.id}">
+                                        <option th:value="${category.id}">[[${category.category}]]</option>
+                                    </th:block>
+                                </th:block>
+                            </select>
+                            <label class="form-label" for="select">Категорія</label>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="form-outline mb-4">
+                            <input type="file" id="inputImage" max="1048576" name="image">
+                            <label class="form-label" for="inputImage">Фотографія</label>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block mb-4 form-control">Зберегти</button>
+                    </form>
                 </div>
+
             </div>
         </main>
         <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>

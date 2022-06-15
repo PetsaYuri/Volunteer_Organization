@@ -210,3 +210,8 @@ img {
     text-align: justify;
     text-indent: 30px;
 }
+
+.align-content-justify {
+    text-indent: 25px;
+    text-align: justify;
+}

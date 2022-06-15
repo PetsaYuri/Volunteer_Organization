@@ -16,6 +16,7 @@ import com.volunteer.Volunteer.Organization.service.MainService;
 import com.volunteer.Volunteer.Organization.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -61,6 +62,11 @@ public class MainController {
         if (user != null) {
             model.addAttribute("role", user.getRoles().getRole());
         }
+
+        Page<Posts> lastPosts = postsRepository.findAll(PageRequest.of(0, 3, Sort.Direction.DESC, "id"));
+        model.addAttribute("posts", lastPosts);
+        model.addAttribute("URI", "/blog/");
+        model.addAttribute("filePathPosts", PATH_TO_POSTS_UPLOADS);
 
         model.addAttribute("projectInfo", mainService.getProjectInfo());
         model.addAttribute("filePath", PATH_TO_PROJECT_INFO_UPLOADS);
