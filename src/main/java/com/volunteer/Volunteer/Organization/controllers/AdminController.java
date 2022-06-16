@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -80,7 +81,9 @@ public class AdminController {
         model.addAttribute("URI", "/blog/");
         model.addAttribute("filePathPosts", PATH_TO_POSTS_UPLOADS);
 
-        model.addAttribute("key", System.getProperty("user.dir"));
+        File file = new File(System.getProperty("user.dir") + "/uploads/volunteers/");
+        boolean key = file.exists();
+        model.addAttribute("key", key);
 
         ProjectInfo projectInfo = projectInfoRepository.getById(Long.valueOf(1));
         model.addAttribute("projectInfo", projectInfo);
