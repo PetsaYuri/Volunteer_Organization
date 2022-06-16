@@ -80,6 +80,8 @@ public class AdminController {
         model.addAttribute("URI", "/blog/");
         model.addAttribute("filePathPosts", PATH_TO_POSTS_UPLOADS);
 
+        model.addAttribute("key", System.getProperty("user.dir"));
+
         ProjectInfo projectInfo = projectInfoRepository.getById(Long.valueOf(1));
         model.addAttribute("projectInfo", projectInfo);
         model.addAttribute("pathProjectInfo", mainService.getPathProjectInfo());
