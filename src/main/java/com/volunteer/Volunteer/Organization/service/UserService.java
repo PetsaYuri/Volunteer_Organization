@@ -11,6 +11,7 @@ import com.volunteer.Volunteer.Organization.repository.RolesRepository;
 import com.volunteer.Volunteer.Organization.repository.UsersRepository;
 import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,6 +24,9 @@ import java.util.UUID;
 
 @Service
 public class UserService {
+
+    @Value("${url.name}")
+    private String url;
 
     @Autowired
     private MainService mainService;
@@ -44,7 +48,7 @@ public class UserService {
         Users user = usersRepository.findByCandidate(candidate);
         String message = String.format("Доброго дня %s! \n" +
                     "Ми прийняли вашу заявку! Для створення облікового запису перейдіть за посиланням: %s", candidate.getName(),
-                "http://localhost:8080/settings_account/" + user.getPassword() + "?email=" + candidate.getEmail());
+                url + "/settings_account/" + user.getPassword() + "?email=" + candidate.getEmail());
         return message;
     }
 
@@ -60,7 +64,7 @@ public class UserService {
                 "Нам прийшло повідомлення про те, що ви втратили доступ до свого облікового запису. " +
                         "Якщо це так, то просимо перейти за посиланням для відновлення доступу: %s . " +
                         "Якщо ні, то просто ігноруйте цей лист!", user.getName(),
-                "http://localhost:8080/settings_account/" + user.getPassword() + "?email=" + user.getEmail());
+                url + "/settings_account/" + user.getPassword() + "?email=" + user.getEmail());
         return message;
     }
 

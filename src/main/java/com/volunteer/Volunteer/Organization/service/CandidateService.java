@@ -4,6 +4,7 @@ import com.volunteer.Volunteer.Organization.exceptions.IncorrectQueryException;
 import com.volunteer.Volunteer.Organization.models.Candidates;
 import com.volunteer.Volunteer.Organization.repository.CandidatesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,13 +14,16 @@ import java.util.UUID;
 @Service
 public class CandidateService {
 
+    @Value("${url.name}")
+    private String url;
+
     @Autowired
     private CandidatesRepository candidatesRepository;
 
     public String sendActivationMessageToEmail(Candidates candidate)    {
         String message = String.format("Доброго дня %s! \n" +
-                        "Будь ласка, перейдіть по посиланню ниже " +
-                        "http://localhost:8080/activate/%s",
+                        "Будь ласка, перейдіть по посиланню ниже " + url +
+                        "/activate/%s",
                 candidate.getName(),
                 candidate.getActivationCode());
         return message;
