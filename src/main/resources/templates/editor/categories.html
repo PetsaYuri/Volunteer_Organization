@@ -23,21 +23,20 @@
     <body>
         <header th:insert="blocks\editor_header :: header"></header>
 
-        <div th:if="${param.AddedCategory}" class="alert alert-success">
+        <div th:if="${param.AddedCategory}" class="alert alert-success text-center">
             <h3>Категорія додана!</h3>
         </div>
 
-        <div th:if="${param.EditedCategory}" class="alert alert-success">
+        <div th:if="${param.EditedCategory}" class="alert alert-success text-center">
             <h3>Категорія відредагована!</h3>
         </div>
 
-        <div th:if="${param.DeletedCategory}" class="alert alert-danger">
+        <div th:if="${param.DeletedCategory}" class="alert alert-danger text-center">
             <h3>Категорія видалена!</h3>
         </div>
 
         <main>
             <div class="container">
-                <h1 class="text-center">Категорії</h1>
 
                 <div class="mt-2 text-end">
                     <h3><a href="/editor/add_category" class="fa fa-plus" aria-hidden="true">Додати нову категорію
@@ -45,25 +44,34 @@
                     </h3>
                 </div>
 
-                <th:block th:each="category : ${categories}">
-                    <div class="row">
-                        <div class="btn-group">
-                            <h3 class="mr-2">[[${category.id}]]. [[${category.category}]] - [[${category.description}]]
-                            </h3>
-                            <form action="edit_category" method="post">
-                                <button type="submit" class="btn btn-outline-warning" name="idCategory"
-                                    th:value="${category.id}"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-                            </form>
-                            <th:block th:unless="${categories.size()} == 2">
-                                <form action="delete_category" method="post">
-                                    <button type="submit" class="btn btn-outline-danger" name="idCategory"
-                                        th:value="${category.id}"><i class="fa fa-trash"
+                <div class="card mb-5">
+                    <div class="card-header text-center">
+                        <h1>Категорії ([[${categories.size()}]])</h1>
+                    </div>
+
+                    <th:block th:each="category : ${categories}">
+                        <div class="card-body">
+                            <div class="btn-group d-flex justify-content-center text-center">
+                                <h3 class="text-center">[[${category.category}]]</h3>
+
+                                <form action="edit_category" method="post">
+                                    <button type="submit" class="btn btn-outline-warning ml-2" name="idCategory"
+                                        th:value="${category.id}"><i class="fa fa-pencil"
                                             aria-hidden="true"></i></button>
                                 </form>
-                            </th:block>
+
+                                <th:block th:unless="${categories.size()} == 2">
+                                    <form action="delete_category" method="post">
+                                        <button type="submit" class="btn btn-outline-danger ml-2" name="idCategory"
+                                            th:value="${category.id}"><i class="fa fa-trash"
+                                                aria-hidden="true"></i></button>
+                                    </form>
+                                </th:block>
+                            </div>
+                            <h5>[[${category.description}]]</h5>
                         </div>
-                    </div>
-                </th:block>
+                    </th:block>
+                </div>
             </div>
         </main>
         <footer class="navbar-inverse" th:insert="blocks\footer :: footer"></footer>

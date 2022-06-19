@@ -23,6 +23,10 @@
     <body background="/img/background12.jpg">
         <header th:insert="blocks\user_header :: header"></header>
 
+        <div class="alert alert-success text-center" th:if="${param.PasswordChanged}">
+            <h5>Пароль змінено!</h5>
+        </div>
+
         <main>
             <div class="">
                 <img src="/img/image.jpg" alt="Волонтерська організація">

@@ -96,7 +96,7 @@ public class UserService {
         if (usersRepository.existsById(user.getId()))   {
             BCryptPasswordEncoder bCryptEncoder = new BCryptPasswordEncoder();
             if (bCryptEncoder.matches(curPassword, user.getPassword())) {
-                String encodedPass = bCryptEncoder.encode(curPassword);
+                String encodedPass = bCryptEncoder.encode(newPassword);
                 user.setPassword(encodedPass);
                 usersRepository.save(user);
             }   else {

@@ -27,6 +27,10 @@
             Лист із підтвердженням відправлений на вашу електронну адресу!
         </div>
 
+        <div class="alert alert-success text-center" th:if="${param.PasswordChanged}">
+            <h5>Пароль змінено!</h5>
+        </div>
+
         <div th:if="${users.size} == 0" class="alert alert-info d-flex justify-content-center">
             <form action="/add_admin" method="post" enctype="multipart/form-data">
                 <button type="submit" class="btn btn-info">

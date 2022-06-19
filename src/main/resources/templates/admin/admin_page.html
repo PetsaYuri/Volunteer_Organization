@@ -24,8 +24,11 @@
         <header th:insert="blocks\admin_header :: header"></header>
 
         <div class="alert alert-success text-center" th:if="${param.ImageDownload}">
-            <h5> Зображення завантажено!
-            </h5>
+            <h5> Зображення завантажено!</h5>
+        </div>
+
+        <div class="alert alert-success text-center" th:if="${param.PasswordChanged}">
+            <h5>Пароль змінено!</h5>
         </div>
 
         <div th:if="${param.ddd}" class="alert alert-info text-center">

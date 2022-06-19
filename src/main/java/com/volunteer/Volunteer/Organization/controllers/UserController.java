@@ -166,7 +166,7 @@ public class UserController {
         try {
             if (password.equals(rePassword)) {
                 Roles roles = userService.changePassword(request, curPassword, password);
-                return "redirect:/" + roles.getRole() + "/";
+                return "redirect:/" + roles.getRole() + "/?PasswordChanged";
             }   else {
                 throw new RepeatedPasswordIsInvalidException();
             }

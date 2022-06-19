@@ -25,21 +25,20 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="nav nav-pills">
                         <li class="nav-item"><a href="/admin/upload_logo" class="nav-link">
-                                <h4>Завантажити логотип</h4>
+                                <h5>Завантажити логотип</h4>
                             </a></li>
                         <li class="nav-item"><a href="/admin/view_candidates" class="nav-link">
-                                <h4>Керувати кандидатами</h4>
+                                <h5>Керувати кандидатами</h4>
                             </a>
                         </li>
                         <li class="nav-item"><a href="/admin/view_users" class="nav-link">
-                                <h4>Керувати користувачами</h4>
+                                <h5>Керувати користувачами</h4>
                             </a>
                         </li>
-                        <form th:action="@{/logout}" method="post" class="nav-item">
-                            <h4>
-                                <input type="submit" value="Вихід" class="nav-link" />
-                            </h4>
-                        </form>
+                        <li class="nav-item"><a href="/logout" class="nav-link">
+                                <h5>Вихід</h5>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
