@@ -99,7 +99,7 @@ public class MainController {
     @GetMapping("/blog")
     public String blog(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 6) Pageable pageable,
                         @RequestParam(required = false) String query, Model model, HttpServletRequest request,
-                       @RequestParam(required = false) Long idCategory)    {
+                       @RequestParam(required = false) Long idCategory)     {
         try {
             Page<Posts> posts;
             Categories category;

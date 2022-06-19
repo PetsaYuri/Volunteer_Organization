@@ -30,4 +30,6 @@ public interface CandidatesRepository extends JpaRepository<Candidates, Long> {
     Page<Candidates> findByPhoneContainingIgnoreCaseAndStatus (final String phone, String status, Pageable pageable);
 
     Page<Candidates> findByCityContainingIgnoreCaseAndStatus (final String city, String status, Pageable pageable);
+
+    Page<Candidates> findByActivationContainingIgnoreCaseAndStatus (final String activation, String status, Pageable pageable);
 }

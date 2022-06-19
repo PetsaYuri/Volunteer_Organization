@@ -71,6 +71,8 @@ public class CandidateService {
                 return volunteers = candidatesRepository.findByPhoneContainingIgnoreCaseAndStatus(query, filter, pageable);
             case "city":
                 return volunteers = candidatesRepository.findByCityContainingIgnoreCaseAndStatus(query, filter, pageable);
+            case "activation":
+                return volunteers = candidatesRepository.findByActivationContainingIgnoreCaseAndStatus("confirmed", filter, pageable);
             default:
                 throw new IncorrectQueryException();
         }
